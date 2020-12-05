@@ -1,19 +1,20 @@
 package http
 
 import (
+	"github.com/gin-gonic/gin"
 	"pixstall-artist/app/domain/artist"
 )
 
-type RabbitMQArtistController struct {
+type ArtistController struct {
 	artistUseCase artist.UseCase
 }
 
-func NewRabbitMQArtistController(useCase artist.UseCase) RabbitMQArtistController {
-	return RabbitMQArtistController{
+func NewArtistController(useCase artist.UseCase) ArtistController {
+	return ArtistController{
 		artistUseCase: useCase,
 	}
 }
 
-func (a RabbitMQArtistController) RegisterNewArtist() {
+func (a ArtistController) GetArtist(c *gin.Context) {
 
 }
