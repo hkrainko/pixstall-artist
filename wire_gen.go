@@ -6,6 +6,7 @@
 package main
 
 import (
+	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"pixstall-artist/app/artist/delivery/http"
 	"pixstall-artist/app/artist/delivery/rabbitmq"
@@ -22,9 +23,9 @@ func InitArtistController(db *mongo.Database) http.ArtistController {
 	return artistController
 }
 
-func InitArtistMessageBroker(db *mongo.Database) rabbitmq.ArtistMessageBroker {
+func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection) rabbitmq.ArtistMessageBroker {
 	repo := mongo2.NewMongoArtistRepo(db)
 	useCase := usecase.NewArtistUseCase(repo)
-	artistMessageBroker := rabbitmq.NewRabbitMQArtistMessageBroker(useCase)
+	artistMessageBroker := rabbitmq.NewRabbitMQArtistMessageBroker(useCase, conn)
 	return artistMessageBroker
 }
