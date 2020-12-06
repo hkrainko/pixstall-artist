@@ -1,7 +1,6 @@
 package rabbitmq
 
 import (
-	"bytes"
 	"context"
 	"github.com/streadway/amqp"
 	"log"
@@ -46,7 +45,7 @@ func (a ArtistMessageBroker) StartArtistQueue(ctx context.Context) {
 	}
 	err = a.ch.QueueBind(
 		q.Name,
-		"user.artist.#",
+		"user.#",
 		"user",
 		false,
 		nil,
@@ -73,10 +72,6 @@ func (a ArtistMessageBroker) StartArtistQueue(ctx context.Context) {
 	go func() {
 		for d := range msgs {
 			log.Printf("Received a message: %s", d.Body)
-			dot_count := bytes.Count(d.Body, []byte("."))
-			t := time.Duration(dot_count)
-			time.Sleep(t * time.Second)
-			log.Printf("Done")
 			d.Ack(false)
 
 			err := a.artistUseCase.RegisterNewArtist(ctx, &model.Artist{
@@ -106,5 +101,9 @@ func (a ArtistMessageBroker) StartArtistQueue(ctx context.Context) {
 }
 
 func (a ArtistMessageBroker) StopArtistQueue(ctx context.Context) {
-	//TODO need?
+	err := a.ch.Close()
+	if err != nil {
+		log.Printf("StopArtistQueue err %v", err)
+	}
+	log.Printf("StopArtistQueue success")
 }

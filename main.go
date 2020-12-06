@@ -31,7 +31,9 @@ func main() {
 		log.Fatalf("Failed to connect to RabbitMQ %v", err)
 	}
 	defer conn.Close()
-	InitArtistMessageBroker(dbClient.Database("pixstall-artist"), conn)
+	artistMsgBroker := InitArtistMessageBroker(dbClient.Database("pixstall-artist"), conn)
+	go artistMsgBroker.StartArtistQueue(ctx)
+	defer artistMsgBroker.StopArtistQueue(ctx)
 
 	//Gin
 	r := gin.Default()
