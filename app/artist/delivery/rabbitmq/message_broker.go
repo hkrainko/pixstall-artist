@@ -104,3 +104,7 @@ func (a ArtistMessageBroker) StartArtistQueue(ctx context.Context) {
 
 	<-forever
 }
+
+func (a ArtistMessageBroker) StopArtistQueue(ctx context.Context) {
+	//TODO need?
+}

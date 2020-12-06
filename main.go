@@ -31,11 +31,6 @@ func main() {
 		log.Fatalf("Failed to connect to RabbitMQ %v", err)
 	}
 	defer conn.Close()
-	ch, err := conn.Channel()
-	if err != nil {
-		log.Fatalf("Failed to open a channel %v", err)
-	}
-	defer ch.Close()
 	InitArtistMessageBroker(dbClient.Database("pixstall-artist"), conn)
 
 	//Gin
