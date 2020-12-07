@@ -24,6 +24,7 @@ func main() {
 			panic(err)
 		}
 	}()
+	db := dbClient.Database("pixstall-artist")
 
 	//RabbitMQ
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
@@ -31,18 +32,19 @@ func main() {
 		log.Fatalf("Failed to connect to RabbitMQ %v", err)
 	}
 	defer conn.Close()
-	artistMsgBroker := InitArtistMessageBroker(dbClient.Database("pixstall-artist"), conn)
+	artistMsgBroker := InitArtistMessageBroker(db, conn)
 	go artistMsgBroker.StartArtistQueue(ctx)
 	defer artistMsgBroker.StopArtistQueue(ctx)
 
 	//Gin
 	r := gin.Default()
 
-	//authGroup := r.Group("/artist")
-	//{
-	//	ctr := InitAuthController(conn, dbClient.Database("pixstall-user"))
-	//	authGroup.POST("/getAuthUrl", ctr.GetAuthURL)
-	//}
+	authGroup := r.Group("/artist")
+	{
+		ctr := InitArtistController(db)
+		authGroup.POST("/getArtist", ctr.GetArtist)
+		authGroup.POST("/updateArtist", ctr.UpdateArtist)
+	}
 
 	err = r.Run(":9002")
 	print(err)

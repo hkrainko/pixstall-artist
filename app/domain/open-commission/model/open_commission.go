@@ -12,6 +12,18 @@ type OpenCommission struct {
 	State     OpenCommissionSate
 }
 
+type OpenCommissionUpdater struct {
+	ID        string
+	ArtistID  *string
+	Title     *string
+	Desc      *string
+	PriceFrom *string
+	PriceTo   *string
+	DayNeed   *DayNeed
+	Size      *Size
+	State     *OpenCommissionSate
+}
+
 type DayNeed struct {
 	From int
 	To   int
