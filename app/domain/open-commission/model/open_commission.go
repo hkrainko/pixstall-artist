@@ -14,7 +14,7 @@ type OpenCommission struct {
 
 type OpenCommissionUpdater struct {
 	ID        string
-	ArtistID  *string
+	ArtistID  string
 	Title     *string
 	Desc      *string
 	PriceFrom *string
@@ -37,6 +37,6 @@ type Size struct {
 type OpenCommissionSate string
 
 const (
-	OpenCommissionStateActive  = "A"
-	OpenCommissionStateRemoved = "R"
+	OpenCommissionStateActive OpenCommissionSate  = "A"
+	OpenCommissionStateRemoved OpenCommissionSate = "R"
 )

@@ -43,7 +43,9 @@ func main() {
 	{
 		ctr := InitArtistController(db)
 		authGroup.POST("/getArtist", ctr.GetArtist)
-		authGroup.POST("/updateArtist", ctr.UpdateArtist)
+		authGroup.POST("/updateIntro", ctr.UpdateIntro)
+		authGroup.POST("/updateDetails", ctr.UpdateOpenCommission)
+		authGroup.POST("/updateDetails", ctr.UpdateOpenCommission)
 	}
 
 	err = r.Run(":9002")

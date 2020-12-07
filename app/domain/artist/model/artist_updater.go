@@ -21,5 +21,5 @@ type ArtistUpdater struct {
 	ArtistIntro      *ArtistIntroUpdater
 	ArtistDetails    *ArtistDetailsUpdater
 	OpenCommissions  *[]domainOpenCommissionModel.OpenCommissionUpdater
-	Artworks         *[]domainArtworkModel.Artwork
+	Artworks         *[]domainArtworkModel.ArtworkUpdater
 }

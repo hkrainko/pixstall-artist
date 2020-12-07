@@ -23,9 +23,10 @@ type ArtworkUpdater struct {
 }
 
 type ArtworkState string
+
 const (
-	ArtworkStateActive    = "A"
-	ArtworkStateHidden    = "H"
-	ArtworkStateRemoved   = "R"
-	ArtworkStateForbidden = "F"
+	ArtworkStateActive    ArtworkState = "A"
+	ArtworkStateHidden    ArtworkState = "H"
+	ArtworkStateRemoved   ArtworkState = "R"
+	ArtworkStateForbidden ArtworkState = "F"
 )

@@ -5,6 +5,9 @@ import (
 	"pixstall-artist/app/artist/delivery/model/get_artist"
 	domainArtist "pixstall-artist/app/domain/artist"
 	domain "pixstall-artist/app/domain/artist/model"
+	model2 "pixstall-artist/app/domain/artwork/model"
+	"pixstall-artist/app/domain/open-commission/model"
+	"strconv"
 )
 
 type ArtistController struct {
@@ -27,34 +30,94 @@ func (a ArtistController) GetArtist(c *gin.Context) {
 	c.PureJSON(200, get_artist.NewResponse(*artist))
 }
 
-func (a ArtistController) UpdateArtist(c *gin.Context) {
+func (a ArtistController) UpdateIntro(c *gin.Context) {
 	artistID := c.Query("artistId")
 	UserName := c.Query("userName")
 	email := c.Query("email")
 	birthday := c.Query("birthday")
 	gender := c.Query("gender")
 
-	updater := domain.ArtistUpdater{
-		ArtistID:         artistID,
-		UserName:         &UserName,
-		Email:            &email,
-		Birthday:         &birthday,
-		Gender:           &gender,
-		PhotoURL:         nil,
-		State:            nil,
-		FansIDs:          nil,
-		LikeIDs:          nil,
-		RegistrationTime: nil,
-		ArtistIntro:      nil,
-		ArtistDetails:    nil,
-		OpenCommissions:  nil,
-		Artworks:         nil,
+	updater := &domain.ArtistIntroUpdater{
+		YearOfDrawing: nil,
+		ArtTypes:      nil,
+		SelfIntro:     nil,
 	}
 
-	err := a.artistUseCase.UpdateArtist(c, artistID, updater)
+	err := a.artistUseCase.UpdateIntro(c, artistID, updater)
 	if err != nil {
 		return
 	}
 
+	c.PureJSON(200, nil)
+}
+
+func (a ArtistController) UpdateOpenCommission(c *gin.Context) {
+	artistID := c.Query("artistId")
+	openCommissionID := c.Query("openCommissionId")
+	title := c.Query("title")
+	desc := c.Query("desc")
+	priceFrom := c.Query("priceFrom")
+	priceTo := c.Query("priceTo")
+
+	dayNeedMap := c.QueryMap("dayNeed")
+	var dayNeed *model.DayNeed
+	if dayNeedMap["from"] != "" && dayNeedMap["to"] != "" {
+		dayNeed = &model.DayNeed{}
+		if from, err := strconv.Atoi(dayNeedMap["from"]); err == nil {
+			dayNeed.From = from
+		}
+		if to, err := strconv.Atoi(dayNeedMap["to"]); err == nil {
+			dayNeed.To = to
+		}
+	}
+
+	sizeMap := c.QueryMap("size")
+	var size *model.Size
+	if sizeMap["width"] != "" && sizeMap["height"] != "" {
+		size = &model.Size{}
+		if width, err := strconv.ParseFloat(sizeMap["width"], 64); err == nil {
+			size.Width = width
+		}
+		if height, err := strconv.ParseFloat(sizeMap["height"], 64); err == nil {
+			size.Height = height
+		}
+	}
+
+	updater := &model.OpenCommissionUpdater{
+		ID:        openCommissionID,
+		ArtistID:  artistID,
+		Title:     &title,
+		Desc:      &desc,
+		PriceFrom: &priceFrom,
+		PriceTo:   &priceTo,
+		DayNeed:   dayNeed,
+		Size:      size,
+	}
+
+	err := a.artistUseCase.UpdateOpenCommission(c, artistID, updater)
+	if err != nil {
+		return
+	}
+
+	c.PureJSON(200, nil)
+}
+
+func (a ArtistController) UpdateArtwork(c *gin.Context) {
+	artistID := c.Query("artistId")
+	artworkID := c.Query("artworkId")
+	state := c.Query("state")
+
+	artworkState := (model2.ArtworkState)(state)
+
+	updater := &model2.ArtworkUpdater{
+		ID:           artworkID,
+		ArtistID:     artistID,
+		State:        &artworkState,
+	}
+
+	err := a.artistUseCase.UpdateArtwork(c, artistID, updater)
+	if err != nil {
+		return
+	}
 	c.PureJSON(200, nil)
 }
