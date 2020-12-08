@@ -1,5 +1,7 @@
 package model
 
 type User struct {
-	UserID string
+	UserID   string
+	UserName string
+	IsArtist bool //need?
 }

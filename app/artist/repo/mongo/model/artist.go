@@ -16,7 +16,7 @@ type Artist struct {
 	//Gender           string                                     `bson:"gender,omitempty"`
 	//PhotoURL         string                                     `bson:"photoURL,omitempty"`
 	//State            domainArtistModel.UserState                `bson:"state,omitempty"`
-	//FansIDs          map[string]userDomainModel.User            `bson:"fansIDs,omitempty"`
+	//Fans          map[string]userDomainModel.User            `bson:"fansIDs,omitempty"`
 	//LikeIDs          map[string]userDomainModel.User            `bson:"likeIDs,omitempty"`
 	//RegistrationTime time.Time                                  `bson:"registrationTime,omitempty"`
 	//ArtistIntro      domainArtistModel.ArtistIntro              `bson:"artistIntro,omitempty"`

@@ -32,15 +32,26 @@ func (a ArtistController) GetArtist(c *gin.Context) {
 
 func (a ArtistController) UpdateIntro(c *gin.Context) {
 	artistID := c.Query("artistId")
-	UserName := c.Query("userName")
-	email := c.Query("email")
-	birthday := c.Query("birthday")
-	gender := c.Query("gender")
 
 	updater := &domain.ArtistIntroUpdater{
 		YearOfDrawing: nil,
 		ArtTypes:      nil,
 		SelfIntro:     nil,
+	}
+
+	yearOfDrawing, exist := c.GetQuery("yearOfDrawing")
+	if exist {
+		if  value, err := strconv.Atoi(yearOfDrawing); err == nil {
+			updater.YearOfDrawing = &value
+		}
+	}
+	artTypes, exist := c.GetQueryArray("artTypes")
+	if exist {
+		updater.ArtTypes = &artTypes
+	}
+	selfIntro, exist := c.GetQuery("selfIntro")
+	if exist {
+		updater.SelfIntro = &selfIntro
 	}
 
 	err := a.artistUseCase.UpdateIntro(c, artistID, updater)
