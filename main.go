@@ -41,11 +41,12 @@ func main() {
 
 	authGroup := r.Group("/artist")
 	{
-		ctr := InitArtistController(db)
-		authGroup.POST("/getArtist", ctr.GetArtist)
-		authGroup.POST("/updateIntro", ctr.UpdateIntro)
-		authGroup.POST("/updateDetails", ctr.UpdateOpenCommission)
-		authGroup.POST("/updateDetails", ctr.UpdateOpenCommission)
+		ctrl := InitArtistController(db)
+		authGroup.POST("/getArtist", ctrl.GetArtist)
+		authGroup.POST("/updateIntro", ctrl.UpdateIntro)
+		authGroup.POST("/updateOpenCommission", ctrl.UpdateOpenCommission)
+		authGroup.POST("/addOpenCommission", ctrl.AddOpenCommission)
+		authGroup.POST("/deleteOpenCommission", ctrl.DeleteOpenCommission)
 	}
 
 	err = r.Run(":9002")

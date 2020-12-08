@@ -5,7 +5,6 @@ import (
 	"pixstall-artist/app/artist/delivery/model/get_artist"
 	domainArtist "pixstall-artist/app/domain/artist"
 	domain "pixstall-artist/app/domain/artist/model"
-	model2 "pixstall-artist/app/domain/artwork/model"
 	"pixstall-artist/app/domain/open-commission/model"
 	"strconv"
 )
@@ -41,7 +40,7 @@ func (a ArtistController) UpdateIntro(c *gin.Context) {
 
 	yearOfDrawing, exist := c.GetQuery("yearOfDrawing")
 	if exist {
-		if  value, err := strconv.Atoi(yearOfDrawing); err == nil {
+		if value, err := strconv.Atoi(yearOfDrawing); err == nil {
 			updater.YearOfDrawing = &value
 		}
 	}
@@ -113,22 +112,10 @@ func (a ArtistController) UpdateOpenCommission(c *gin.Context) {
 	c.PureJSON(200, nil)
 }
 
-func (a ArtistController) UpdateArtwork(c *gin.Context) {
-	artistID := c.Query("artistId")
-	artworkID := c.Query("artworkId")
-	state := c.Query("state")
+func (a ArtistController) AddOpenCommission(c *gin.Context) {
 
-	artworkState := (model2.ArtworkState)(state)
+}
 
-	updater := &model2.ArtworkUpdater{
-		ID:           artworkID,
-		ArtistID:     artistID,
-		State:        &artworkState,
-	}
+func (a ArtistController) DeleteOpenCommission(c *gin.Context) {
 
-	err := a.artistUseCase.UpdateArtwork(c, artistID, updater)
-	if err != nil {
-		return
-	}
-	c.PureJSON(200, nil)
 }
