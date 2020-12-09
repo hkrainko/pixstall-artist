@@ -2,11 +2,12 @@ package rabbitmq
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/streadway/amqp"
 	"log"
+	reg_info "pixstall-artist/app/artist/delivery/model/reg-artist"
+	update_artist "pixstall-artist/app/artist/delivery/model/update-artist"
 	"pixstall-artist/app/domain/artist"
-	"pixstall-artist/app/domain/artist/model"
-	"time"
 )
 
 type ArtistMessageBroker struct {
@@ -74,24 +75,17 @@ func (a ArtistMessageBroker) StartArtistQueue(ctx context.Context) {
 			log.Printf("Received a message: %s", d.Body)
 			d.Ack(false)
 
-			err := a.artistUseCase.RegisterNewArtist(ctx, &model.Artist{
-				ArtistID:         "",
-				UserID:           "",
-				UserName:         "",
-				Email:            "",
-				Birthday:         "",
-				Gender:           "",
-				PhotoURL:         "",
-				State:            "",
-				Fans:             nil,
-				RegistrationTime: time.Time{},
-				ArtistIntro:      model.ArtistIntro{},
-				ArtistDetails:    model.ArtistDetails{},
-				OpenCommissions:  nil,
-				Artworks:         nil,
-			})
-			if err != nil {
-
+			switch d.RoutingKey {
+			case "user.new.isArtist":
+				err := a.registerNewArtist(ctx, d.Body)
+				if err != nil {
+					//TODO: error handling, store it ?
+				}
+			case "user.update.isArtist":
+				err := a.updateArtist(ctx, d.Body)
+				if err != nil {
+					//TODO: error handling, store it ?
+				}
 			}
 		}
 	}()
@@ -105,4 +99,23 @@ func (a ArtistMessageBroker) StopArtistQueue(ctx context.Context) {
 		log.Printf("StopArtistQueue err %v", err)
 	}
 	log.Printf("StopArtistQueue success")
+}
+
+
+func (a ArtistMessageBroker) registerNewArtist(ctx context.Context, body []byte) error {
+	req := reg_info.Request{}
+	err := json.Unmarshal(body, &req)
+	if err != nil {
+		return err
+	}
+	return a.artistUseCase.RegisterNewArtist(ctx, req.RegInfo)
+}
+
+func (a ArtistMessageBroker) updateArtist(ctx context.Context, body []byte) error {
+	req := update_artist.Request{}
+	err := json.Unmarshal(body, &req)
+	if err != nil {
+		return err
+	}
+	return a.artistUseCase.UpdateBasicInfo(ctx, req.ArtistUpdater.ArtistID, req.ArtistUpdater)
 }
