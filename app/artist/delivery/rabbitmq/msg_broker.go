@@ -7,7 +7,7 @@ import (
 	"log"
 	reg_info "pixstall-artist/app/artist/delivery/model/reg-artist"
 	update_artist "pixstall-artist/app/artist/delivery/model/update-artist"
-	"pixstall-artist/app/domain/artist"
+	"pixstall-artist/domain/artist"
 )
 
 type ArtistMessageBroker struct {
@@ -100,7 +100,6 @@ func (a ArtistMessageBroker) StopArtistQueue(ctx context.Context) {
 	}
 	log.Printf("StopArtistQueue success")
 }
-
 
 func (a ArtistMessageBroker) registerNewArtist(ctx context.Context, body []byte) error {
 	req := reg_info.Request{}

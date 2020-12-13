@@ -2,10 +2,10 @@ package artist
 
 import (
 	"context"
-	domainArtistModel "pixstall-artist/app/domain/artist/model"
-	domainArtworkModel "pixstall-artist/app/domain/artwork/model"
-	domainOpenCommissionModel "pixstall-artist/app/domain/open-commission/model"
-	"pixstall-artist/app/domain/reg/model"
+	domainArtistModel "pixstall-artist/domain/artist/model"
+	domainArtworkModel "pixstall-artist/domain/artwork/model"
+	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
+	"pixstall-artist/domain/reg/model"
 )
 
 type UseCase interface {

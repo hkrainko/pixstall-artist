@@ -37,6 +37,6 @@ type Size struct {
 type OpenCommissionSate string
 
 const (
-	OpenCommissionStateActive OpenCommissionSate  = "A"
+	OpenCommissionStateActive  OpenCommissionSate = "A"
 	OpenCommissionStateRemoved OpenCommissionSate = "R"
 )

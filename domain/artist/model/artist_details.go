@@ -7,7 +7,7 @@ type ArtistDetails struct {
 	CommissionAcceptCount  int
 	CommissionSuccessCount int
 	AvgRatings             int
-	LastRequestTime        time.Time
+	LastRequestTime        *time.Time
 }
 
 type ArtistDetailsUpdater struct {

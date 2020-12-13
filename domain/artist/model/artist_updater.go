@@ -1,9 +1,9 @@
 package model
 
 import (
-	domainArtworkModel "pixstall-artist/app/domain/artwork/model"
-	domainFanModel "pixstall-artist/app/domain/fan/model"
-	domainOpenCommissionModel "pixstall-artist/app/domain/open-commission/model"
+	domainArtworkModel "pixstall-artist/domain/artwork/model"
+	domainFanModel "pixstall-artist/domain/fan/model"
+	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	"time"
 )
 

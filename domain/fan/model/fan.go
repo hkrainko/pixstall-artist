@@ -1,7 +1,7 @@
 package model
 
 import (
-	"pixstall-artist/app/domain/user/model"
+	"pixstall-artist/domain/user/model"
 	"time"
 )
 

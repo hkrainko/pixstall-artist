@@ -1,7 +1,7 @@
 package get_artist
 
 import (
-	domain "pixstall-artist/app/domain/artist/model"
+	domain "pixstall-artist/domain/artist/model"
 )
 
 type Response struct {

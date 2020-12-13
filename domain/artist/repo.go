@@ -2,9 +2,9 @@ package artist
 
 import (
 	"context"
-	domainArtistModel "pixstall-artist/app/domain/artist/model"
-	domainArtworkModel "pixstall-artist/app/domain/artwork/model"
-	domainOpenCommissionModel "pixstall-artist/app/domain/open-commission/model"
+	domainArtistModel "pixstall-artist/domain/artist/model"
+	domainArtworkModel "pixstall-artist/domain/artwork/model"
+	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 )
 
 type Repo interface {

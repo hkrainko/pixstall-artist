@@ -1,6 +1,6 @@
 package model
 
-import "pixstall-artist/app/domain/artist/model"
+import "pixstall-artist/domain/artist/model"
 
 type RegInfo struct {
 	AuthID        string            `json:"authId"`

@@ -1,9 +1,9 @@
 package model
 
 import (
-	domainArtworkModel "pixstall-artist/app/domain/artwork/model"
-	"pixstall-artist/app/domain/fan/model"
-	domainOpenCommissionModel "pixstall-artist/app/domain/open-commission/model"
+	domainArtworkModel "pixstall-artist/domain/artwork/model"
+	"pixstall-artist/domain/fan/model"
+	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	"time"
 )
 
@@ -14,7 +14,7 @@ type Artist struct {
 	Email            string
 	Birthday         string
 	Gender           string
-	PhotoURL         string
+	ProfilePath      string
 	State            UserState
 	Fans             map[string]model.Fan
 	RegistrationTime time.Time

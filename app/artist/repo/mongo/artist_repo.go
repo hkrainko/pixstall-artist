@@ -6,10 +6,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	mongoModel "pixstall-artist/app/artist/repo/mongo/model"
-	"pixstall-artist/app/domain/artist"
-	"pixstall-artist/app/domain/artist/model"
-	domainArtworkModel "pixstall-artist/app/domain/artwork/model"
-	domainOpenCommissionModel "pixstall-artist/app/domain/open-commission/model"
+	"pixstall-artist/domain/artist"
+	"pixstall-artist/domain/artist/model"
+	domainArtworkModel "pixstall-artist/domain/artwork/model"
+	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 )
 
 type mongoArtistRepo struct {
@@ -18,7 +18,6 @@ type mongoArtistRepo struct {
 }
 
 const (
-	DBName           = "pixstall-artist"
 	ArtistCollection = "Artists"
 )
 

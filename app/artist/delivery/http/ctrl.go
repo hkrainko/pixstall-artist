@@ -3,9 +3,9 @@ package http
 import (
 	"github.com/gin-gonic/gin"
 	"pixstall-artist/app/artist/delivery/model/get-artist"
-	domainArtist "pixstall-artist/app/domain/artist"
-	domain "pixstall-artist/app/domain/artist/model"
-	"pixstall-artist/app/domain/open-commission/model"
+	domainArtist "pixstall-artist/domain/artist"
+	domain "pixstall-artist/domain/artist/model"
+	"pixstall-artist/domain/open-commission/model"
 	"strconv"
 )
 

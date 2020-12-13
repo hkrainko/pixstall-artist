@@ -1,6 +1,6 @@
 package reg_artist
 
-import "pixstall-artist/app/domain/reg/model"
+import "pixstall-artist/domain/reg/model"
 
 type Request struct {
 	*model.RegInfo

@@ -3,15 +3,17 @@ package mongo
 import (
 	"context"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"os"
 	mongoModel "pixstall-artist/app/artist/repo/mongo/model"
-	"pixstall-artist/app/domain/artist"
-	"pixstall-artist/app/domain/artist/model"
-	domainFanModel "pixstall-artist/app/domain/fan/model"
+	"pixstall-artist/domain/artist"
+	"pixstall-artist/domain/artist/model"
+	model2 "pixstall-artist/domain/artwork/model"
+	domainFanModel "pixstall-artist/domain/fan/model"
 	"testing"
 	"time"
 )
@@ -55,13 +57,71 @@ func teardown() {
 
 func TestMongoArtistRepo_SaveArtist(t *testing.T) {
 	cleanAll()
+	newTime := time.Now()
+	dArtist := model.Artist{
+		ArtistID:         "new_ArtistID",
+		UserID:           "new_UserID",
+		UserName:         "new_UserName",
+		Email:            "temp@mail.com",
+		Birthday:         "20000101",
+		Gender:           "M",
+		ProfilePath:      "/temp/pic",
+		State:            model.UserStateActive,
+		Fans:             nil,
+		RegistrationTime: newTime,
+		ArtistIntro: model.ArtistIntro{
+			YearOfDrawing: 10,
+			ArtTypes:      []string{"Art", "Comic"},
+			SelfIntro:     "Hello I am a artist",
+		},
+		ArtistDetails: model.ArtistDetails{
+			CommissionRequestCount: 10,
+			CommissionAcceptCount:  20,
+			CommissionSuccessCount: 30,
+			AvgRatings:             10,
+			LastRequestTime:        nil,
+		},
+		OpenCommissions: nil,
+		Artworks: []model2.Artwork{
+			{
+				ID:           "new_ArtworkID1",
+				ArtistID:     "new_ArtistID",
+				ClientID:     "new_ArtistID1",
+				Rating:       5,
+				RequestTime:  newTime,
+				CompleteTime: newTime,
+				State:        model2.ArtworkStateActive,
+			},
+			{
+				ID:           "new_ArtworkID2",
+				ArtistID:     "new_ArtistID",
+				ClientID:     "new_ArtistID2",
+				Rating:       0,
+				RequestTime:  newTime,
+				CompleteTime: newTime,
+				State:        model2.ArtworkStateRemoved,
+			},
+		},
+	}
+	err := repo.SaveArtist(ctx, &dArtist)
+	assert.NoError(t, err)
+
+	mongoArtist := mongoModel.Artist{}
+	err = db.Collection(ArtistCollection).FindOne(ctx, bson.M{"artistId": "new_ArtistID"}).Decode(&mongoArtist)
+
+	assert.Equal(t, "new_ArtistID", mongoArtist.ArtistID)
+	assert.Equal(t, "new_UserID", mongoArtist.UserID)
+	assert.Equal(t, "new_UserName", mongoArtist.UserName)
+	assert.Equal(t, "temp@mail.com", mongoArtist.Email)
+	assert.Equal(t, "20000101", mongoArtist.Birthday)
+	assert.Equal(t, "M", mongoArtist.Gender)
+	assert.Equal(t, "/temp/pic", mongoArtist.ProfilePath)
+	assert.Equal(t, model.UserStateActive, mongoArtist.State)
+	assert.Nil(t, mongoArtist.Fans)
+	//assert.Equal(t, newTime.Local().String(), mongoArtist.RegistrationTime.Local().String())
+	assert.True(t, newTime.Equal(mongoArtist.RegistrationTime))
+
 }
-
-
-
-
-
-
 
 //Private
 func cleanAll() {
@@ -83,26 +143,24 @@ func insertDummyArtist(ctx context.Context, userId string, state model.UserState
 
 	user := mongoModel.Artist{
 		ObjectID: primitive.ObjectID{},
-		Artist:   model.Artist{
-			ArtistID:         "temp_ArtistID",
-			UserID:           "temp_UserID",
-			UserName:         "temp_UserName",
-			Email:            "temp_Email",
-			Birthday:         "20200101",
-			Gender:           "M",
-			PhotoURL:         "",
-			State:            state,
-			Fans:             map[string]domainFanModel.Fan{},
-			RegistrationTime: time.Now(),
-			ArtistIntro:      model.ArtistIntro{
-				YearOfDrawing: 10,
-				ArtTypes:      []string{"Comic"},
-				SelfIntro:     "",
-			},
-			ArtistDetails:    model.ArtistDetails{},
-			OpenCommissions:  nil,
-			Artworks:         nil,
+		ArtistID:         "temp_ArtistID",
+		UserID:           userId,
+		UserName:         "temp_UserName",
+		Email:            "temp_Email",
+		Birthday:         "20200101",
+		Gender:           "M",
+		ProfilePath:      "",
+		State:            state,
+		Fans:             map[string]domainFanModel.Fan{},
+		RegistrationTime: time.Now(),
+		ArtistIntro: model.ArtistIntro{
+			YearOfDrawing: 10,
+			ArtTypes:      []string{"Comic"},
+			SelfIntro:     "",
 		},
+		ArtistDetails:   model.ArtistDetails{},
+		OpenCommissions: nil,
+		Artworks:        nil,
 	}
 	result, err := c.InsertOne(ctx, &user)
 	if err != nil {

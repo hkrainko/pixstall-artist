@@ -2,11 +2,11 @@ package usecase
 
 import (
 	"context"
-	"pixstall-artist/app/domain/artist"
-	domainArtistModel "pixstall-artist/app/domain/artist/model"
-	domainArtworkModel "pixstall-artist/app/domain/artwork/model"
-	domainOpenCommissionModel "pixstall-artist/app/domain/open-commission/model"
-	domainRegModel "pixstall-artist/app/domain/reg/model"
+	"pixstall-artist/domain/artist"
+	domainArtistModel "pixstall-artist/domain/artist/model"
+	domainArtworkModel "pixstall-artist/domain/artwork/model"
+	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
+	domainRegModel "pixstall-artist/domain/reg/model"
 	"time"
 )
 
@@ -29,7 +29,7 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 		Email:            regInfo.Email,
 		Birthday:         regInfo.Birthday,
 		Gender:           regInfo.Gender,
-		PhotoURL:         "",
+		ProfilePath:      "",
 		State:            domainArtistModel.UserStateActive,
 		Fans:             nil,
 		RegistrationTime: time.Time{},
