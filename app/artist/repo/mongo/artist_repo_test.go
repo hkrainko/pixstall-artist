@@ -118,8 +118,7 @@ func TestMongoArtistRepo_SaveArtist(t *testing.T) {
 	assert.Equal(t, "/temp/pic", mongoArtist.ProfilePath)
 	assert.Equal(t, model.UserStateActive, mongoArtist.State)
 	assert.Nil(t, mongoArtist.Fans)
-	//assert.Equal(t, newTime.Local().String(), mongoArtist.RegistrationTime.Local().String())
-	assert.True(t, newTime.Equal(mongoArtist.RegistrationTime))
+	assert.Equal(t, newTime.Truncate(time.Millisecond).UnixNano(), mongoArtist.RegistrationTime.UnixNano())
 
 }
 
