@@ -38,7 +38,9 @@ func main() {
 	//Gin
 	r := gin.Default()
 
-	authGroup := r.Group("/artist")
+	apiGroup := r.Group("/api")
+
+	authGroup := apiGroup.Group("/artist")
 	{
 		ctrl := InitArtistController(db)
 		authGroup.POST("/getArtist", ctrl.GetArtist)
