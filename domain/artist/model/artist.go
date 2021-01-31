@@ -20,6 +20,7 @@ type Artist struct {
 	RegistrationTime time.Time
 	ArtistIntro      ArtistIntro
 	ArtistDetails    ArtistDetails
+	ArtistBoard      ArtistBoard
 	OpenCommissions  []domainOpenCommissionModel.OpenCommission
 	Artworks         []domainArtworkModel.Artwork
 }

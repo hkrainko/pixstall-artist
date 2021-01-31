@@ -23,6 +23,7 @@ type Artist struct {
 	RegistrationTime time.Time                                  `bson:"registrationTime,omitempty"`
 	ArtistIntro      domainArtistModel.ArtistIntro              `bson:"artistIntro,omitempty"`
 	ArtistDetails    domainArtistModel.ArtistDetails            `bson:"artistDetails,omitempty"`
+	ArtistBoard      domainArtistModel.ArtistBoard              `bson:"artistBoard,omitempty"`
 	OpenCommissions  []domainOpenCommissionModel.OpenCommission `bson:"openCommissions,omitempty"`
 	Artworks         []domainArtworkModel.Artwork               `bson:"artworks,omitempty"`
 }
@@ -41,6 +42,7 @@ func NewFromDomainArtist(d *domainArtistModel.Artist) Artist {
 		RegistrationTime: d.RegistrationTime,
 		ArtistIntro:      d.ArtistIntro,
 		ArtistDetails:    d.ArtistDetails,
+		ArtistBoard:      d.ArtistBoard,
 		OpenCommissions:  d.OpenCommissions,
 		Artworks:         d.Artworks,
 	}
@@ -60,6 +62,7 @@ func (a *Artist) ToDomainArtist() *domainArtistModel.Artist {
 		RegistrationTime: a.RegistrationTime,
 		ArtistIntro:      a.ArtistIntro,
 		ArtistDetails:    a.ArtistDetails,
+		ArtistBoard:      a.ArtistBoard,
 		OpenCommissions:  a.OpenCommissions,
 		Artworks:         a.Artworks,
 	}

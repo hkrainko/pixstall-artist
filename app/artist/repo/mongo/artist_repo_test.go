@@ -72,7 +72,6 @@ func TestMongoArtistRepo_SaveArtist(t *testing.T) {
 		ArtistIntro: model.ArtistIntro{
 			YearOfDrawing: 10,
 			ArtTypes:      []string{"Art", "Comic"},
-			SelfIntro:     "Hello I am a artist",
 		},
 		ArtistDetails: model.ArtistDetails{
 			CommissionRequestCount: 10,
@@ -155,7 +154,6 @@ func insertDummyArtist(ctx context.Context, userId string, state model.UserState
 		ArtistIntro: model.ArtistIntro{
 			YearOfDrawing: 10,
 			ArtTypes:      []string{"Comic"},
-			SelfIntro:     "",
 		},
 		ArtistDetails:   model.ArtistDetails{},
 		OpenCommissions: nil,

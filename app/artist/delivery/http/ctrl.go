@@ -34,7 +34,6 @@ func (a ArtistController) UpdateArtist(c *gin.Context) {
 	updater := &domain.ArtistIntroUpdater{
 		YearOfDrawing: nil,
 		ArtTypes:      nil,
-		SelfIntro:     nil,
 	}
 
 	yearOfDrawing, exist := c.GetQuery("yearOfDrawing")
@@ -46,10 +45,6 @@ func (a ArtistController) UpdateArtist(c *gin.Context) {
 	artTypes, exist := c.GetQueryArray("artTypes")
 	if exist {
 		updater.ArtTypes = &artTypes
-	}
-	selfIntro, exist := c.GetQuery("selfIntro")
-	if exist {
-		updater.SelfIntro = &selfIntro
 	}
 
 	err := a.artistUseCase.UpdateIntro(c, artistID, updater)
