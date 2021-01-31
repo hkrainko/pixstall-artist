@@ -5,7 +5,6 @@ import (
 	"pixstall-artist/app/artist/delivery/model/get-artist"
 	domainArtist "pixstall-artist/domain/artist"
 	domain "pixstall-artist/domain/artist/model"
-	"pixstall-artist/domain/open-commission/model"
 	"strconv"
 )
 
@@ -66,61 +65,6 @@ func (a ArtistController) GetOpenCommissionsForArtist(c *gin.Context) {
 }
 
 func (a ArtistController) AddOpenCommissionForArtist(c *gin.Context) {
-
-}
-
-func (a ArtistController) UpdateOpenCommissionForArtist(c *gin.Context) {
-	artistID := c.Query("artistId")
-	openCommissionID := c.Query("openCommissionId")
-	title := c.Query("title")
-	desc := c.Query("desc")
-	priceFrom := c.Query("priceFrom")
-	priceTo := c.Query("priceTo")
-
-	dayNeedMap := c.QueryMap("dayNeed")
-	var dayNeed *model.DayNeed
-	if dayNeedMap["from"] != "" && dayNeedMap["to"] != "" {
-		dayNeed = &model.DayNeed{}
-		if from, err := strconv.Atoi(dayNeedMap["from"]); err == nil {
-			dayNeed.From = from
-		}
-		if to, err := strconv.Atoi(dayNeedMap["to"]); err == nil {
-			dayNeed.To = to
-		}
-	}
-
-	sizeMap := c.QueryMap("size")
-	var size *model.Size
-	if sizeMap["width"] != "" && sizeMap["height"] != "" {
-		size = &model.Size{}
-		if width, err := strconv.ParseFloat(sizeMap["width"], 64); err == nil {
-			size.Width = width
-		}
-		if height, err := strconv.ParseFloat(sizeMap["height"], 64); err == nil {
-			size.Height = height
-		}
-	}
-
-	updater := &model.OpenCommissionUpdater{
-		ID:        openCommissionID,
-		ArtistID:  artistID,
-		Title:     &title,
-		Desc:      &desc,
-		PriceFrom: &priceFrom,
-		PriceTo:   &priceTo,
-		DayNeed:   dayNeed,
-		Size:      size,
-	}
-
-	err := a.artistUseCase.UpdateOpenCommission(c, artistID, updater)
-	if err != nil {
-		return
-	}
-
-	c.PureJSON(200, nil)
-}
-
-func (a ArtistController) DeleteOpenCommissionForArtist(c *gin.Context) {
 
 }
 

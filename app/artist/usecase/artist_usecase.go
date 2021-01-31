@@ -64,31 +64,8 @@ func (a artistUseCase) GetOpenCommissionsForArtist(ctx context.Context, artistID
 	panic("implement me")
 }
 
-func (a artistUseCase) UpdateOpenCommission(ctx context.Context, requesterID string, updater *domainOpenCommissionModel.OpenCommissionUpdater) error {
-	//artistUpdater := &domainArtistModel.ArtistUpdater{
-	//	ArtistID:        artistID,
-	//	OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{*updater},
-	//}
-	return a.openCommRepo.UpdateOpenCommission(ctx, *updater)
-}
-
 func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommission *domainOpenCommissionModel.OpenCommission) error {
 	return a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommission)
-}
-
-func (a artistUseCase) DeleteOpenCommission(ctx context.Context, requesterID string, openCommissionID string) error {
-	//newState := domainOpenCommissionModel.OpenCommissionStateRemoved
-	//openCommissionUpdater := domainOpenCommissionModel.OpenCommissionUpdater{
-	//	ID:       openCommissionID,
-	//	ArtistID: artistID,
-	//	State:    &newState,
-	//}
-	//artistUpdater := &domainArtistModel.ArtistUpdater{
-	//	ArtistID:        artistID,
-	//	OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{openCommissionUpdater},
-	//}
-	//return o.openCommRepo.UpdateOpenCommission(ctx, artistUpdater)
-	return nil
 }
 
 func (a artistUseCase) UpdateBasicInfo(ctx context.Context, artistID string, updater *domainArtistModel.ArtistUpdater) error {

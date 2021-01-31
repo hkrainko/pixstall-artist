@@ -23,3 +23,26 @@ func (o openCommissionUseCase) GetOpenCommission(ctx context.Context, id string,
 func (o openCommissionUseCase) GetOpenCommissions(ctx context.Context, filter domainOpenCommModel.OpenCommissionFilter) ([]domainOpenCommModel.OpenCommission, error) {
 	panic("implement me")
 }
+
+func (o openCommissionUseCase) UpdateOpenCommission(ctx context.Context, requesterID string, updater *domainOpenCommModel.OpenCommissionUpdater) error {
+	//artistUpdater := &domainArtistModel.ArtistUpdater{
+	//	ArtistID:        artistID,
+	//	OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{*updater},
+	//}
+	return o.openCommRepo.UpdateOpenCommission(ctx, *updater)
+}
+
+func (o openCommissionUseCase) DeleteOpenCommission(ctx context.Context, requesterID string, openCommissionID string) error {
+	//newState := domainOpenCommissionModel.OpenCommissionStateRemoved
+	//openCommissionUpdater := domainOpenCommissionModel.OpenCommissionUpdater{
+	//	ID:       openCommissionID,
+	//	ArtistID: artistID,
+	//	State:    &newState,
+	//}
+	//artistUpdater := &domainArtistModel.ArtistUpdater{
+	//	ArtistID:        artistID,
+	//	OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{openCommissionUpdater},
+	//}
+	//return o.openCommRepo.UpdateOpenCommission(ctx, artistUpdater)
+	return nil
+}

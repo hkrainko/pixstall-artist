@@ -13,9 +13,7 @@ type UseCase interface {
 	GetArtist(ctx context.Context, artistID string) (*domainArtistModel.Artist, error)
 	// Open Commission
 	GetOpenCommissionsForArtist(ctx context.Context, artistID string, count int, offset int) ([]domainOpenCommissionModel.OpenCommission, error)
-	UpdateOpenCommission(ctx context.Context, requesterID string, updater *domainOpenCommissionModel.OpenCommissionUpdater) error
 	AddOpenCommission(ctx context.Context, requesterID string, openCommission *domainOpenCommissionModel.OpenCommission) error
-	DeleteOpenCommission(ctx context.Context, requesterID string, openCommissionID string) error
 
 	UpdateBasicInfo(ctx context.Context, artistID string, updater *domainArtistModel.ArtistUpdater) error
 	UpdateIntro(ctx context.Context, artistID string, updater *domainArtistModel.ArtistIntroUpdater) error

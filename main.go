@@ -45,10 +45,8 @@ func main() {
 		ctrl := InitArtistController(db)
 		artistGroup.GET("/:id", ctrl.GetArtist)
 		artistGroup.PATCH("/:id", ctrl.UpdateArtist)
-		artistGroup.GET("/:id/openCommissions", ctrl.GetOpenCommissionsForArtist)
-		artistGroup.POST("/:id/openCommissions", ctrl.AddOpenCommissionForArtist)
-		artistGroup.PATCH("/:id/openCommissions/:openCommId", ctrl.UpdateOpenCommissionForArtist)
-		artistGroup.DELETE("/:id/openCommissions/:openCommId", ctrl.DeleteOpenCommissionForArtist)
+		artistGroup.GET("/:id/open-commissions", ctrl.GetOpenCommissionsForArtist)
+		artistGroup.POST("/:id/open-commissions", ctrl.AddOpenCommissionForArtist)
 	}
 
 	openCommGroup := apiGroup.Group("/open-commissions")
@@ -56,6 +54,8 @@ func main() {
 		ctrl := InitOpenCommissionController(db)
 		openCommGroup.GET("/:id", ctrl.GetOpenCommission)
 		openCommGroup.GET("", ctrl.GetOpenCommissions)
+		openCommGroup.PATCH("/:id", ctrl.UpdateOpenCommission)
+		openCommGroup.DELETE("/:id", ctrl.DeleteOpenCommission)
 	}
 
 	err = r.Run(":9002")
