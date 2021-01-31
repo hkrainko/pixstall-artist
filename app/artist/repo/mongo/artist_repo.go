@@ -9,7 +9,6 @@ import (
 	"pixstall-artist/domain/artist"
 	"pixstall-artist/domain/artist/model"
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
-	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 )
 
 type mongoArtistRepo struct {
@@ -49,10 +48,6 @@ func (m mongoArtistRepo) GetArtist(ctx context.Context, artistID string) (*model
 }
 
 func (m mongoArtistRepo) UpdateArtist(ctx context.Context, updater *model.ArtistUpdater) error {
-	panic("implement me")
-}
-
-func (m mongoArtistRepo) AddOpenCommission(ctx context.Context, openCommission *domainOpenCommissionModel.OpenCommission) error {
 	panic("implement me")
 }
 

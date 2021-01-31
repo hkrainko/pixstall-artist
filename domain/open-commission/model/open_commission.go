@@ -12,18 +12,6 @@ type OpenCommission struct {
 	State     OpenCommissionSate
 }
 
-type OpenCommissionUpdater struct {
-	ID        string
-	ArtistID  string
-	Title     *string
-	Desc      *string
-	PriceFrom *string
-	PriceTo   *string
-	DayNeed   *DayNeed
-	Size      *Size
-	State     *OpenCommissionSate
-}
-
 type DayNeed struct {
 	From int
 	To   int
@@ -38,5 +26,6 @@ type OpenCommissionSate string
 
 const (
 	OpenCommissionStateActive  OpenCommissionSate = "A"
+	OpenCommissionStateHidden  OpenCommissionSate = "H"
 	OpenCommissionStateRemoved OpenCommissionSate = "R"
 )

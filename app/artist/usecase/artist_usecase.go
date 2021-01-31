@@ -5,6 +5,7 @@ import (
 	"pixstall-artist/domain/artist"
 	domainArtistModel "pixstall-artist/domain/artist/model"
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
+	openCommission "pixstall-artist/domain/open-commission"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	domainRegModel "pixstall-artist/domain/reg/model"
 	"time"
@@ -12,11 +13,13 @@ import (
 
 type artistUseCase struct {
 	artistRepo artist.Repo
+	openCommRepo openCommission.Repo
 }
 
-func NewArtistUseCase(artistRepo artist.Repo) artist.UseCase {
+func NewArtistUseCase(artistRepo artist.Repo, openCommRepo openCommission.Repo) artist.UseCase {
 	return &artistUseCase{
 		artistRepo: artistRepo,
+		openCommRepo: openCommRepo,
 	}
 }
 
@@ -57,6 +60,37 @@ func (a artistUseCase) GetArtist(ctx context.Context, artistID string) (*domainA
 	return dArtist, nil
 }
 
+func (a artistUseCase) GetOpenCommissionsForArtist(ctx context.Context, artistID string, count int, offset int) ([]domainOpenCommissionModel.OpenCommission, error) {
+	panic("implement me")
+}
+
+func (a artistUseCase) UpdateOpenCommission(ctx context.Context, requesterID string, updater *domainOpenCommissionModel.OpenCommissionUpdater) error {
+	//artistUpdater := &domainArtistModel.ArtistUpdater{
+	//	ArtistID:        artistID,
+	//	OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{*updater},
+	//}
+	return a.openCommRepo.UpdateOpenCommission(ctx, *updater)
+}
+
+func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommission *domainOpenCommissionModel.OpenCommission) error {
+	return a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommission)
+}
+
+func (a artistUseCase) DeleteOpenCommission(ctx context.Context, requesterID string, openCommissionID string) error {
+	//newState := domainOpenCommissionModel.OpenCommissionStateRemoved
+	//openCommissionUpdater := domainOpenCommissionModel.OpenCommissionUpdater{
+	//	ID:       openCommissionID,
+	//	ArtistID: artistID,
+	//	State:    &newState,
+	//}
+	//artistUpdater := &domainArtistModel.ArtistUpdater{
+	//	ArtistID:        artistID,
+	//	OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{openCommissionUpdater},
+	//}
+	//return o.openCommRepo.UpdateOpenCommission(ctx, artistUpdater)
+	return nil
+}
+
 func (a artistUseCase) UpdateBasicInfo(ctx context.Context, artistID string, updater *domainArtistModel.ArtistUpdater) error {
 	return a.artistRepo.UpdateArtist(ctx, updater)
 }
@@ -77,14 +111,6 @@ func (a artistUseCase) UpdateDetails(ctx context.Context, artistID string, updat
 	return a.artistRepo.UpdateArtist(ctx, artistUpdater)
 }
 
-func (a artistUseCase) UpdateOpenCommission(ctx context.Context, artistID string, updater *domainOpenCommissionModel.OpenCommissionUpdater) error {
-	artistUpdater := &domainArtistModel.ArtistUpdater{
-		ArtistID:        artistID,
-		OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{*updater},
-	}
-	return a.artistRepo.UpdateArtist(ctx, artistUpdater)
-}
-
 func (a artistUseCase) UpdateArtwork(ctx context.Context, artistID string, updater *domainArtworkModel.ArtworkUpdater) error {
 	artistUpdater := &domainArtistModel.ArtistUpdater{
 		ArtistID: artistID,
@@ -93,26 +119,8 @@ func (a artistUseCase) UpdateArtwork(ctx context.Context, artistID string, updat
 	return a.artistRepo.UpdateArtist(ctx, artistUpdater)
 }
 
-func (a artistUseCase) AddOpenCommission(ctx context.Context, openCommission *domainOpenCommissionModel.OpenCommission) error {
-	return a.artistRepo.AddOpenCommission(ctx, openCommission)
-}
-
 func (a artistUseCase) AddArtwork(ctx context.Context, artwork *domainArtworkModel.Artwork) error {
 	return a.artistRepo.AddArtwork(ctx, artwork)
-}
-
-func (a artistUseCase) DeleteOpenCommission(ctx context.Context, artistID string, openCommissionID string) error {
-	newState := domainOpenCommissionModel.OpenCommissionStateRemoved
-	openCommissionUpdater := domainOpenCommissionModel.OpenCommissionUpdater{
-		ID:       openCommissionID,
-		ArtistID: artistID,
-		State:    &newState,
-	}
-	artistUpdater := &domainArtistModel.ArtistUpdater{
-		ArtistID:        artistID,
-		OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{openCommissionUpdater},
-	}
-	return a.artistRepo.UpdateArtist(ctx, artistUpdater)
 }
 
 func (a artistUseCase) DeleteArtwork(ctx context.Context, artistID string, artworkID string) error {

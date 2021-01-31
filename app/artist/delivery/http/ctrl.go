@@ -29,7 +29,7 @@ func (a ArtistController) GetArtist(c *gin.Context) {
 	c.PureJSON(200, get_artist.NewResponse(*artist))
 }
 
-func (a ArtistController) UpdateIntro(c *gin.Context) {
+func (a ArtistController) UpdateArtist(c *gin.Context) {
 	artistID := c.Query("artistId")
 
 	updater := &domain.ArtistIntroUpdater{
@@ -61,7 +61,15 @@ func (a ArtistController) UpdateIntro(c *gin.Context) {
 	c.PureJSON(200, nil)
 }
 
-func (a ArtistController) UpdateOpenCommission(c *gin.Context) {
+func (a ArtistController) GetOpenCommissionsForArtist(c *gin.Context) {
+
+}
+
+func (a ArtistController) AddOpenCommissionForArtist(c *gin.Context) {
+
+}
+
+func (a ArtistController) UpdateOpenCommissionForArtist(c *gin.Context) {
 	artistID := c.Query("artistId")
 	openCommissionID := c.Query("openCommissionId")
 	title := c.Query("title")
@@ -112,10 +120,8 @@ func (a ArtistController) UpdateOpenCommission(c *gin.Context) {
 	c.PureJSON(200, nil)
 }
 
-func (a ArtistController) AddOpenCommission(c *gin.Context) {
+func (a ArtistController) DeleteOpenCommissionForArtist(c *gin.Context) {
 
 }
 
-func (a ArtistController) DeleteOpenCommission(c *gin.Context) {
 
-}

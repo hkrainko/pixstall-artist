@@ -12,20 +12,32 @@ import (
 	"pixstall-artist/app/artist/delivery/rabbitmq"
 	mongo2 "pixstall-artist/app/artist/repo/mongo"
 	"pixstall-artist/app/artist/usecase"
+	http2 "pixstall-artist/app/open-commission/delivery/http"
+	mongo3 "pixstall-artist/app/open-commission/repo/mongo"
+	usecase2 "pixstall-artist/app/open-commission/usecase"
 )
 
 // Injectors from wire.go:
 
 func InitArtistController(db *mongo.Database) http.ArtistController {
 	repo := mongo2.NewMongoArtistRepo(db)
-	useCase := usecase.NewArtistUseCase(repo)
+	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
+	useCase := usecase.NewArtistUseCase(repo, open_commissionRepo)
 	artistController := http.NewArtistController(useCase)
 	return artistController
 }
 
+func InitOpenCommissionController(db *mongo.Database) http2.OpenCommissionController {
+	repo := mongo3.NewMongoOpenCommissionRepo(db)
+	useCase := usecase2.NewOpenCommissionUseCase(repo)
+	openCommissionController := http2.NewOpenCommissionController(useCase)
+	return openCommissionController
+}
+
 func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection) rabbitmq.ArtistMessageBroker {
 	repo := mongo2.NewMongoArtistRepo(db)
-	useCase := usecase.NewArtistUseCase(repo)
+	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
+	useCase := usecase.NewArtistUseCase(repo, open_commissionRepo)
 	artistMessageBroker := rabbitmq.NewRabbitMQArtistMessageBroker(useCase, conn)
 	return artistMessageBroker
 }
