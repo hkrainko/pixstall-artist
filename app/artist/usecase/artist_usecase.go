@@ -12,13 +12,13 @@ import (
 )
 
 type artistUseCase struct {
-	artistRepo artist.Repo
+	artistRepo   artist.Repo
 	openCommRepo openCommission.Repo
 }
 
 func NewArtistUseCase(artistRepo artist.Repo, openCommRepo openCommission.Repo) artist.UseCase {
 	return &artistUseCase{
-		artistRepo: artistRepo,
+		artistRepo:   artistRepo,
 		openCommRepo: openCommRepo,
 	}
 }
@@ -37,15 +37,16 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 		Fans:             nil,
 		RegistrationTime: time.Time{},
 		ArtistIntro:      regInfo.RegArtistInfo,
-		ArtistDetails:    domainArtistModel.ArtistDetails{
+		ArtistDetails: domainArtistModel.ArtistDetails{
 			CommissionRequestCount: 0,
 			CommissionAcceptCount:  0,
 			CommissionSuccessCount: 0,
-			AvgRatings:             0,
+			AvgRatings:             nil,
 			LastRequestTime:        nil,
 		},
-		OpenCommissions:  nil,
-		Artworks:         nil,
+		ArtistBoard: domainArtistModel.ArtistBoard{},
+		OpenCommissions: nil,
+		Artworks:        nil,
 	}
 
 	err := a.artistRepo.SaveArtist(ctx, &dArtist)

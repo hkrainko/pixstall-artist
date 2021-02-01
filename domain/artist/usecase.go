@@ -18,6 +18,8 @@ type UseCase interface {
 	UpdateBasicInfo(ctx context.Context, artistID string, updater *domainArtistModel.ArtistUpdater) error
 	UpdateIntro(ctx context.Context, artistID string, updater *domainArtistModel.ArtistIntroUpdater) error
 	UpdateDetails(ctx context.Context, artistID string, updater *domainArtistModel.ArtistDetailsUpdater) error
+
+
 	UpdateArtwork(ctx context.Context, artistID string, updater *domainArtworkModel.ArtworkUpdater) error
 	AddArtwork(ctx context.Context, artwork *domainArtworkModel.Artwork) error
 	DeleteArtwork(ctx context.Context, artistID string, artworkID string) error
