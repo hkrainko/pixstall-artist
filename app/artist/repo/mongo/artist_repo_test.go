@@ -58,6 +58,7 @@ func teardown() {
 func TestMongoArtistRepo_SaveArtist(t *testing.T) {
 	cleanAll()
 	newTime := time.Now()
+	avgRatings := 10
 	dArtist := model.Artist{
 		ArtistID:         "new_ArtistID",
 		UserID:           "new_UserID",
@@ -77,7 +78,7 @@ func TestMongoArtistRepo_SaveArtist(t *testing.T) {
 			CommissionRequestCount: 10,
 			CommissionAcceptCount:  20,
 			CommissionSuccessCount: 30,
-			AvgRatings:             10,
+			AvgRatings:             &avgRatings,
 			LastRequestTime:        nil,
 		},
 		OpenCommissions: nil,
@@ -140,7 +141,7 @@ func insertDummyArtist(ctx context.Context, userId string, state model.UserState
 	c := db.Collection(ArtistCollection)
 
 	user := mongoModel.Artist{
-		ObjectID: primitive.ObjectID{},
+		ObjectID:         primitive.ObjectID{},
 		ArtistID:         "temp_ArtistID",
 		UserID:           userId,
 		UserName:         "temp_UserName",

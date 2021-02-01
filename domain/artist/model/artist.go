@@ -18,6 +18,7 @@ type Artist struct {
 	State            UserState
 	Fans             map[string]model.Fan
 	RegistrationTime time.Time
+	LastUpdatedTime  time.Time
 	ArtistIntro      ArtistIntro
 	ArtistDetails    ArtistDetails
 	ArtistBoard      ArtistBoard

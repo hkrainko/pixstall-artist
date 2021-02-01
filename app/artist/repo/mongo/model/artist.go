@@ -21,6 +21,7 @@ type Artist struct {
 	State            domainArtistModel.UserState                `bson:"state,omitempty"`
 	Fans             map[string]model.Fan                       `bson:"fans,omitempty"`
 	RegistrationTime time.Time                                  `bson:"registrationTime,omitempty"`
+	LastUpdatedTime  time.Time                                  `bson:"lastUpdatedTime,omitempty"`
 	ArtistIntro      domainArtistModel.ArtistIntro              `bson:"artistIntro,omitempty"`
 	ArtistDetails    domainArtistModel.ArtistDetails            `bson:"artistDetails,omitempty"`
 	ArtistBoard      domainArtistModel.ArtistBoard              `bson:"artistBoard,omitempty"`
@@ -40,6 +41,7 @@ func NewFromDomainArtist(d *domainArtistModel.Artist) Artist {
 		State:            d.State,
 		Fans:             d.Fans,
 		RegistrationTime: d.RegistrationTime,
+		LastUpdatedTime:  d.LastUpdatedTime,
 		ArtistIntro:      d.ArtistIntro,
 		ArtistDetails:    d.ArtistDetails,
 		ArtistBoard:      d.ArtistBoard,
@@ -60,6 +62,7 @@ func (a *Artist) ToDomainArtist() *domainArtistModel.Artist {
 		State:            a.State,
 		Fans:             a.Fans,
 		RegistrationTime: a.RegistrationTime,
+		LastUpdatedTime:  a.LastUpdatedTime,
 		ArtistIntro:      a.ArtistIntro,
 		ArtistDetails:    a.ArtistDetails,
 		ArtistBoard:      a.ArtistBoard,
