@@ -10,9 +10,9 @@ import (
 
 type UseCase interface {
 	RegisterNewArtist(ctx context.Context, regInfo *model.RegInfo) error
-	GetArtist(ctx context.Context, artistID string) (*domainArtistModel.Artist, error)
+	GetArtist(ctx context.Context, artistID string, requesterID *string) (*domainArtistModel.Artist, error)
 	// Open Commission
-	GetOpenCommissionsForArtist(ctx context.Context, artistID string, count int, offset int) ([]domainOpenCommissionModel.OpenCommission, error)
+	GetOpenCommissionsForArtist(ctx context.Context, artistID string, requesterID *string, count int, offset int) ([]domainOpenCommissionModel.OpenCommission, error)
 	AddOpenCommission(ctx context.Context, requesterID string, openCommission *domainOpenCommissionModel.OpenCommission) error
 
 	UpdateBasicInfo(ctx context.Context, artistID string, updater *domainArtistModel.ArtistUpdater) error

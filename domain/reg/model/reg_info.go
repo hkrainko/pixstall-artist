@@ -9,6 +9,7 @@ type RegInfo struct {
 	Email         string            `json:"email"`
 	Birthday      string            `json:"birthday"`
 	Gender        string            `json:"gender"`
+	ProfilePath   string            `json:"profilePath"`
 	RegAsArtist   bool              `json:"regAsArtist"`
 	RegArtistInfo model.ArtistIntro `json:"regArtistInfo"`
 }

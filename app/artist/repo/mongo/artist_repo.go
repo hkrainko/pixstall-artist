@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	mongoModel "pixstall-artist/app/artist/repo/mongo/model"
 	"pixstall-artist/domain/artist"
 	"pixstall-artist/domain/artist/model"
@@ -40,9 +41,44 @@ func (m mongoArtistRepo) SaveArtist(ctx context.Context, dArtist *model.Artist) 
 func (m mongoArtistRepo) GetArtist(ctx context.Context, artistID string) (*model.Artist, error) {
 	filter := bson.M{"artistId": artistID}
 	mongoArtist := mongoModel.Artist{}
-	err := m.collection.FindOne(ctx, filter).Decode(&mongoArtist)
+	opt := options.FindOneOptions{
+		Projection: bson.D{
+			{"email", 0},
+			{"birthday", 0},
+			{"gender", 0},
+			{"openCommissions", 0},
+			{"artworks", 0},
+		},
+	}
+	err := m.collection.FindOne(ctx, filter, &opt).Decode(&mongoArtist)
 	if err != nil {
-		return nil, err
+		switch err {
+		case mongo.ErrNoDocuments:
+			return nil, model.ArtistErrorNotFound
+		default:
+			return nil, model.ArtistErrorUnknown
+		}
+	}
+	return mongoArtist.ToDomainArtist(), nil
+}
+
+func (m mongoArtistRepo) GetArtistDetails(ctx context.Context, artistID string) (*model.Artist, error) {
+	filter := bson.M{"artistId": artistID}
+	mongoArtist := mongoModel.Artist{}
+	opt := options.FindOneOptions{
+		Projection: bson.D{
+			{"openCommissions", 0},
+			{"artworks", 0},
+		},
+	}
+	err := m.collection.FindOne(ctx, filter, &opt).Decode(&mongoArtist)
+	if err != nil {
+		switch err {
+		case mongo.ErrNoDocuments:
+			return nil, model.ArtistErrorNotFound
+		default:
+			return nil, model.ArtistErrorUnknown
+		}
 	}
 	return mongoArtist.ToDomainArtist(), nil
 }

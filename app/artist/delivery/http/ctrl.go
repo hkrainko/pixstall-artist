@@ -19,17 +19,38 @@ func NewArtistController(useCase domainArtist.UseCase) ArtistController {
 }
 
 func (a ArtistController) GetArtist(c *gin.Context) {
-	artistID := c.Query("artistId")
-	artist, err := a.artistUseCase.GetArtist(c, artistID)
+	artistID := c.Param("id")
+	artist, err := a.artistUseCase.GetArtist(c, artistID, nil)
 	if err != nil {
+		c.JSON(get_artist.NewErrorResponse(err))
 		return
 	}
 
-	c.PureJSON(200, get_artist.NewResponse(*artist))
+	c.JSON(200, get_artist.NewResponse(*artist))
+}
+
+func (a ArtistController) GetArtistDetails(c *gin.Context) {
+	artistID := c.Param("id")
+	tokenUserID := c.GetString("userId")
+	if artistID != tokenUserID {
+		c.JSON(get_artist.NewErrorResponse(domain.ArtistErrorUnAuth))
+		return
+	}
+	artist, err := a.artistUseCase.GetArtist(c, artistID, &tokenUserID)
+	if err != nil {
+		c.JSON(get_artist.NewErrorResponse(err))
+		return
+	}
+	c.JSON(200, get_artist.NewResponse(*artist))
 }
 
 func (a ArtistController) UpdateArtist(c *gin.Context) {
-	artistID := c.Query("artistId")
+	artistID := c.Param("id")
+	tokenUserID := c.GetString("userId")
+	if artistID != tokenUserID {
+		c.JSON(get_artist.NewErrorResponse(domain.ArtistErrorUnAuth))
+		return
+	}
 
 	updater := &domain.ArtistIntroUpdater{
 		YearOfDrawing: nil,
@@ -56,6 +77,10 @@ func (a ArtistController) UpdateArtist(c *gin.Context) {
 }
 
 func (a ArtistController) GetOpenCommissionsForArtist(c *gin.Context) {
+
+}
+
+func (a ArtistController) GetOpenCommissionsDetailsForArtist(c *gin.Context) {
 
 }
 

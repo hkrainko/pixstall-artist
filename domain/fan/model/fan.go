@@ -7,5 +7,6 @@ import (
 
 type Fan struct {
 	model.User
-	FollowTime time.Time
+	FollowTime     time.Time
+	LastUpdateTime time.Time
 }

@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"pixstall-artist/app/middleware"
 	"time"
 )
 
@@ -38,15 +39,21 @@ func main() {
 	//Gin
 	r := gin.Default()
 
+	userIDExtractor := middleware.NewJWTPayloadsExtractor([]string{"userId"})
+
 	apiGroup := r.Group("/api")
 
 	artistGroup := apiGroup.Group("/artists")
 	{
 		ctrl := InitArtistController(db)
+		// Artist
 		artistGroup.GET("/:id", ctrl.GetArtist)
-		artistGroup.PATCH("/:id", ctrl.UpdateArtist)
+		artistGroup.GET("/:id/details", userIDExtractor.ExtractPayloadsFromJWT, ctrl.GetArtistDetails)
+		artistGroup.PATCH("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctrl.UpdateArtist)
+		// Open Commission
 		artistGroup.GET("/:id/open-commissions", ctrl.GetOpenCommissionsForArtist)
-		artistGroup.POST("/:id/open-commissions", ctrl.AddOpenCommissionForArtist)
+		artistGroup.GET("/:id/open-commissions/details", userIDExtractor.ExtractPayloadsFromJWT, ctrl.GetOpenCommissionsDetailsForArtist)
+		artistGroup.POST("/:id/open-commissions", userIDExtractor.ExtractPayloadsFromJWT, ctrl.AddOpenCommissionForArtist)
 	}
 
 	openCommGroup := apiGroup.Group("/open-commissions")
@@ -54,8 +61,8 @@ func main() {
 		ctrl := InitOpenCommissionController(db)
 		openCommGroup.GET("/:id", ctrl.GetOpenCommission)
 		openCommGroup.GET("", ctrl.GetOpenCommissions)
-		openCommGroup.PATCH("/:id", ctrl.UpdateOpenCommission)
-		openCommGroup.DELETE("/:id", ctrl.DeleteOpenCommission)
+		openCommGroup.PATCH("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctrl.UpdateOpenCommission)
+		openCommGroup.DELETE("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctrl.DeleteOpenCommission)
 	}
 
 	err = r.Run(":9002")
