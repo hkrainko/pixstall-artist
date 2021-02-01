@@ -36,7 +36,7 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 		State:            domainArtistModel.UserStateActive,
 		Fans:             nil,
 		RegistrationTime: time.Time{},
-		ArtistIntro:      regInfo.RegArtistInfo,
+		ArtistIntro:      regInfo.RegArtistIntro,
 		ArtistDetails: domainArtistModel.ArtistDetails{
 			CommissionRequestCount: 0,
 			CommissionAcceptCount:  0,
