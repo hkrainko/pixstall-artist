@@ -1,6 +1,9 @@
 package model
 
-import "pixstall-artist/domain/artist/model"
+import (
+	"pixstall-artist/domain/artist/model"
+	"time"
+)
 
 type RegInfo struct {
 	AuthID         string            `json:"authId"`
@@ -12,4 +15,5 @@ type RegInfo struct {
 	ProfilePath    string            `json:"profilePath"`
 	RegAsArtist    bool              `json:"regAsArtist"`
 	RegArtistIntro model.ArtistIntro `json:"regArtistIntro"`
+	RegTime        time.Time         `json:"regTime"`
 }

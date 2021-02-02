@@ -69,7 +69,7 @@ func TestMongoArtistRepo_SaveArtist(t *testing.T) {
 		ProfilePath:      "/temp/pic",
 		State:            model.UserStateActive,
 		Fans:             nil,
-		RegistrationTime: newTime,
+		RegTime: newTime,
 		ArtistIntro: model.ArtistIntro{
 			YearOfDrawing: 10,
 			ArtTypes:      []string{"Art", "Comic"},
@@ -118,7 +118,7 @@ func TestMongoArtistRepo_SaveArtist(t *testing.T) {
 	assert.Equal(t, "/temp/pic", mongoArtist.ProfilePath)
 	assert.Equal(t, model.UserStateActive, mongoArtist.State)
 	assert.Nil(t, mongoArtist.Fans)
-	assert.Equal(t, newTime.Truncate(time.Millisecond).UnixNano(), mongoArtist.RegistrationTime.UnixNano())
+	assert.Equal(t, newTime.Truncate(time.Millisecond).UnixNano(), mongoArtist.RegTime.UnixNano())
 
 }
 
@@ -151,7 +151,7 @@ func insertDummyArtist(ctx context.Context, userId string, state model.UserState
 		ProfilePath:      "",
 		State:            state,
 		Fans:             map[string]domainFanModel.Fan{},
-		RegistrationTime: time.Now(),
+		RegTime: time.Now(),
 		ArtistIntro: model.ArtistIntro{
 			YearOfDrawing: 10,
 			ArtTypes:      []string{"Comic"},

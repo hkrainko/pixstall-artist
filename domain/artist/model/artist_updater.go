@@ -16,7 +16,7 @@ type ArtistUpdater struct {
 	PhotoURL         *string
 	State            *UserState
 	Fans             *map[string]domainFanModel.Fan
-	RegistrationTime *time.Time
+	RegTime *time.Time
 	ArtistIntro      *ArtistIntroUpdater
 	ArtistDetails    *ArtistDetailsUpdater
 	OpenCommissions  *[]domainOpenCommissionModel.OpenCommissionUpdater
