@@ -26,17 +26,18 @@ func NewArtistUseCase(artistRepo artist.Repo, openCommRepo openCommission.Repo) 
 func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainRegModel.RegInfo) error {
 
 	dArtist := domainArtistModel.Artist{
-		ArtistID:         regInfo.UserID,
-		UserID:           regInfo.UserID,
-		UserName:         regInfo.DisplayName,
-		Email:            regInfo.Email,
-		Birthday:         regInfo.Birthday,
-		Gender:           regInfo.Gender,
-		ProfilePath:      regInfo.ProfilePath,
-		State:            domainArtistModel.UserStateActive,
-		Fans:             nil,
-		RegTime: time.Time{},
-		ArtistIntro:      regInfo.RegArtistIntro,
+		ArtistID:        regInfo.UserID,
+		UserID:          regInfo.UserID,
+		UserName:        regInfo.DisplayName,
+		Email:           regInfo.Email,
+		Birthday:        regInfo.Birthday,
+		Gender:          regInfo.Gender,
+		ProfilePath:     regInfo.ProfilePath,
+		State:           domainArtistModel.UserStateActive,
+		Fans:            nil,
+		RegTime:         regInfo.RegTime,
+		LastUpdatedTime: time.Now(),
+		ArtistIntro:     regInfo.RegArtistIntro,
 		ArtistDetails: domainArtistModel.ArtistDetails{
 			CommissionRequestCount: 0,
 			CommissionAcceptCount:  0,
@@ -44,7 +45,7 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 			AvgRatings:             nil,
 			LastRequestTime:        nil,
 		},
-		ArtistBoard: domainArtistModel.ArtistBoard{},
+		ArtistBoard:     domainArtistModel.ArtistBoard{},
 		OpenCommissions: nil,
 		Artworks:        nil,
 	}
