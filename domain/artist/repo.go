@@ -4,6 +4,7 @@ import (
 	"context"
 	domainArtistModel "pixstall-artist/domain/artist/model"
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
+	"pixstall-artist/domain/fan/model"
 )
 
 type Repo interface {
@@ -11,5 +12,9 @@ type Repo interface {
 	GetArtist(ctx context.Context, artistID string) (*domainArtistModel.Artist, error)
 	GetArtistDetails(ctx context.Context, artistID string) (*domainArtistModel.Artist, error)
 	UpdateArtist(ctx context.Context, updater *domainArtistModel.ArtistUpdater) error
+	// Artwork
 	AddArtwork(ctx context.Context, artwork *domainArtworkModel.Artwork) error
+	// Fan
+	AddFan(ctx context.Context, artistID string, fan model.Fan) error
+	RemoveFan(ctx context.Context, artistID string, fanId string) error
 }

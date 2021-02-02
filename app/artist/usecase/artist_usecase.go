@@ -38,7 +38,7 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 		RegTime:         regInfo.RegTime,
 		LastUpdatedTime: time.Now(),
 		ArtistIntro:     regInfo.RegArtistIntro,
-		ArtistDetails: domainArtistModel.ArtistDetails{
+		CommissionDetails: domainArtistModel.CommissionDetails{
 			CommissionRequestCount: 0,
 			CommissionAcceptCount:  0,
 			CommissionSuccessCount: 0,
@@ -86,14 +86,6 @@ func (a artistUseCase) UpdateIntro(ctx context.Context, artistID string, updater
 	artistUpdater := &domainArtistModel.ArtistUpdater{
 		ArtistID:    artistID,
 		ArtistIntro: updater,
-	}
-	return a.artistRepo.UpdateArtist(ctx, artistUpdater)
-}
-
-func (a artistUseCase) UpdateDetails(ctx context.Context, artistID string, updater *domainArtistModel.ArtistDetailsUpdater) error {
-	artistUpdater := &domainArtistModel.ArtistUpdater{
-		ArtistID:      artistID,
-		ArtistDetails: updater,
 	}
 	return a.artistRepo.UpdateArtist(ctx, artistUpdater)
 }

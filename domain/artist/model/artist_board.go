@@ -1,6 +1,11 @@
 package model
 
 type ArtistBoard struct {
-	bannerPath string
-	desc       string
+	BannerPath string `bson:"bannerPath"`
+	Desc       string `bson:"desc"`
+}
+
+type ArtistBoardUpdater struct {
+	BannerPath *string
+	Desc       *string
 }

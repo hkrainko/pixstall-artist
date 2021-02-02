@@ -74,7 +74,7 @@ func TestMongoArtistRepo_SaveArtist(t *testing.T) {
 			YearOfDrawing: 10,
 			ArtTypes:      []string{"Art", "Comic"},
 		},
-		ArtistDetails: model.ArtistDetails{
+		CommissionDetails: model.CommissionDetails{
 			CommissionRequestCount: 10,
 			CommissionAcceptCount:  20,
 			CommissionSuccessCount: 30,
@@ -156,9 +156,9 @@ func insertDummyArtist(ctx context.Context, userId string, state model.UserState
 			YearOfDrawing: 10,
 			ArtTypes:      []string{"Comic"},
 		},
-		ArtistDetails:   model.ArtistDetails{},
-		OpenCommissions: nil,
-		Artworks:        nil,
+		CommissionDetails: model.CommissionDetails{},
+		OpenCommissions:   nil,
+		Artworks:          nil,
 	}
 	result, err := c.InsertOne(ctx, &user)
 	if err != nil {

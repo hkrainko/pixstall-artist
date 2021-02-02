@@ -10,6 +10,8 @@ import (
 	"pixstall-artist/domain/artist"
 	"pixstall-artist/domain/artist/model"
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
+	domainFanModel "pixstall-artist/domain/fan/model"
+	"time"
 )
 
 type mongoArtistRepo struct {
@@ -84,9 +86,76 @@ func (m mongoArtistRepo) GetArtistDetails(ctx context.Context, artistID string) 
 }
 
 func (m mongoArtistRepo) UpdateArtist(ctx context.Context, updater *model.ArtistUpdater) error {
-	panic("implement me")
+	if updater == nil {
+		return model.ArtistErrorUnknown
+	}
+	collection := m.db.Collection(ArtistCollection)
+
+	filter := bson.M{"artistID": updater.ArtistID}
+	update := bson.M{}
+
+	if updater.UserName != nil {
+		update["userName"] = updater.UserName
+	}
+	if updater.Email != nil {
+		update["email"] = updater.Email
+	}
+	if updater.Birthday != nil {
+		update["birthday"] = updater.Birthday
+	}
+	if updater.Gender != nil {
+		update["gender"] = updater.Gender
+	}
+	if updater.ProfilePath != nil {
+		update["profilePath"] = updater.ProfilePath
+	}
+	if updater.State != nil {
+		update["state"] = updater.State
+	}
+	if updater.RegTime != nil {
+		update["regTime"] = updater.RegTime
+	}
+	if updater.ArtistIntro != nil {
+		if updater.ArtistIntro.YearOfDrawing != nil {
+			update["artistIntro.yearOfDrawing"] = updater.ArtistIntro.YearOfDrawing
+		}
+		if updater.ArtistIntro.ArtTypes != nil {
+			update["artistIntro.artTypes"] = updater.ArtistIntro.ArtTypes
+		}
+	}
+	if updater.ArtistBoard != nil {
+		if updater.ArtistBoard.BannerPath != nil {
+			update["artistBoard.bannerPath"] = updater.ArtistBoard.BannerPath
+		}
+		if updater.ArtistBoard.Desc != nil {
+			update["artistBoard.desc"] = updater.ArtistBoard.Desc
+		}
+	}
+	update["lastUpdatedTime"] = time.Now()
+
+	result, err := collection.UpdateOne(ctx, filter, bson.M{"$set": update})
+
+	if err != nil {
+		return err
+	}
+	fmt.Printf("UpdateUser success: %v", result.UpsertedID)
+	return nil
 }
 
 func (m mongoArtistRepo) AddArtwork(ctx context.Context, artwork *domainArtworkModel.Artwork) error {
+	panic("implement me")
+}
+
+func (m mongoArtistRepo) AddFan(ctx context.Context, artistID string, fan domainFanModel.Fan) error {
+	collection := m.db.Collection(ArtistCollection)
+
+	filter := bson.M{"artistID": artistID}
+
+	change := bson.M{"$push":bson.M{"user.$.sales":bson.M{"$each":addsales}}}
+
+	result, err := collection.InsertOne(ctx, filter, change)
+}
+
+func (m mongoArtistRepo) RemoveFan(ctx context.Context, artistID string, fanId string) error {
 	panic("implement me")
 }
