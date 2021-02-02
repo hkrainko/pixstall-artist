@@ -138,7 +138,7 @@ func (m mongoArtistRepo) UpdateArtist(ctx context.Context, updater *model.Artist
 	if err != nil {
 		return err
 	}
-	fmt.Printf("UpdateUser success: %v", result.UpsertedID)
+	fmt.Printf("UpdateArtist success: %v", result.UpsertedID)
 	return nil
 }
 
@@ -151,9 +151,14 @@ func (m mongoArtistRepo) AddFan(ctx context.Context, artistID string, fan domain
 
 	filter := bson.M{"artistID": artistID}
 
-	change := bson.M{"$push":bson.M{"user.$.sales":bson.M{"$each":addsales}}}
+	change := bson.M{"$push": bson.M{"fans": bson.M{fan.UserID: fan}}}
 
-	result, err := collection.InsertOne(ctx, filter, change)
+	result, err := collection.UpdateOne(ctx, filter, change)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("AddFan success: %v", result.UpsertedID)
+	return nil
 }
 
 func (m mongoArtistRepo) RemoveFan(ctx context.Context, artistID string, fanId string) error {

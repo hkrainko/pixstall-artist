@@ -10,9 +10,9 @@ import (
 )
 
 type Artist struct {
-	ObjectID        primitive.ObjectID                         `bson:"_id,omitempty"`
-	ArtistID        string                                     `bson:"artistId,omitempty"`
-	UserID          string                                     `bson:"userId,omitempty"`
+	ObjectID          primitive.ObjectID                         `bson:"_id,omitempty"`
+	ArtistID          string                                     `bson:"artistId,omitempty"`
+	UserID            string                                     `bson:"userId,omitempty"`
 	UserName          string                                     `bson:"userName,omitempty"`
 	Email             string                                     `bson:"email,omitempty"`
 	Birthday          string                                     `bson:"birthday,omitempty"`
@@ -31,8 +31,8 @@ type Artist struct {
 
 func NewFromDomainArtist(d *domainArtistModel.Artist) Artist {
 	return Artist{
-		ArtistID:        d.ArtistID,
-		UserID:          d.UserID,
+		ArtistID:          d.ArtistID,
+		UserID:            d.UserID,
 		UserName:          d.UserName,
 		Email:             d.Email,
 		Birthday:          d.Birthday,
@@ -52,8 +52,8 @@ func NewFromDomainArtist(d *domainArtistModel.Artist) Artist {
 
 func (a *Artist) ToDomainArtist() *domainArtistModel.Artist {
 	return &domainArtistModel.Artist{
-		ArtistID:        a.ArtistID,
-		UserID:          a.UserID,
+		ArtistID:          a.ArtistID,
+		UserID:            a.UserID,
 		UserName:          a.UserName,
 		Email:             a.Email,
 		Birthday:          a.Birthday,
