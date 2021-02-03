@@ -23,7 +23,7 @@ func NewMongoOpenCommissionRepo(db *mongo.Database) openCommission.Repo {
 	}
 }
 
-func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID string, openComm *domainOpenCommissionModel.OpenCommission) error {
+func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID string, openComm domainOpenCommissionModel.OpenCommission) error {
 	panic("implement me")
 }
 

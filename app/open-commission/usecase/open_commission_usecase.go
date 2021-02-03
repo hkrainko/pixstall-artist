@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	domainArtistModel "pixstall-artist/domain/artist/model"
 	openCommission "pixstall-artist/domain/open-commission"
 	domainOpenCommModel "pixstall-artist/domain/open-commission/model"
 )
@@ -16,6 +17,10 @@ func NewOpenCommissionUseCase(openCommRepo openCommission.Repo) openCommission.U
 	}
 }
 
+func (o openCommissionUseCase) AddOpenCommission(ctx context.Context, artistID string, openComm domainOpenCommModel.OpenCommission) (domainOpenCommModel.OpenCommission, error) {
+	panic("implement me")
+}
+
 func (o openCommissionUseCase) GetOpenCommission(ctx context.Context, id string, requesterID *string) (domainOpenCommModel.OpenCommission, error) {
 	panic("implement me")
 }
@@ -24,25 +29,21 @@ func (o openCommissionUseCase) GetOpenCommissions(ctx context.Context, filter do
 	panic("implement me")
 }
 
-func (o openCommissionUseCase) UpdateOpenCommission(ctx context.Context, requesterID string, updater *domainOpenCommModel.OpenCommissionUpdater) error {
-	//artistUpdater := &domainArtistModel.ArtistUpdater{
-	//	ArtistID:        artistID,
-	//	OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{*updater},
-	//}
-	return o.openCommRepo.UpdateOpenCommission(ctx, *updater)
+func (o openCommissionUseCase) UpdateOpenCommission(ctx context.Context, requesterID string, updater domainOpenCommModel.OpenCommissionUpdater) error {
+	return o.openCommRepo.UpdateOpenCommission(ctx, updater)
 }
 
 func (o openCommissionUseCase) DeleteOpenCommission(ctx context.Context, requesterID string, openCommissionID string) error {
-	//newState := domainOpenCommissionModel.OpenCommissionStateRemoved
-	//openCommissionUpdater := domainOpenCommissionModel.OpenCommissionUpdater{
-	//	ID:       openCommissionID,
-	//	ArtistID: artistID,
-	//	State:    &newState,
-	//}
-	//artistUpdater := &domainArtistModel.ArtistUpdater{
-	//	ArtistID:        artistID,
-	//	OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{openCommissionUpdater},
-	//}
-	//return o.openCommRepo.UpdateOpenCommission(ctx, artistUpdater)
+	newState := domainOpenCommModel.OpenCommissionStateRemoved
+	openCommissionUpdater := domainOpenCommModel.OpenCommissionUpdater{
+		ID:       openCommissionID,
+		ArtistID: artistID,
+		State:    &newState,
+	}
+	artistUpdater := &domainArtistModel.ArtistUpdater{
+		ArtistID:        artistID,
+		OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{openCommissionUpdater},
+	}
+	return o.openCommRepo.UpdateOpenCommission(ctx, artistUpdater)
 	return nil
 }

@@ -90,12 +90,12 @@ func (a artistUseCase) UpdateIntro(ctx context.Context, artistID string, updater
 	return a.artistRepo.UpdateArtist(ctx, artistUpdater)
 }
 
+func (a artistUseCase) UpdateDetails(ctx context.Context, artistID string, updater *domainArtistModel.CommissionDetailsUpdater) error {
+	panic("implement me")
+}
+
 func (a artistUseCase) UpdateArtwork(ctx context.Context, artistID string, updater *domainArtworkModel.ArtworkUpdater) error {
-	artistUpdater := &domainArtistModel.ArtistUpdater{
-		ArtistID: artistID,
-		Artworks: &[]domainArtworkModel.ArtworkUpdater{*updater},
-	}
-	return a.artistRepo.UpdateArtist(ctx, artistUpdater)
+	return nil
 }
 
 func (a artistUseCase) AddArtwork(ctx context.Context, artwork *domainArtworkModel.Artwork) error {
@@ -103,18 +103,19 @@ func (a artistUseCase) AddArtwork(ctx context.Context, artwork *domainArtworkMod
 }
 
 func (a artistUseCase) DeleteArtwork(ctx context.Context, artistID string, artworkID string) error {
-	state := domainArtworkModel.ArtworkStateRemoved
-	artworkUpdater := domainArtworkModel.ArtworkUpdater{
-		ID:           artworkID,
-		ArtistID:     artistID,
-		Rating:       nil,
-		RequestTime:  nil,
-		CompleteTime: nil,
-		State:        &state,
-	}
-	artistUpdater := &domainArtistModel.ArtistUpdater{
-		ArtistID: artistID,
-		Artworks: &[]domainArtworkModel.ArtworkUpdater{artworkUpdater},
-	}
-	return a.artistRepo.UpdateArtist(ctx, artistUpdater)
+	//state := domainArtworkModel.ArtworkStateRemoved
+	//artworkUpdater := domainArtworkModel.ArtworkUpdater{
+	//	ID:           artworkID,
+	//	ArtistID:     artistID,
+	//	Rating:       nil,
+	//	RequestTime:  nil,
+	//	CompleteTime: nil,
+	//	State:        &state,
+	//}
+	//artistUpdater := &domainArtistModel.ArtistUpdater{
+	//	ArtistID: artistID,
+	//	Artworks: &[]domainArtworkModel.ArtworkUpdater{artworkUpdater},
+	//}
+	//return a.artistRepo.UpdateArtist(ctx, artistUpdater)
+	return nil
 }
