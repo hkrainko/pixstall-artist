@@ -70,14 +70,6 @@ func (a artistUseCase) GetArtist(ctx context.Context, artistID string, requester
 	}
 }
 
-func (a artistUseCase) GetOpenCommissionsForArtist(ctx context.Context, artistID string, requesterID *string, count int, offset int) ([]domainOpenCommissionModel.OpenCommission, error) {
-	panic("implement me")
-}
-
-func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommission *domainOpenCommissionModel.OpenCommission) error {
-	return a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommission)
-}
-
 func (a artistUseCase) UpdateBasicInfo(ctx context.Context, artistID string, updater *domainArtistModel.ArtistUpdater) error {
 	return a.artistRepo.UpdateArtist(ctx, updater)
 }
@@ -93,6 +85,27 @@ func (a artistUseCase) UpdateIntro(ctx context.Context, artistID string, updater
 func (a artistUseCase) UpdateDetails(ctx context.Context, artistID string, updater *domainArtistModel.CommissionDetailsUpdater) error {
 	panic("implement me")
 }
+
+// Open Commission
+func (a artistUseCase) GetOpenCommissionsForArtist(ctx context.Context, artistID string, requesterID *string, count int64, offset int64) ([]domainOpenCommissionModel.OpenCommission, error) {
+	filter := domainOpenCommissionModel.OpenCommissionFilter{
+		ArtistID:  &artistID,
+		Count:     &count,
+		Offset:    &offset,
+	}
+	oc, err := a.openCommRepo.GetOpenCommissions(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	return oc, nil
+}
+
+func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommission domainOpenCommissionModel.OpenCommission) (*domainOpenCommissionModel.OpenCommission, error) {
+	addedOpenComm, err := a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommission)
+	return addedOpenComm, err
+}
+
+// Artwork
 
 func (a artistUseCase) UpdateArtwork(ctx context.Context, artistID string, updater *domainArtworkModel.ArtworkUpdater) error {
 	return nil

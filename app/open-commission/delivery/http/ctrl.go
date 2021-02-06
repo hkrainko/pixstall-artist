@@ -30,8 +30,7 @@ func (o OpenCommissionController) UpdateOpenCommission(c *gin.Context) {
 	openCommissionID := c.Query("openCommissionId")
 	title := c.Query("title")
 	desc := c.Query("desc")
-	priceFrom := c.Query("priceFrom")
-	priceTo := c.Query("priceTo")
+	//price := c.Query("price")
 
 	dayNeedMap := c.QueryMap("dayNeed")
 	var dayNeed *model.DayNeed
@@ -57,15 +56,12 @@ func (o OpenCommissionController) UpdateOpenCommission(c *gin.Context) {
 		}
 	}
 
-	updater := &model.OpenCommissionUpdater{
+	updater := model.OpenCommissionUpdater{
 		ID:        openCommissionID,
 		ArtistID:  artistID,
 		Title:     &title,
 		Desc:      &desc,
-		PriceFrom: &priceFrom,
-		PriceTo:   &priceTo,
 		DayNeed:   dayNeed,
-		Size:      size,
 	}
 
 	err := o.openCommUseCase.UpdateOpenCommission(c, artistID, updater)

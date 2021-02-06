@@ -1,13 +1,15 @@
 package model
 
 type OpenCommissionUpdater struct {
-	ID        string
-	ArtistID  string
-	Title     *string
-	Desc      *string
-	PriceFrom *string
-	PriceTo   *string
-	DayNeed   *DayNeed
-	Size      *Size
-	State     *OpenCommissionSate
+	ID                             string
+	ArtistID                       string
+	Title                          *string
+	Desc                           *string
+	DepositRule                    *string
+	Price                          *Price
+	DayNeed                        *DayNeed
+	TimesAllowedDraftToChange      *int
+	TimesAllowedCompletionToChange *int
+	SampleImagePaths               *[]string
+	State                          *OpenCommissionSate
 }

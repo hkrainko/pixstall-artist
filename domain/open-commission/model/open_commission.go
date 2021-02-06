@@ -3,24 +3,24 @@ package model
 import "time"
 
 type OpenCommission struct {
-	ID                   string
-	ArtistID             string
-	Title                string
-	Desc                 string
-	PriceRange           string
-	DayNeed              DayNeed
-	TimesAllowedToChange *int
-	SampleImagePath      *string
-	Size                 Size
-	State                OpenCommissionSate
-	CreateTime           time.Time
-	LastUpdatedTime      time.Time
+	ID                             string
+	ArtistID                       string
+	Title                          string
+	Desc                           string
+	DepositRule                    string
+	Price                          Price
+	DayNeed                        DayNeed
+	TimesAllowedDraftToChange      *int
+	TimesAllowedCompletionToChange *int
+	SampleImagePaths               []string
+	State                          OpenCommissionSate
+	CreateTime                     time.Time
+	LastUpdatedTime                time.Time
 }
 
-type PriceRange struct {
-	AmountFrom float64
-	AmountTo   float64
-	Currency   Currency
+type Price struct {
+	AmountFrom float64  `bson:"amountFrom"`
+	Currency   Currency `bson:"currency"`
 }
 
 type DayNeed struct {

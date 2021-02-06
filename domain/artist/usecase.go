@@ -11,13 +11,13 @@ import (
 type UseCase interface {
 	RegisterNewArtist(ctx context.Context, regInfo *model.RegInfo) error
 	GetArtist(ctx context.Context, artistID string, requesterID *string) (*domainArtistModel.Artist, error)
-	// Open Commission
-	GetOpenCommissionsForArtist(ctx context.Context, artistID string, requesterID *string, count int, offset int) ([]domainOpenCommissionModel.OpenCommission, error)
-	AddOpenCommission(ctx context.Context, requesterID string, openCommission *domainOpenCommissionModel.OpenCommission) error
-
 	UpdateBasicInfo(ctx context.Context, artistID string, updater *domainArtistModel.ArtistUpdater) error
 	UpdateIntro(ctx context.Context, artistID string, updater *domainArtistModel.ArtistIntroUpdater) error
 	UpdateDetails(ctx context.Context, artistID string, updater *domainArtistModel.CommissionDetailsUpdater) error
+
+	// Open Commission
+	GetOpenCommissionsForArtist(ctx context.Context, artistID string, requesterID *string, count int64, offset int64) ([]domainOpenCommissionModel.OpenCommission, error)
+	AddOpenCommission(ctx context.Context, requesterID string, openCommission domainOpenCommissionModel.OpenCommission) (*domainOpenCommissionModel.OpenCommission, error)
 
 	// Artwork
 	UpdateArtwork(ctx context.Context, artistID string, updater *domainArtworkModel.ArtworkUpdater) error

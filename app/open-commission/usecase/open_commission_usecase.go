@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	domainArtistModel "pixstall-artist/domain/artist/model"
 	openCommission "pixstall-artist/domain/open-commission"
 	domainOpenCommModel "pixstall-artist/domain/open-commission/model"
 )
@@ -15,10 +14,6 @@ func NewOpenCommissionUseCase(openCommRepo openCommission.Repo) openCommission.U
 	return &openCommissionUseCase{
 		openCommRepo: openCommRepo,
 	}
-}
-
-func (o openCommissionUseCase) AddOpenCommission(ctx context.Context, artistID string, openComm domainOpenCommModel.OpenCommission) (domainOpenCommModel.OpenCommission, error) {
-	panic("implement me")
 }
 
 func (o openCommissionUseCase) GetOpenCommission(ctx context.Context, id string, requesterID *string) (domainOpenCommModel.OpenCommission, error) {
@@ -37,13 +32,8 @@ func (o openCommissionUseCase) DeleteOpenCommission(ctx context.Context, request
 	newState := domainOpenCommModel.OpenCommissionStateRemoved
 	openCommissionUpdater := domainOpenCommModel.OpenCommissionUpdater{
 		ID:       openCommissionID,
-		ArtistID: artistID,
+		ArtistID: requesterID,
 		State:    &newState,
 	}
-	artistUpdater := &domainArtistModel.ArtistUpdater{
-		ArtistID:        artistID,
-		OpenCommissions: &[]domainOpenCommissionModel.OpenCommissionUpdater{openCommissionUpdater},
-	}
-	return o.openCommRepo.UpdateOpenCommission(ctx, artistUpdater)
-	return nil
+	return o.openCommRepo.UpdateOpenCommission(ctx, openCommissionUpdater)
 }

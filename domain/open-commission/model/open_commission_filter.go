@@ -1,11 +1,12 @@
 package model
 
 type OpenCommissionFilter struct {
-	ArtistID  *string
-	count     *int
-	offset    *int
-	Key       *string
-	PriceForm *float64
-	PriceTo   *float64
-	DayNeed   *int
+	ArtistID              *string
+	Count                 *int64
+	Offset                *int64
+	Key                   *string
+	PriceForm             *float64
+	PriceTo               *float64
+	DayNeedGreaterOrEqual *int
+	DayNeedLessOrEqual    *int
 }
