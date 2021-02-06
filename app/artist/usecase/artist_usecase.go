@@ -54,20 +54,23 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 	return err
 }
 
-func (a artistUseCase) GetArtist(ctx context.Context, artistID string, requesterID *string) (*domainArtistModel.Artist, error) {
-	if artistID == *requesterID {
-		dArtist, err := a.artistRepo.GetArtistDetails(ctx, artistID)
-		if err != nil {
-			return nil, err
-		}
-		return dArtist, nil
-	} else {
-		dArtist, err := a.artistRepo.GetArtist(ctx, artistID)
-		if err != nil {
-			return nil, err
-		}
-		return dArtist, nil
+func (a artistUseCase) GetArtist(ctx context.Context, artistID string) (*domainArtistModel.Artist, error) {
+	dArtist, err := a.artistRepo.GetArtist(ctx, artistID)
+	if err != nil {
+		return nil, err
 	}
+	return dArtist, nil
+}
+
+func (a artistUseCase) GetArtistDetails(ctx context.Context, artistID string, requesterID *string) (*domainArtistModel.Artist, error) {
+	if requesterID ==nil || *requesterID != artistID {
+		return nil, domainArtistModel.ArtistErrorUnAuth
+	}
+	dArtist, err := a.artistRepo.GetArtistDetails(ctx, artistID)
+	if err != nil {
+		return nil, err
+	}
+	return dArtist, nil
 }
 
 func (a artistUseCase) UpdateBasicInfo(ctx context.Context, artistID string, updater *domainArtistModel.ArtistUpdater) error {

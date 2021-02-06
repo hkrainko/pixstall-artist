@@ -10,7 +10,8 @@ import (
 
 type UseCase interface {
 	RegisterNewArtist(ctx context.Context, regInfo *model.RegInfo) error
-	GetArtist(ctx context.Context, artistID string, requesterID *string) (*domainArtistModel.Artist, error)
+	GetArtist(ctx context.Context, artistID string) (*domainArtistModel.Artist, error)
+	GetArtistDetails(ctx context.Context, artistID string, requesterID *string) (*domainArtistModel.Artist, error)
 	UpdateBasicInfo(ctx context.Context, artistID string, updater *domainArtistModel.ArtistUpdater) error
 	UpdateIntro(ctx context.Context, artistID string, updater *domainArtistModel.ArtistIntroUpdater) error
 	UpdateDetails(ctx context.Context, artistID string, updater *domainArtistModel.CommissionDetailsUpdater) error

@@ -8,22 +8,22 @@ import (
 )
 
 type Artist struct {
-	ArtistID          string
-	UserID            string
-	UserName          string
-	Email             string
-	Birthday          string
-	Gender            string
-	ProfilePath       string
-	State             UserState
-	Fans              map[string]model.Fan
-	RegTime           time.Time
-	LastUpdatedTime   time.Time
-	ArtistIntro       ArtistIntro
-	ArtistBoard       ArtistBoard
-	CommissionDetails CommissionDetails
-	OpenCommissions   []domainOpenCommissionModel.OpenCommission
-	Artworks          []domainArtworkModel.Artwork
+	ArtistID          string                                     `json:"artistId"`
+	UserID            string                                     `json:"userId"`
+	UserName          string                                     `json:"userName"`
+	Email             string                                     `json:"email,omitempty"`
+	Birthday          string                                     `json:"birthday,omitempty"`
+	Gender            string                                     `json:"gender,omitempty"`
+	ProfilePath       string                                     `json:"profilePath"`
+	State             UserState                                  `json:"state"`
+	Fans              map[string]model.Fan                       `json:"fans,omitempty"`
+	RegTime           time.Time                                  `json:"regTime"`
+	LastUpdatedTime   time.Time                                  `json:"lastUpdatedTime,omitempty"`
+	ArtistIntro       ArtistIntro                                `json:"artistIntro"`
+	ArtistBoard       ArtistBoard                                `json:"artistBoard"`
+	CommissionDetails CommissionDetails                          `json:"commissionDetails"`
+	OpenCommissions   []domainOpenCommissionModel.OpenCommission `json:"openCommissions"`
+	Artworks          []domainArtworkModel.Artwork               `json:"artworks"`
 }
 
 type ArtistUpdater struct {

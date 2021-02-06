@@ -20,7 +20,7 @@ func NewArtistController(useCase domainArtist.UseCase) ArtistController {
 
 func (a ArtistController) GetArtist(c *gin.Context) {
 	artistID := c.Param("id")
-	artist, err := a.artistUseCase.GetArtist(c, artistID, nil)
+	artist, err := a.artistUseCase.GetArtist(c, artistID)
 	if err != nil {
 		c.JSON(get_artist.NewErrorResponse(err))
 		return
@@ -36,7 +36,7 @@ func (a ArtistController) GetArtistDetails(c *gin.Context) {
 		c.JSON(get_artist.NewErrorResponse(domain.ArtistErrorUnAuth))
 		return
 	}
-	artist, err := a.artistUseCase.GetArtist(c, artistID, &tokenUserID)
+	artist, err := a.artistUseCase.GetArtistDetails(c, artistID, &tokenUserID)
 	if err != nil {
 		c.JSON(get_artist.NewErrorResponse(err))
 		return
