@@ -2,25 +2,18 @@ package model
 
 import (
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
-	"pixstall-artist/domain/fan/model"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
+	model2 "pixstall-artist/domain/user/model"
 	"time"
 )
 
 type Artist struct {
+	model2.User
 	ArtistID          string                                     `json:"artistId"`
-	UserID            string                                     `json:"userId"`
-	UserName          string                                     `json:"userName"`
-	Email             string                                     `json:"email,omitempty"`
-	Birthday          string                                     `json:"birthday,omitempty"`
-	Gender            string                                     `json:"gender,omitempty"`
-	ProfilePath       string                                     `json:"profilePath"`
-	State             UserState                                  `json:"state"`
-	Fans              map[string]model.Fan                       `json:"fans,omitempty"`
-	RegTime           time.Time                                  `json:"regTime"`
-	LastUpdatedTime   time.Time                                  `json:"lastUpdatedTime,omitempty"`
+	Fans              Fans                                       `json:"fans,omitempty"`
 	ArtistIntro       ArtistIntro                                `json:"artistIntro"`
 	ArtistBoard       ArtistBoard                                `json:"artistBoard"`
+	PaymentMethods    []string                                   `json:"paymentMethods"`
 	CommissionDetails CommissionDetails                          `json:"commissionDetails"`
 	OpenCommissions   []domainOpenCommissionModel.OpenCommission `json:"openCommissions"`
 	Artworks          []domainArtworkModel.Artwork               `json:"artworks"`
