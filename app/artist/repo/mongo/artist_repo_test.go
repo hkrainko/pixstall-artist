@@ -13,7 +13,7 @@ import (
 	"pixstall-artist/domain/artist"
 	"pixstall-artist/domain/artist/model"
 	model2 "pixstall-artist/domain/artwork/model"
-	domainFanModel "pixstall-artist/domain/fan/model"
+	model3 "pixstall-artist/domain/user/model"
 	"testing"
 	"time"
 )
@@ -60,16 +60,22 @@ func TestMongoArtistRepo_SaveArtist(t *testing.T) {
 	newTime := time.Now()
 	avgRatings := 10
 	dArtist := model.Artist{
-		ArtistID:         "new_ArtistID",
-		UserID:           "new_UserID",
-		UserName:         "new_UserName",
-		Email:            "temp@mail.com",
-		Birthday:         "20000101",
-		Gender:           "M",
-		ProfilePath:      "/temp/pic",
-		State:            model.UserStateActive,
-		Fans:             nil,
-		RegTime: newTime,
+		ArtistID:    "new_ArtistID",
+		User: model3.User{
+			UserID:          "new_UserID",
+			UserName:        "new_UserName",
+			ProfilePath:     "/temp/pic",
+			Email:           "temp@mail.com",
+			Birthday:        "20000101",
+			Gender:          "M",
+			State:           model3.UserStateActive,
+			RegTime:         newTime,
+			LastUpdatedTime: newTime,
+		},
+		Fans:        model.Fans{
+			Meta:  nil,
+			Total: 0,
+		},
 		ArtistIntro: model.ArtistIntro{
 			YearOfDrawing: 10,
 			ArtTypes:      []string{"Art", "Comic"},
@@ -116,7 +122,7 @@ func TestMongoArtistRepo_SaveArtist(t *testing.T) {
 	assert.Equal(t, "20000101", mongoArtist.Birthday)
 	assert.Equal(t, "M", mongoArtist.Gender)
 	assert.Equal(t, "/temp/pic", mongoArtist.ProfilePath)
-	assert.Equal(t, model.UserStateActive, mongoArtist.State)
+	assert.Equal(t, model3.UserStateActive, mongoArtist.State)
 	assert.Nil(t, mongoArtist.Fans)
 	assert.Equal(t, newTime.Truncate(time.Millisecond).UnixNano(), mongoArtist.RegTime.UnixNano())
 
@@ -137,21 +143,26 @@ func dropAll() {
 	}
 }
 
-func insertDummyArtist(ctx context.Context, userId string, state model.UserState) primitive.ObjectID {
+func insertDummyArtist(ctx context.Context, userId string, state model3.UserState) primitive.ObjectID {
 	c := db.Collection(ArtistCollection)
 
 	user := mongoModel.Artist{
 		ObjectID:         primitive.ObjectID{},
-		ArtistID:         "temp_ArtistID",
-		UserID:           userId,
-		UserName:         "temp_UserName",
-		Email:            "temp_Email",
-		Birthday:         "20200101",
-		Gender:           "M",
-		ProfilePath:      "",
-		State:            state,
-		Fans:             map[string]domainFanModel.Fan{},
-		RegTime: time.Now(),
+		User: model3.User{
+			UserID:          userId,
+			UserName:        "temp_UserName",
+			ProfilePath:     "",
+			Email:           "temp_Email",
+			Birthday:        "20200101",
+			Gender:          "M",
+			State:           state,
+			RegTime:         time.Now(),
+			LastUpdatedTime: time.Now(),
+		},
+		Fans:             model.Fans{
+			Meta:  nil,
+			Total: 0,
+		},
 		ArtistIntro: model.ArtistIntro{
 			YearOfDrawing: 10,
 			ArtTypes:      []string{"Comic"},

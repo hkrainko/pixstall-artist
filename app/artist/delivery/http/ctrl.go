@@ -5,6 +5,7 @@ import (
 	"pixstall-artist/app/artist/delivery/model/get-artist"
 	domainArtist "pixstall-artist/domain/artist"
 	domain "pixstall-artist/domain/artist/model"
+	"pixstall-artist/domain/open-commission/model"
 	"strconv"
 )
 
@@ -85,7 +86,30 @@ func (a ArtistController) GetOpenCommissionsDetailsForArtist(c *gin.Context) {
 }
 
 func (a ArtistController) AddOpenCommissionForArtist(c *gin.Context) {
+	artistID := c.Param("id")
+	tokenUserID := c.GetString("userId")
+	if artistID != tokenUserID {
+		c.JSON(get_artist.NewErrorResponse(domain.ArtistErrorUnAuth))
+		return
+	}
+	title := c.PostForm("title")
+	
+	creator := model.OpenCommissionCreator{
+		Title:                          title,
+		Desc:                           "",
+		DepositRule:                    nil,
+		Price:                          model.Price{},
+		DayNeed:                        model.DayNeed{},
+		TimesAllowedDraftToChange:      nil,
+		TimesAllowedCompletionToChange: nil,
+		SampleImages:                   nil,
+		SampleImagePaths:               nil,
+	}
 
+	id, err := a.artistUseCase.AddOpenCommission(c, artistID, creator)
+	if err != nil {
+
+	}
 }
 
 

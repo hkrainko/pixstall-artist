@@ -4,24 +4,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	domainArtistModel "pixstall-artist/domain/artist/model"
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
-	"pixstall-artist/domain/fan/model"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
-	"time"
+	model2 "pixstall-artist/domain/user/model"
 )
 
 type Artist struct {
+	model2.User       `bson:",inline"`
 	ObjectID          primitive.ObjectID                         `bson:"_id,omitempty"`
 	ArtistID          string                                     `bson:"artistId,omitempty"`
-	UserID            string                                     `bson:"userId,omitempty"`
-	UserName          string                                     `bson:"userName,omitempty"`
-	Email             string                                     `bson:"email,omitempty"`
-	Birthday          string                                     `bson:"birthday,omitempty"`
-	Gender            string                                     `bson:"gender,omitempty"`
-	ProfilePath       string                                     `bson:"profilePath,omitempty"`
-	State             domainArtistModel.UserState                `bson:"state,omitempty"`
-	Fans              map[string]model.Fan                       `bson:"fans,omitempty"`
-	RegTime           time.Time                                  `bson:"regTime,omitempty"`
-	LastUpdatedTime   time.Time                                  `bson:"lastUpdatedTime,omitempty"`
+	Fans              domainArtistModel.Fans                     `bson:"fans,omitempty"`
 	ArtistIntro       domainArtistModel.ArtistIntro              `bson:"artistIntro,omitempty"`
 	CommissionDetails domainArtistModel.CommissionDetails        `bson:"commissionDetails,omitempty"`
 	ArtistBoard       domainArtistModel.ArtistBoard              `bson:"artistBoard,omitempty"`
@@ -32,16 +23,18 @@ type Artist struct {
 func NewFromDomainArtist(d *domainArtistModel.Artist) Artist {
 	return Artist{
 		ArtistID:          d.ArtistID,
-		UserID:            d.UserID,
-		UserName:          d.UserName,
-		Email:             d.Email,
-		Birthday:          d.Birthday,
-		Gender:            d.Gender,
-		ProfilePath:       d.ProfilePath,
-		State:             d.State,
+		User: model2.User{
+			UserID:          d.UserID,
+			UserName:        d.UserName,
+			ProfilePath:     d.ProfilePath,
+			Email:           d.Email,
+			Birthday:        d.Birthday,
+			Gender:          d.Gender,
+			State:           d.State,
+			RegTime:         d.RegTime,
+			LastUpdatedTime: d.LastUpdatedTime,
+		},
 		Fans:              d.Fans,
-		RegTime:           d.RegTime,
-		LastUpdatedTime:   d.LastUpdatedTime,
 		ArtistIntro:       d.ArtistIntro,
 		CommissionDetails: d.CommissionDetails,
 		ArtistBoard:       d.ArtistBoard,
@@ -52,17 +45,19 @@ func NewFromDomainArtist(d *domainArtistModel.Artist) Artist {
 
 func (a *Artist) ToDomainArtist() *domainArtistModel.Artist {
 	return &domainArtistModel.Artist{
-		ArtistID:          a.ArtistID,
-		UserID:            a.UserID,
-		UserName:          a.UserName,
-		Email:             a.Email,
-		Birthday:          a.Birthday,
-		Gender:            a.Gender,
-		ProfilePath:       a.ProfilePath,
-		State:             a.State,
+		ArtistID: a.ArtistID,
+		User: model2.User{
+			UserID:          a.UserID,
+			UserName:        a.UserName,
+			ProfilePath:     a.ProfilePath,
+			Email:           a.Email,
+			Birthday:        a.Birthday,
+			Gender:          a.Gender,
+			State:           a.State,
+			RegTime:         a.RegTime,
+			LastUpdatedTime: a.LastUpdatedTime,
+		},
 		Fans:              a.Fans,
-		RegTime:           a.RegTime,
-		LastUpdatedTime:   a.LastUpdatedTime,
 		ArtistIntro:       a.ArtistIntro,
 		CommissionDetails: a.CommissionDetails,
 		ArtistBoard:       a.ArtistBoard,

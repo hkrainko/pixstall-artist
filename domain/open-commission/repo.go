@@ -6,7 +6,7 @@ import (
 )
 
 type Repo interface {
-	AddOpenCommission(ctx context.Context, artistID string, openComm domainOpenCommissionModel.OpenCommission) (*domainOpenCommissionModel.OpenCommission, error)
+	AddOpenCommission(ctx context.Context, artistID string, openComm domainOpenCommissionModel.OpenCommissionCreator) (*domainOpenCommissionModel.OpenCommission, error)
 	GetOpenCommission(ctx context.Context, openCommID string) (*domainOpenCommissionModel.OpenCommission, error)
 	GetOpenCommissions(ctx context.Context, filter domainOpenCommissionModel.OpenCommissionFilter) ([]domainOpenCommissionModel.OpenCommission, error)
 	UpdateOpenCommission(ctx context.Context, openCommUpdater domainOpenCommissionModel.OpenCommissionUpdater) error

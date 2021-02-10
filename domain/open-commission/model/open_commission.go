@@ -7,7 +7,7 @@ type OpenCommission struct {
 	ArtistID                       string
 	Title                          string
 	Desc                           string
-	DepositRule                    string
+	DepositRule                    *string
 	Price                          Price
 	DayNeed                        DayNeed
 	TimesAllowedDraftToChange      *int

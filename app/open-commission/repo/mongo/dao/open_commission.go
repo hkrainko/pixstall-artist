@@ -12,7 +12,7 @@ type OpenCommission struct {
 	ArtistID                       string                   `bson:"artistId"`
 	Title                          string                   `bson:"title"`
 	Desc                           string                   `bson:"desc"`
-	DepositRule                    string                   `bson:"depositRule"`
+	DepositRule                    *string                  `bson:"depositRule"`
 	Price                          model.Price              `bson:"price,omitempty"`
 	DayNeed                        model.DayNeed            `bson:"dayNeed"`
 	TimesAllowedDraftToChange      *int                     `bson:"timesAllowedDraftToChange,omitempty"`
@@ -23,10 +23,10 @@ type OpenCommission struct {
 	LastUpdatedTime                time.Time                `bson:"lastUpdatedTime"`
 }
 
-func NewFromDomainOpenCommission(d model.OpenCommission) OpenCommission {
+func NewFromDomainOpenCommissionCreator(artistID string, d model.OpenCommissionCreator, openCommID string) OpenCommission {
 	return OpenCommission{
-		OpenCommID:                     d.ID,
-		ArtistID:                       d.ArtistID,
+		OpenCommID:                     openCommID,
+		ArtistID:                       artistID,
 		Title:                          d.Title,
 		Desc:                           d.Desc,
 		DepositRule:                    d.DepositRule,
@@ -35,9 +35,9 @@ func NewFromDomainOpenCommission(d model.OpenCommission) OpenCommission {
 		TimesAllowedDraftToChange:      d.TimesAllowedDraftToChange,
 		TimesAllowedCompletionToChange: d.TimesAllowedCompletionToChange,
 		SampleImagePaths:               d.SampleImagePaths,
-		State:                          d.State,
-		CreateTime:                     d.CreateTime,
-		LastUpdatedTime:                d.LastUpdatedTime,
+		State:                          model.OpenCommissionStateActive,
+		CreateTime:                     time.Now(),
+		LastUpdatedTime:                time.Now(),
 	}
 }
 

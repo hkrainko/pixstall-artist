@@ -28,13 +28,12 @@ func NewMongoOpenCommissionRepo(db *mongo.Database) openCommission.Repo {
 	}
 }
 
-func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID string, openComm domainOpenCommissionModel.OpenCommission) (*domainOpenCommissionModel.OpenCommission, error) {
-	mongoOpenComm := dao.NewFromDomainOpenCommission(openComm)
+func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*domainOpenCommissionModel.OpenCommission, error) {
 	newUUID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, domainOpenCommissionModel.OpenCommissionErrorUnknown
 	}
-	mongoOpenComm.OpenCommID = openCommIDPrefix + newUUID.String()
+	mongoOpenComm := dao.NewFromDomainOpenCommissionCreator(artistID, openCommCreator, openCommIDPrefix + newUUID.String())
 	_, err = m.collection.InsertOne(ctx, mongoOpenComm)
 	if err != nil {
 		return nil, domainOpenCommissionModel.OpenCommissionErrorUnknown

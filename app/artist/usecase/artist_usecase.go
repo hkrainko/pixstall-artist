@@ -8,6 +8,7 @@ import (
 	openCommission "pixstall-artist/domain/open-commission"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	domainRegModel "pixstall-artist/domain/reg/model"
+	"pixstall-artist/domain/user/model"
 	"time"
 )
 
@@ -27,16 +28,21 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 
 	dArtist := domainArtistModel.Artist{
 		ArtistID:        regInfo.UserID,
-		UserID:          regInfo.UserID,
-		UserName:        regInfo.DisplayName,
-		Email:           regInfo.Email,
-		Birthday:        regInfo.Birthday,
-		Gender:          regInfo.Gender,
-		ProfilePath:     regInfo.ProfilePath,
-		State:           domainArtistModel.UserStateActive,
-		Fans:            nil,
-		RegTime:         regInfo.RegTime,
-		LastUpdatedTime: time.Now(),
+		User: model.User{
+			UserID:          regInfo.UserID,
+			UserName:        regInfo.DisplayName,
+			ProfilePath:     "",
+			Email:           regInfo.Email,
+			Birthday:        regInfo.Birthday,
+			Gender:          regInfo.Gender,
+			State:           model.UserStateActive,
+			RegTime:         regInfo.RegTime,
+			LastUpdatedTime: time.Now(),
+		},
+		Fans:            domainArtistModel.Fans{
+			Meta:  nil,
+			Total: 0,
+		},
 		ArtistIntro:     regInfo.RegArtistIntro,
 		CommissionDetails: domainArtistModel.CommissionDetails{
 			CommissionRequestCount: 0,
@@ -103,13 +109,12 @@ func (a artistUseCase) GetOpenCommissionsForArtist(ctx context.Context, artistID
 	return oc, nil
 }
 
-func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommission domainOpenCommissionModel.OpenCommission) (*domainOpenCommissionModel.OpenCommission, error) {
-	addedOpenComm, err := a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommission)
+func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*domainOpenCommissionModel.OpenCommission, error) {
+	addedOpenComm, err := a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommCreator)
 	return addedOpenComm, err
 }
 
 // Artwork
-
 func (a artistUseCase) UpdateArtwork(ctx context.Context, artistID string, updater *domainArtworkModel.ArtworkUpdater) error {
 	return nil
 }

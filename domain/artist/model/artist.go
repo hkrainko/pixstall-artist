@@ -26,7 +26,7 @@ type ArtistUpdater struct {
 	Birthday    *string
 	Gender      *string
 	ProfilePath *string
-	State       *UserState
+	State       *model2.UserState
 	//Fans            *map[string]domainFanModel.Fan
 	RegTime     *time.Time
 	ArtistIntro *ArtistIntroUpdater
