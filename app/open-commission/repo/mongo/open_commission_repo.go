@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"fmt"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,17 +29,23 @@ func NewMongoOpenCommissionRepo(db *mongo.Database) openCommission.Repo {
 	}
 }
 
-func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*domainOpenCommissionModel.OpenCommission, error) {
+func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*string, error) {
 	newUUID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, domainOpenCommissionModel.OpenCommissionErrorUnknown
 	}
-	mongoOpenComm := dao.NewFromDomainOpenCommissionCreator(artistID, openCommCreator, openCommIDPrefix + newUUID.String())
-	_, err = m.collection.InsertOne(ctx, mongoOpenComm)
+	newID := openCommIDPrefix + newUUID.String()
+	mongoOpenComm := dao.NewFromDomainOpenCommissionCreator(artistID, openCommCreator, newID)
+
+	filter := bson.M{"artistId": artistID}
+	change := bson.M{"$push": bson.M{"openCommissions": mongoOpenComm}}
+
+	_, err = m.collection.UpdateOne(ctx, filter, change)
 	if err != nil {
 		return nil, domainOpenCommissionModel.OpenCommissionErrorUnknown
 	}
-	return mongoOpenComm.ToDomainOpenCommission(), nil
+	fmt.Printf("AddOpenCommission success, id:%v", newID)
+	return &newID, nil
 }
 
 func (m mongoOpenCommissionRepo) GetOpenCommission(ctx context.Context, openCommID string) (*domainOpenCommissionModel.OpenCommission, error) {

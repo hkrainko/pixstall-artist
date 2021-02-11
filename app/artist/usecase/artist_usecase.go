@@ -109,7 +109,7 @@ func (a artistUseCase) GetOpenCommissionsForArtist(ctx context.Context, artistID
 	return oc, nil
 }
 
-func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*domainOpenCommissionModel.OpenCommission, error) {
+func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*string, error) {
 	addedOpenComm, err := a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommCreator)
 	return addedOpenComm, err
 }

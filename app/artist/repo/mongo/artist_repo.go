@@ -91,7 +91,7 @@ func (m mongoArtistRepo) UpdateArtist(ctx context.Context, updater *model.Artist
 	}
 	collection := m.db.Collection(ArtistCollection)
 
-	filter := bson.M{"artistID": updater.ArtistID}
+	filter := bson.M{"artistId": updater.ArtistID}
 	update := bson.M{}
 
 	if updater.UserName != nil {
@@ -149,7 +149,7 @@ func (m mongoArtistRepo) AddArtwork(ctx context.Context, artwork *domainArtworkM
 func (m mongoArtistRepo) AddFan(ctx context.Context, artistID string, fan domainFanModel.Fan) error {
 	collection := m.db.Collection(ArtistCollection)
 
-	filter := bson.M{"artistID": artistID}
+	filter := bson.M{"artistId": artistID}
 
 	change := bson.M{"$push": bson.M{"fans": bson.M{fan.UserID: fan}}}
 
