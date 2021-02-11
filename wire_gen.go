@@ -6,12 +6,14 @@
 package main
 
 import (
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"pixstall-artist/app/artist/delivery/http"
 	"pixstall-artist/app/artist/delivery/rabbitmq"
 	mongo2 "pixstall-artist/app/artist/repo/mongo"
 	"pixstall-artist/app/artist/usecase"
+	"pixstall-artist/app/image/aws-s3"
 	http2 "pixstall-artist/app/open-commission/delivery/http"
 	mongo3 "pixstall-artist/app/open-commission/repo/mongo"
 	usecase2 "pixstall-artist/app/open-commission/usecase"
@@ -19,10 +21,11 @@ import (
 
 // Injectors from wire.go:
 
-func InitArtistController(db *mongo.Database) http.ArtistController {
+func InitArtistController(db *mongo.Database, awsS3 *s3.S3) http.ArtistController {
 	repo := mongo2.NewMongoArtistRepo(db)
 	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
-	useCase := usecase.NewArtistUseCase(repo, open_commissionRepo)
+	imageRepo := aws_s3.NewAWSS3ImageRepository(awsS3)
+	useCase := usecase.NewArtistUseCase(repo, open_commissionRepo, imageRepo)
 	artistController := http.NewArtistController(useCase)
 	return artistController
 }
@@ -34,10 +37,11 @@ func InitOpenCommissionController(db *mongo.Database) http2.OpenCommissionContro
 	return openCommissionController
 }
 
-func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection) rabbitmq.ArtistMessageBroker {
+func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection, awsS3 *s3.S3) rabbitmq.ArtistMessageBroker {
 	repo := mongo2.NewMongoArtistRepo(db)
 	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
-	useCase := usecase.NewArtistUseCase(repo, open_commissionRepo)
+	imageRepo := aws_s3.NewAWSS3ImageRepository(awsS3)
+	useCase := usecase.NewArtistUseCase(repo, open_commissionRepo, imageRepo)
 	artistMessageBroker := rabbitmq.NewRabbitMQArtistMessageBroker(useCase, conn)
 	return artistMessageBroker
 }

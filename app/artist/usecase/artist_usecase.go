@@ -2,9 +2,12 @@ package usecase
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"pixstall-artist/domain/artist"
 	domainArtistModel "pixstall-artist/domain/artist/model"
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
+	domainImage "pixstall-artist/domain/image"
+	model2 "pixstall-artist/domain/image/model"
 	openCommission "pixstall-artist/domain/open-commission"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	domainRegModel "pixstall-artist/domain/reg/model"
@@ -15,19 +18,21 @@ import (
 type artistUseCase struct {
 	artistRepo   artist.Repo
 	openCommRepo openCommission.Repo
+	imageRepo    domainImage.Repo
 }
 
-func NewArtistUseCase(artistRepo artist.Repo, openCommRepo openCommission.Repo) artist.UseCase {
+func NewArtistUseCase(artistRepo artist.Repo, openCommRepo openCommission.Repo, imageRepo domainImage.Repo) artist.UseCase {
 	return &artistUseCase{
 		artistRepo:   artistRepo,
 		openCommRepo: openCommRepo,
+		imageRepo:    imageRepo,
 	}
 }
 
 func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainRegModel.RegInfo) error {
 
 	dArtist := domainArtistModel.Artist{
-		ArtistID:        regInfo.UserID,
+		ArtistID: regInfo.UserID,
 		User: model.User{
 			UserID:          regInfo.UserID,
 			UserName:        regInfo.DisplayName,
@@ -39,11 +44,11 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 			RegTime:         regInfo.RegTime,
 			LastUpdatedTime: time.Now(),
 		},
-		Fans:            domainArtistModel.Fans{
+		Fans: domainArtistModel.Fans{
 			Meta:  nil,
 			Total: 0,
 		},
-		ArtistIntro:     regInfo.RegArtistIntro,
+		ArtistIntro: regInfo.RegArtistIntro,
 		CommissionDetails: domainArtistModel.CommissionDetails{
 			CommissionRequestCount: 0,
 			CommissionAcceptCount:  0,
@@ -69,7 +74,7 @@ func (a artistUseCase) GetArtist(ctx context.Context, artistID string) (*domainA
 }
 
 func (a artistUseCase) GetArtistDetails(ctx context.Context, artistID string, requesterID *string) (*domainArtistModel.Artist, error) {
-	if requesterID ==nil || *requesterID != artistID {
+	if requesterID == nil || *requesterID != artistID {
 		return nil, domainArtistModel.ArtistErrorUnAuth
 	}
 	dArtist, err := a.artistRepo.GetArtistDetails(ctx, artistID)
@@ -98,9 +103,9 @@ func (a artistUseCase) UpdateDetails(ctx context.Context, artistID string, updat
 // Open Commission
 func (a artistUseCase) GetOpenCommissionsForArtist(ctx context.Context, artistID string, requesterID *string, count int64, offset int64) ([]domainOpenCommissionModel.OpenCommission, error) {
 	filter := domainOpenCommissionModel.OpenCommissionFilter{
-		ArtistID:  &artistID,
-		Count:     &count,
-		Offset:    &offset,
+		ArtistID: &artistID,
+		Count:    &count,
+		Offset:   &offset,
 	}
 	oc, err := a.openCommRepo.GetOpenCommissions(ctx, filter)
 	if err != nil {
@@ -110,6 +115,22 @@ func (a artistUseCase) GetOpenCommissionsForArtist(ctx context.Context, artistID
 }
 
 func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*string, error) {
+
+	if len(openCommCreator.SampleImages) > 0 {
+		pathImages := make([]model2.PathImage, 0, len(openCommCreator.SampleImages))
+		for _, sampleImage := range openCommCreator.SampleImages {
+			pathImages = append(pathImages, model2.PathImage{
+				Path:  "open-commissions/",
+				Name:  "OC-" + requesterID + uuid.NewString(),
+				Image: sampleImage,
+			})
+		}
+		paths, err := a.imageRepo.SaveImages(ctx, pathImages)
+		if err == nil {
+			openCommCreator.SampleImagePaths = paths
+		}
+	}
+
 	addedOpenComm, err := a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommCreator)
 	return addedOpenComm, err
 }

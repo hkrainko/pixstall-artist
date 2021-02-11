@@ -2,6 +2,11 @@ package main
 
 import (
 	"context"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/endpoints"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/streadway/amqp"
@@ -13,8 +18,26 @@ import (
 )
 
 func main() {
-	//Mongo
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	//AWS s3
+	awsAccessKey := "AKIA5BWICLKRWX6ARSEF"
+	awsSecret := "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"
+	token := ""
+	creds := credentials.NewStaticCredentials(awsAccessKey, awsSecret, token)
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		Config: aws.Config{
+			Region:                        aws.String(endpoints.ApEast1RegionID),
+			CredentialsChainVerboseErrors: aws.Bool(true),
+			Credentials:                   creds,
+		},
+		//Profile:                 "default", //[default], use [prod], [uat]
+		//SharedConfigState:       session.SharedConfigEnable,
+	}))
+	awsS3 := s3.New(sess)
+
+	//Mongo
 	dbClient, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		panic(err)
@@ -33,7 +56,7 @@ func main() {
 		log.Fatalf("Failed to connect to RabbitMQ %v", err)
 	}
 	defer conn.Close()
-	artistMsgBroker := InitArtistMessageBroker(db, conn)
+	artistMsgBroker := InitArtistMessageBroker(db, conn, awsS3)
 	go artistMsgBroker.StartArtistQueue()
 	defer artistMsgBroker.StopArtistQueue()
 
@@ -56,7 +79,7 @@ func main() {
 
 	artistGroup := apiGroup.Group("/artists")
 	{
-		ctrl := InitArtistController(db)
+		ctrl := InitArtistController(db, awsS3)
 		// Artist
 		artistGroup.GET("/:id", ctrl.GetArtist)
 		artistGroup.GET("/:id/details", userIDExtractor.ExtractPayloadsFromJWT, ctrl.GetArtistDetails)
