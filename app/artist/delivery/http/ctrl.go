@@ -138,8 +138,8 @@ func (a ArtistController) AddOpenCommissionForArtist(c *gin.Context) {
 		if amount, err := strconv.ParseFloat(priceAmount, 64); err == nil {
 			if priceCurrency, exist := c.GetPostForm("price.currency"); exist {
 				creator.Price = model.Price{
-					AmountFrom: amount,
-					Currency:   model.Currency(priceCurrency),
+					Amount:   amount,
+					Currency: model.Currency(priceCurrency),
 				}
 			}
 		}

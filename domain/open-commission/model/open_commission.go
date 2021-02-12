@@ -19,8 +19,8 @@ type OpenCommission struct {
 }
 
 type Price struct {
-	AmountFrom float64  `bson:"amountFrom"`
-	Currency   Currency `bson:"currency"`
+	Amount   float64  `bson:"amount"`
+	Currency Currency `bson:"currency"`
 }
 
 type DayNeed struct {
