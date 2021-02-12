@@ -3,11 +3,11 @@ package model
 import "time"
 
 type CommissionDetails struct {
-	CommissionRequestCount int        `bson:"commissionRequestCount"`
-	CommissionAcceptCount  int        `bson:"commissionAcceptCount"`
-	CommissionSuccessCount int        `bson:"commissionSuccessCount"`
-	AvgRatings             *int       `bson:"avgRatings,omitempty"`
-	LastRequestTime        *time.Time `bson:"lastRequestTime,omitempty"`
+	CommissionRequestCount int        `json:"commissionRequestCount" bson:"commissionRequestCount"`
+	CommissionAcceptCount  int        `json:"commissionAcceptCount" bson:"commissionAcceptCount"`
+	CommissionSuccessCount int        `json:"commissionSuccessCount" bson:"commissionSuccessCount"`
+	AvgRatings             *int       `json:"avgRatings,omitempty" bson:"avgRatings,omitempty"`
+	LastRequestTime        *time.Time `json:"lastRequestTime,omitempty" bson:"lastRequestTime,omitempty"`
 }
 
 type CommissionDetailsUpdater struct {

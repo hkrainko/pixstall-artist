@@ -48,7 +48,6 @@ func (m mongoArtistRepo) GetArtist(ctx context.Context, artistID string) (*model
 			{"email", 0},
 			{"birthday", 0},
 			{"gender", 0},
-			{"openCommissions", 0},
 			{"artworks", 0},
 		},
 	}
