@@ -4,7 +4,6 @@ import (
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	model2 "pixstall-artist/domain/user/model"
-	"time"
 )
 
 type Artist struct {
@@ -19,19 +18,12 @@ type Artist struct {
 	Artworks          []domainArtworkModel.Artwork               `json:"artworks"`
 }
 
-type ArtistUpdater struct {
-	ArtistID    string
-	UserName    *string
-	Email       *string
-	Birthday    *string
-	Gender      *string
-	ProfilePath *string
-	State       *model2.UserState
-	//Fans            *map[string]domainFanModel.Fan
-	RegTime     *time.Time
-	ArtistIntro *ArtistIntroUpdater
-	ArtistBoard *ArtistBoardUpdater
-	//CommissionDetails   *CommissionDetailsUpdater
-	//OpenCommissions *[]domainOpenCommissionModel.OpenCommissionUpdater
-	//Artworks        *[]domainArtworkModel.ArtworkUpdater
+type ArtistIntro struct {
+	YearOfDrawing int      `json:"yearOfDrawing" bson:"yearOfDrawing"`
+	ArtTypes      []string `json:"artTypes" bson:"artTypes"`
+}
+
+type ArtistBoard struct {
+	BannerPath string `bson:"bannerPath"`
+	Desc       string `bson:"desc"`
 }

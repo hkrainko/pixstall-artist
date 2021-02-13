@@ -11,6 +11,7 @@ import (
 	"pixstall-artist/domain/artist/model"
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
 	domainFanModel "pixstall-artist/domain/fan/model"
+	model2 "pixstall-artist/domain/user/model"
 	"time"
 )
 
@@ -93,6 +94,42 @@ func (m mongoArtistRepo) UpdateArtist(ctx context.Context, updater *model.Artist
 	filter := bson.M{"artistId": updater.ArtistID}
 	update := bson.M{}
 
+	if updater.ArtistIntro != nil {
+		if updater.ArtistIntro.YearOfDrawing != nil {
+			update["artistIntro.yearOfDrawing"] = updater.ArtistIntro.YearOfDrawing
+		}
+		if updater.ArtistIntro.ArtTypes != nil {
+			update["artistIntro.artTypes"] = updater.ArtistIntro.ArtTypes
+		}
+	}
+	if updater.ArtistBoard != nil {
+		if updater.ArtistBoard.BannerPath != nil {
+			update["artistBoard.bannerPath"] = updater.ArtistBoard.BannerPath
+		}
+		if updater.ArtistBoard.Desc != nil {
+			update["artistBoard.desc"] = updater.ArtistBoard.Desc
+		}
+	}
+	update["lastUpdatedTime"] = time.Now()
+
+	result, err := collection.UpdateOne(ctx, filter, bson.M{"$set": update})
+
+	if err != nil {
+		return err
+	}
+	fmt.Printf("UpdateArtist success: %v", result.UpsertedID)
+	return nil
+}
+
+func (m mongoArtistRepo) UpdateArtistUser(ctx context.Context, updater *model2.UserUpdater) error {
+	if updater == nil {
+		return model.ArtistErrorUnknown
+	}
+	collection := m.db.Collection(ArtistCollection)
+
+	filter := bson.M{"artistId": updater.UserID}
+	update := bson.M{}
+
 	if updater.UserName != nil {
 		update["userName"] = updater.UserName
 	}
@@ -113,22 +150,6 @@ func (m mongoArtistRepo) UpdateArtist(ctx context.Context, updater *model.Artist
 	}
 	if updater.RegTime != nil {
 		update["regTime"] = updater.RegTime
-	}
-	if updater.ArtistIntro != nil {
-		if updater.ArtistIntro.YearOfDrawing != nil {
-			update["artistIntro.yearOfDrawing"] = updater.ArtistIntro.YearOfDrawing
-		}
-		if updater.ArtistIntro.ArtTypes != nil {
-			update["artistIntro.artTypes"] = updater.ArtistIntro.ArtTypes
-		}
-	}
-	if updater.ArtistBoard != nil {
-		if updater.ArtistBoard.BannerPath != nil {
-			update["artistBoard.bannerPath"] = updater.ArtistBoard.BannerPath
-		}
-		if updater.ArtistBoard.Desc != nil {
-			update["artistBoard.desc"] = updater.ArtistBoard.Desc
-		}
 	}
 	update["lastUpdatedTime"] = time.Now()
 

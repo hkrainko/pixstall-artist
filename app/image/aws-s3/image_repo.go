@@ -25,7 +25,7 @@ func NewAWSS3ImageRepository(s3 *s3.S3) domainImage.Repo {
 	}
 }
 
-func (a awsS3ImageRepository) SaveImage(ctx context.Context, pathImage model.PathImage) error {
+func (a awsS3ImageRepository) SaveImage(ctx context.Context, pathImage model.PathImage) (*string, error) {
 	// create buffer
 	buff := new(bytes.Buffer)
 
@@ -34,6 +34,7 @@ func (a awsS3ImageRepository) SaveImage(ctx context.Context, pathImage model.Pat
 	if err != nil {
 		fmt.Println("failed to create buffer", err)
 	}
+	uploadPath := pathImage.Path + pathImage.Name
 
 	// convert buffer to reader
 	reader := bytes.NewReader(buff.Bytes())
@@ -41,16 +42,16 @@ func (a awsS3ImageRepository) SaveImage(ctx context.Context, pathImage model.Pat
 	// use it in `PutObjectInput`
 	_, err = a.s3.PutObjectWithContext(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(BucketName),
-		Key:    aws.String(pathImage.Path + pathImage.Name),
+		Key:    aws.String(uploadPath),
 		Body:   reader,
 		ContentType: aws.String("image"),
 		ACL: aws.String("public-read"),  //profile should be public accessible
 	})
 
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return &uploadPath, nil
 }
 
 func (a awsS3ImageRepository) SaveImages(ctx context.Context, pathImages []model.PathImage) ([]string, error) {

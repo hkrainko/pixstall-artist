@@ -6,6 +6,6 @@ import (
 )
 
 type Repo interface {
-	SaveImage(ctx context.Context, pathImage model.PathImage) error
+	SaveImage(ctx context.Context, pathImage model.PathImage) (*string, error)
 	SaveImages(ctx context.Context, pathImages []model.PathImage) ([]string, error)
 }

@@ -1,7 +1,9 @@
 package update_artist
 
-import "pixstall-artist/domain/artist/model"
+import (
+	model "pixstall-artist/domain/user/model"
+)
 
 type Request struct {
-	*model.ArtistUpdater
+	*model.UserUpdater
 }

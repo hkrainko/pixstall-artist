@@ -58,28 +58,64 @@ func (a ArtistController) UpdateArtist(c *gin.Context) {
 		return
 	}
 
-	updater := &domain.ArtistIntroUpdater{
-		YearOfDrawing: nil,
-		ArtTypes:      nil,
+	updater := domain.ArtistUpdater{
+		ArtistID: artistID,
 	}
 
-	yearOfDrawing, exist := c.GetQuery("yearOfDrawing")
+	yearOfDrawing, exist := c.GetPostForm("artistIntro.yearOfDrawing")
 	if exist {
 		if value, err := strconv.Atoi(yearOfDrawing); err == nil {
-			updater.YearOfDrawing = &value
+			if updater.ArtistIntro == nil {
+				artistIntro := domain.ArtistIntroUpdater{}
+				updater.ArtistIntro = &artistIntro
+			}
+			updater.ArtistIntro.YearOfDrawing = &value
 		}
 	}
-	artTypes, exist := c.GetQueryArray("artTypes")
+	artTypes, exist := c.GetPostFormArray("artistIntro.artTypes")
 	if exist {
-		updater.ArtTypes = &artTypes
+		if updater.ArtistIntro == nil {
+			artistIntro := domain.ArtistIntroUpdater{}
+			updater.ArtistIntro = &artistIntro
+		}
+		updater.ArtistIntro.ArtTypes = &artTypes
 	}
-
-	err := a.artistUseCase.UpdateIntro(c, artistID, updater)
+	bannerImage, err := c.FormFile("artistBoard.bannerImage")
+	if err == nil {
+		if updater.ArtistBoard == nil {
+			artistBoard := domain.ArtistBoardUpdater{}
+			updater.ArtistBoard = &artistBoard
+		}
+		decodedImg := func() image.Image {
+			if err != nil {
+				return nil
+			}
+			f, err := bannerImage.Open()
+			if err != nil {
+				return nil
+			}
+			img, _, err := image.Decode(f)
+			if err != nil {
+				return nil
+			}
+			return img
+		}()
+		updater.ArtistBoard.BannerFile = &decodedImg
+	}
+	desc, exist := c.GetPostForm("artistBoard.desc")
+	if exist {
+		if updater.ArtistBoard == nil {
+			artistBoard := domain.ArtistBoardUpdater{}
+			updater.ArtistBoard = &artistBoard
+		}
+		updater.ArtistBoard.Desc = &desc
+	}
+	artistId, err := a.artistUseCase.UpdateArtist(c, updater)
 	if err != nil {
+		c.PureJSON(http.StatusBadRequest, nil)
 		return
 	}
-
-	c.PureJSON(http.StatusOK, nil)
+	c.PureJSON(http.StatusOK, artistId)
 }
 
 func (a ArtistController) GetOpenCommissionsForArtist(c *gin.Context) {

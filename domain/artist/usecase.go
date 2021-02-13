@@ -6,14 +6,15 @@ import (
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	"pixstall-artist/domain/reg/model"
+	model2 "pixstall-artist/domain/user/model"
 )
 
 type UseCase interface {
 	RegisterNewArtist(ctx context.Context, regInfo *model.RegInfo) error
 	GetArtist(ctx context.Context, artistID string) (*domainArtistModel.Artist, error)
 	GetArtistDetails(ctx context.Context, artistID string, requesterID *string) (*domainArtistModel.Artist, error)
-	UpdateBasicInfo(ctx context.Context, artistID string, updater *domainArtistModel.ArtistUpdater) error
-	UpdateIntro(ctx context.Context, artistID string, updater *domainArtistModel.ArtistIntroUpdater) error
+	UpdateArtist(ctx context.Context, updater domainArtistModel.ArtistUpdater) (*string, error)
+	UpdateArtistUser(ctx context.Context, updater model2.UserUpdater) (*string, error)
 	UpdateDetails(ctx context.Context, artistID string, updater *domainArtistModel.CommissionDetailsUpdater) error
 
 	// Open Commission

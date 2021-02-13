@@ -84,16 +84,32 @@ func (a artistUseCase) GetArtistDetails(ctx context.Context, artistID string, re
 	return dArtist, nil
 }
 
-func (a artistUseCase) UpdateBasicInfo(ctx context.Context, artistID string, updater *domainArtistModel.ArtistUpdater) error {
-	return a.artistRepo.UpdateArtist(ctx, updater)
+func (a artistUseCase) UpdateArtist(ctx context.Context, updater domainArtistModel.ArtistUpdater) (*string, error) {
+	if updater.ArtistBoard.BannerFile != nil {
+		pathImage := model2.PathImage{
+			Path:  "banners/",
+			Name:  "ba-" + updater.ArtistID + "-" + uuid.NewString(),
+			Image: *updater.ArtistBoard.BannerFile,
+		}
+		path, err := a.imageRepo.SaveImage(ctx, pathImage)
+		if err != nil {
+			return nil, err
+		}
+		updater.ArtistBoard.BannerPath = path
+	}
+	err := a.artistRepo.UpdateArtist(ctx, &updater)
+	if err != nil {
+		return nil, err
+	}
+	return &updater.ArtistID, nil
 }
 
-func (a artistUseCase) UpdateIntro(ctx context.Context, artistID string, updater *domainArtistModel.ArtistIntroUpdater) error {
-	artistUpdater := &domainArtistModel.ArtistUpdater{
-		ArtistID:    artistID,
-		ArtistIntro: updater,
+func (a artistUseCase) UpdateArtistUser(ctx context.Context, updater model.UserUpdater) (*string, error) {
+	err := a.artistRepo.UpdateArtistUser(ctx, &updater)
+	if err != nil {
+		return nil, err
 	}
-	return a.artistRepo.UpdateArtist(ctx, artistUpdater)
+	return &updater.UserID, nil
 }
 
 func (a artistUseCase) UpdateDetails(ctx context.Context, artistID string, updater *domainArtistModel.CommissionDetailsUpdater) error {
@@ -121,7 +137,7 @@ func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string
 		for _, sampleImage := range openCommCreator.SampleImages {
 			pathImages = append(pathImages, model2.PathImage{
 				Path:  "open-commissions/",
-				Name:  "OC-" + requesterID + uuid.NewString(),
+				Name:  "oc-" + requesterID + "-" + uuid.NewString(),
 				Image: sampleImage,
 			})
 		}
