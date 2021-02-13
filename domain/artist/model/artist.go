@@ -24,6 +24,6 @@ type ArtistIntro struct {
 }
 
 type ArtistBoard struct {
-	BannerPath string `bson:"bannerPath"`
-	Desc       string `bson:"desc"`
+	BannerPath string `json:"bannerPath" bson:"bannerPath"`
+	Desc       string `json:"desc" bson:"desc"`
 }
