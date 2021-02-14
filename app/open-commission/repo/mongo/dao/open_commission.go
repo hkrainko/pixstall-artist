@@ -18,6 +18,9 @@ type OpenCommission struct {
 	TimesAllowedDraftToChange      *int                     `bson:"timesAllowedDraftToChange,omitempty"`
 	TimesAllowedCompletionToChange *int                     `bson:"timesAllowedCompletionToChange,omitempty"`
 	SampleImagePaths               []string                 `bson:"sampleImagePaths"`
+	IsR18                          bool                     `bson:"isR18"`
+	AllowBePrivate                 bool                     `bson:"allowBePrivate"`
+	AllowAnonymous                 bool                     `bson:"allowAnonymous"`
 	State                          model.OpenCommissionSate `bson:"state"`
 	CreateTime                     time.Time                `bson:"createTime"`
 	LastUpdatedTime                time.Time                `bson:"lastUpdatedTime"`
@@ -35,9 +38,12 @@ func NewFromDomainOpenCommissionCreator(artistID string, d model.OpenCommissionC
 		TimesAllowedDraftToChange:      d.TimesAllowedDraftToChange,
 		TimesAllowedCompletionToChange: d.TimesAllowedCompletionToChange,
 		SampleImagePaths:               d.SampleImagePaths,
-		State:                          model.OpenCommissionStateActive,
-		CreateTime:                     time.Now(),
-		LastUpdatedTime:                time.Now(),
+		IsR18:                          d.IsR18,
+		AllowBePrivate:                 d.AllowBePrivate,
+		AllowAnonymous:                 d.AllowAnonymous,
+		State:           model.OpenCommissionStateActive,
+		CreateTime:      time.Now(),
+		LastUpdatedTime: time.Now(),
 	}
 }
 
@@ -53,6 +59,9 @@ func (o *OpenCommission) ToDomainOpenCommission() *model.OpenCommission {
 		TimesAllowedDraftToChange:      o.TimesAllowedDraftToChange,
 		TimesAllowedCompletionToChange: o.TimesAllowedCompletionToChange,
 		SampleImagePaths:               o.SampleImagePaths,
+		IsR18:                          o.IsR18,
+		AllowBePrivate:                 o.AllowBePrivate,
+		AllowAnonymous:                 o.AllowAnonymous,
 		State:                          o.State,
 		CreateTime:                     o.CreateTime,
 		LastUpdatedTime:                o.LastUpdatedTime,

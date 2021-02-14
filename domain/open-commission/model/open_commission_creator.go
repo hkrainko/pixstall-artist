@@ -10,6 +10,9 @@ type OpenCommissionCreator struct {
 	DayNeed                        DayNeed
 	TimesAllowedDraftToChange      *int
 	TimesAllowedCompletionToChange *int
+	IsR18                          bool
+	AllowBePrivate                 bool
+	AllowAnonymous                 bool
 	SampleImages                   []image.Image
 	SampleImagePaths               []string
 }

@@ -133,39 +133,57 @@ func (a ArtistController) AddOpenCommissionForArtist(c *gin.Context) {
 		c.JSON(add_open_commission_for_artist.NewErrorResponse(domain.ArtistErrorUnAuth))
 		return
 	}
-	title, exist := c.GetPostForm("title")
-	if !exist {
+	creator := model.OpenCommissionCreator{}
+	if title, exist := c.GetPostForm("title"); exist {
+		creator.Title = title
+	} else {
+		c.JSON(http.StatusBadRequest, nil)
+		return
+	}
+	if desc, exist := c.GetPostForm("desc"); exist {
+		creator.Desc = desc
+	} else {
+		c.JSON(http.StatusBadRequest, nil)
+		return
+	}
+	if dayNeedFrom, exist := c.GetPostForm("dayNeed.from"); exist {
+		if dayNeedFromInt, err := strconv.Atoi(dayNeedFrom); err == nil {
+			creator.DayNeed.From = dayNeedFromInt
+		} else {
+			c.JSON(http.StatusBadRequest, nil)
+			return
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, nil)
+		return
+	}
+	if dayNeedTo, exist := c.GetPostForm("dayNeed.to"); exist {
+		if dayNeedToInt, err := strconv.Atoi(dayNeedTo); err == nil {
+			creator.DayNeed.To = dayNeedToInt
+		} else {
+			c.JSON(http.StatusBadRequest, nil)
+			return
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, nil)
+		return
+	}
+	if isR18, exist := c.GetPostForm("isR18"); exist {
+		creator.IsR18 = isR18 == "true"
+	} else {
 		c.JSON(http.StatusBadRequest, nil)
 	}
-	desc, exist := c.GetPostForm("desc")
-	if !exist {
+	if allowBePrivate, exist := c.GetPostForm("allowBePrivate"); exist {
+		creator.AllowBePrivate = allowBePrivate == "true"
+	} else {
 		c.JSON(http.StatusBadRequest, nil)
 	}
-	dayNeedFrom, exist := c.GetPostForm("dayNeed.from")
-	if !exist {
-		c.JSON(http.StatusBadRequest, nil)
-	}
-	dayNeedFromInt, err := strconv.Atoi(dayNeedFrom)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, nil)
-	}
-	dayNeedTo, exist := c.GetPostForm("dayNeed.to")
-	if !exist {
-		c.JSON(http.StatusBadRequest, nil)
-	}
-	dayNeedToInt, err := strconv.Atoi(dayNeedTo)
-	if err != nil {
+	if allowAnonymous, exist := c.GetPostForm("allowAnonymous"); exist {
+		creator.AllowAnonymous = allowAnonymous == "true"
+	} else {
 		c.JSON(http.StatusBadRequest, nil)
 	}
 
-	creator := model.OpenCommissionCreator{
-		Title:       title,
-		Desc:        desc,
-		DayNeed: model.DayNeed{
-			From: dayNeedFromInt,
-			To:   dayNeedToInt,
-		},
-	}
 	depositRule, exist := c.GetPostForm("depositRule")
 	if exist {
 		creator.DepositRule = &depositRule

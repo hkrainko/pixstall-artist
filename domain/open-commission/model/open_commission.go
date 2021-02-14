@@ -13,6 +13,9 @@ type OpenCommission struct {
 	TimesAllowedDraftToChange      *int               `json:"timesAllowedDraftToChange"`
 	TimesAllowedCompletionToChange *int               `json:"timesAllowedCompletionToChange"`
 	SampleImagePaths               []string           `json:"sampleImagePaths"`
+	IsR18                          bool               `json:"isR18"`
+	AllowBePrivate                 bool               `json:"allowBePrivate"`
+	AllowAnonymous                 bool               `json:"allowAnonymous"`
 	State                          OpenCommissionSate `json:"state"`
 	CreateTime                     time.Time          `json:"createTime"`
 	LastUpdatedTime                time.Time          `json:"lastUpdatedTime"`
