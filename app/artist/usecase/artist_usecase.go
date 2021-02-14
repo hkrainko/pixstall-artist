@@ -36,7 +36,7 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 		User: model.User{
 			UserID:          regInfo.UserID,
 			UserName:        regInfo.DisplayName,
-			ProfilePath:     "",
+			ProfilePath:     regInfo.ProfilePath,
 			Email:           regInfo.Email,
 			Birthday:        regInfo.Birthday,
 			Gender:          regInfo.Gender,
@@ -87,7 +87,7 @@ func (a artistUseCase) GetArtistDetails(ctx context.Context, artistID string, re
 func (a artistUseCase) UpdateArtist(ctx context.Context, updater domainArtistModel.ArtistUpdater) (*string, error) {
 	if updater.ArtistBoard.BannerFile != nil {
 		pathImage := model2.PathImage{
-			Path:  "banners/",
+			Path:  "roofs/",
 			Name:  "ba-" + updater.ArtistID + "-" + uuid.NewString(),
 			Image: *updater.ArtistBoard.BannerFile,
 		}
