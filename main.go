@@ -99,6 +99,11 @@ func main() {
 		openCommGroup.DELETE("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctrl.DeleteOpenCommission)
 	}
 
+	commissionGroup := apiGroup.Group("/commission")
+	{
+		ctrl :=
+	}
+
 	err = r.Run(":9002")
 	print(err)
 }
