@@ -1,14 +1,17 @@
 package http
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"pixstall-artist/domain/commission"
+)
 
 type CommissionController struct {
-
+	commUseCase commission.UseCase
 }
 
-func NewCommissionController() CommissionController {
+func NewCommissionController(commUseCase commission.UseCase) CommissionController {
 	return CommissionController{
-
+		commUseCase: commUseCase,
 	}
 }
 

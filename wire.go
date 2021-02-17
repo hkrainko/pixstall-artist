@@ -16,6 +16,8 @@ import (
 	opencomm_repo "pixstall-artist/app/open-commission/repo/mongo"
 	opencomm_ucase "pixstall-artist/app/open-commission/usecase"
 	commission_deliv_http "pixstall-artist/app/commission/delivery/http"
+	commission_ucase "pixstall-artist/app/commission/usecase"
+	msg_broker_repo_rabbitmq "pixstall-artist/app/msg-broker/repo/rabbitmq"
 )
 
 func InitArtistController(db *mongo.Database, awsS3 *s3.S3) artist_deliv_http.ArtistController {
@@ -49,9 +51,13 @@ func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection, awsS3 *s
 	return artist_deliv_rabbitmq.ArtistMessageBroker{}
 }
 
-func InitCommissionController(conn *amqp.Connection) commission_deliv_http.CommissionController {
+func InitCommissionController(db *mongo.Database, conn *amqp.Connection, awsS3 *s3.S3) commission_deliv_http.CommissionController {
 	wire.Build(
-
+		commission_deliv_http.NewCommissionController,
+		msg_broker_repo_rabbitmq.NewRabbitMQMsgBrokerRepo,
+		commission_ucase.NewCommissionUseCase,
+		opencomm_repo.NewMongoOpenCommissionRepo,
+		image_repo.NewAWSS3ImageRepository,
 	)
 	return commission_deliv_http.CommissionController{}
 }

@@ -99,9 +99,10 @@ func main() {
 		openCommGroup.DELETE("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctrl.DeleteOpenCommission)
 	}
 
-	commissionGroup := apiGroup.Group("/commission")
+	commissionGroup := apiGroup.Group("/commissions")
 	{
-		ctrl :=
+		ctrl := InitCommissionController(db, conn, awsS3)
+		commissionGroup.POST("", ctrl.AddCommission)
 	}
 
 	err = r.Run(":9002")

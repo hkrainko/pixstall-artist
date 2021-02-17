@@ -9,16 +9,16 @@ type CommissionCreator struct {
 	OpenCommissionID string
 	ArtistID         string
 	RequesterID      string
-	Price            model.Price
-	DayNeed          int
-	Size             *model.Size
-	Resolution       *float64
-	ExportFormat     *string
-	Desc             string
-	PaymentMethod    string
-	IsR18            bool
-	BePrivate        bool
-	Anonymous        bool
-	RegImages        []image.Image
-	RegImagePaths    []string
+	Price         model.Price
+	DayNeed       int
+	Size          *model.Size
+	Resolution    *float64
+	ExportFormat  *string
+	Desc          string
+	PaymentMethod string
+	IsR18         bool
+	BePrivate     bool
+	Anonymous     bool
+	RefImages     []image.Image
+	RefImagePaths []string
 }
