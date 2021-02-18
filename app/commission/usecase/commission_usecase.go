@@ -65,6 +65,10 @@ func (c commissionUseCase) AddCommission(ctx context.Context, creator model.Comm
 		}
 	}
 
+	err = c.msgBrokerRepo.SendAddCommissionMsg(ctx, creator)
+	if err != nil {
+		return err
+	}
 
 	return nil
 

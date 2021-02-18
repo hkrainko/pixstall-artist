@@ -2,6 +2,7 @@ package rabbitmq
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/streadway/amqp"
 	"log"
 	"pixstall-artist/domain/commission/model"
@@ -27,5 +28,22 @@ func NewRabbitMQMsgBrokerRepo(conn *amqp.Connection) msg_broker.Repo {
 }
 
 func (r rabbitmqMsgBrokerRepo) SendAddCommissionMsg(ctx context.Context, creator model.CommissionCreator) error {
-	panic("implement me")
+	b, err := json.Marshal(creator)
+	if err != nil {
+		return err
+	}
+	err = r.ch.Publish(
+		"commission",
+		"commission.new",
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: "application/json",
+			Body:        b,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	return nil
 }

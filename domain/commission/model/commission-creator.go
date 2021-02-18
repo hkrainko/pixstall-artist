@@ -6,19 +6,19 @@ import (
 )
 
 type CommissionCreator struct {
-	OpenCommissionID string
-	ArtistID         string
-	RequesterID      string
-	Price         model.Price
-	DayNeed       int
-	Size          *model.Size
-	Resolution    *float64
-	ExportFormat  *string
-	Desc          string
-	PaymentMethod string
-	IsR18         bool
-	BePrivate     bool
-	Anonymous     bool
-	RefImages     []image.Image
-	RefImagePaths []string
+	OpenCommissionID string      `json:"openCommissionId"`
+	ArtistID         string      `json:"artistID"`
+	RequesterID      string      `json:"requesterID"`
+	Price            model.Price `json:"price"`
+	DayNeed          int         `json:"dayNeed"`
+	Size             *model.Size `json:"size"`
+	Resolution       *float64    `json:"resolution"`
+	ExportFormat     *string     `json:"exportFormat"`
+	Desc             string      `json:"desc"`
+	PaymentMethod    string      `json:"paymentMethod"`
+	IsR18            bool        `json:"isR18"`
+	BePrivate        bool        `json:"bePrivate"`
+	Anonymous        bool        `json:"anonymous"`
+	RefImages        []image.Image
+	RefImagePaths    []string `json:"refImagePaths"`
 }
