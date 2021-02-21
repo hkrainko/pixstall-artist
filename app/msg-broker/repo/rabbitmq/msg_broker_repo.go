@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"github.com/streadway/amqp"
 	"log"
-	"pixstall-artist/domain/commission/model"
+	model2 "pixstall-artist/app/msg-broker/repo/rabbitmq/model"
 	msg_broker "pixstall-artist/domain/msg-broker"
 )
 
@@ -27,14 +27,24 @@ func NewRabbitMQMsgBrokerRepo(conn *amqp.Connection) msg_broker.Repo {
 	}
 }
 
-func (r rabbitmqMsgBrokerRepo) SendAddCommissionMsg(ctx context.Context, creator model.CommissionCreator) error {
-	b, err := json.Marshal(creator)
+func (r rabbitmqMsgBrokerRepo) SendValidatedCommissionMsg(ctx context.Context, err error) error {
+	vComm := model2.ValidatedCommission{
+		IsValid: err == nil,
+		Reason: func(err error) *string {
+			if err != nil {
+				errStr := err.Error()
+				return &errStr
+			}
+			return nil
+		}(err),
+	}
+	b, err := json.Marshal(vComm)
 	if err != nil {
 		return err
 	}
 	err = r.ch.Publish(
 		"commission",
-		"commission.new",
+		"commission.validated",
 		false,
 		false,
 		amqp.Publishing{
