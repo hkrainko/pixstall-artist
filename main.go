@@ -60,6 +60,10 @@ func main() {
 	go artistMsgBroker.StartArtistQueue()
 	defer artistMsgBroker.StopArtistQueue()
 
+	commMsgBroker := InitCommissionMessageBroker(db, conn)
+	go commMsgBroker.StartValidateQueue()
+	defer commMsgBroker.StopAllQueue()
+
 	//Gin
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{

@@ -4,7 +4,6 @@ import (
 	"context"
 	"pixstall-artist/domain/commission"
 	"pixstall-artist/domain/commission/model"
-	domainImage "pixstall-artist/domain/image"
 	msgBroker "pixstall-artist/domain/msg-broker"
 	openComm "pixstall-artist/domain/open-commission"
 	model2 "pixstall-artist/domain/open-commission/model"
@@ -13,14 +12,12 @@ import (
 type commissionUseCase struct {
 	msgBrokerRepo msgBroker.Repo
 	openCommRepo openComm.Repo
-	imageRepo domainImage.Repo
 }
 
-func NewCommissionUseCase(msgBrokerRepo msgBroker.Repo, openCommRepo openComm.Repo, imageRepo domainImage.Repo) commission.UseCase {
+func NewCommissionUseCase(msgBrokerRepo msgBroker.Repo, openCommRepo openComm.Repo) commission.UseCase {
 	return &commissionUseCase{
 		msgBrokerRepo: msgBrokerRepo,
 		openCommRepo: openCommRepo,
-		imageRepo: imageRepo,
 	}
 }
 

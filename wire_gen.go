@@ -13,7 +13,10 @@ import (
 	"pixstall-artist/app/artist/delivery/rabbitmq"
 	mongo2 "pixstall-artist/app/artist/repo/mongo"
 	"pixstall-artist/app/artist/usecase"
+	rabbitmq2 "pixstall-artist/app/commission/delivery/rabbitmq"
+	usecase3 "pixstall-artist/app/commission/usecase"
 	"pixstall-artist/app/image/aws-s3"
+	rabbitmq3 "pixstall-artist/app/msg-broker/repo/rabbitmq"
 	http2 "pixstall-artist/app/open-commission/delivery/http"
 	mongo3 "pixstall-artist/app/open-commission/repo/mongo"
 	usecase2 "pixstall-artist/app/open-commission/usecase"
@@ -44,4 +47,12 @@ func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection, awsS3 *s
 	useCase := usecase.NewArtistUseCase(repo, open_commissionRepo, imageRepo)
 	artistMessageBroker := rabbitmq.NewRabbitMQArtistMessageBroker(useCase, conn)
 	return artistMessageBroker
+}
+
+func InitCommissionMessageBroker(db *mongo.Database, conn *amqp.Connection) rabbitmq2.CommissionMessageBroker {
+	repo := rabbitmq3.NewRabbitMQMsgBrokerRepo(conn)
+	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
+	useCase := usecase3.NewCommissionUseCase(repo, open_commissionRepo)
+	commissionMessageBroker := rabbitmq2.NewRabbitMQCommissionMessageBroker(useCase, conn)
+	return commissionMessageBroker
 }

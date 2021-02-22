@@ -31,7 +31,7 @@ func NewRabbitMQCommissionMessageBroker(commUseCase commission.UseCase, conn *am
 	}
 }
 
-func (c CommissionMessageBroker) StartQueue() {
+func (c CommissionMessageBroker) StartValidateQueue() {
 	//TODO
 	q, err := c.ch.QueueDeclare(
 		"commission-validate", // name
@@ -110,7 +110,7 @@ func (c CommissionMessageBroker) StartQueue() {
 	<-forever
 }
 
-func (c CommissionMessageBroker) StopQueue() {
+func (c CommissionMessageBroker) StopAllQueue() {
 	err := c.ch.Close()
 	if err != nil {
 		log.Printf("StopCommissionQueue err %v", err)
