@@ -44,7 +44,7 @@ func (r rabbitmqMsgBrokerRepo) SendValidatedCommissionMsg(ctx context.Context, e
 	}
 	err = r.ch.Publish(
 		"commission",
-		"commission.validated",
+		"commission.event.validated",
 		false,
 		false,
 		amqp.Publishing{
