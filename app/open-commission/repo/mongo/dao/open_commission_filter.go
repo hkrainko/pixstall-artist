@@ -12,8 +12,8 @@ func NewFilterFromDomainOpenCommissionFilter(d model.OpenCommissionFilter) bson.
 	if d.ArtistID != nil {
 		filter = append(filter, bson.E{Key: "artistId", Value: d.ArtistID})
 	}
-	if d.PriceForm != nil {
-		filter = append(filter, bson.E{Key: "price", Value: bson.M{"$gte": d.PriceForm}})
+	if d.PriceFrom != nil {
+		filter = append(filter, bson.E{Key: "price", Value: bson.M{"$gte": d.PriceFrom}})
 	}
 	if d.PriceTo != nil {
 		filter = append(filter, bson.E{Key: "price", Value: bson.M{"lte": d.PriceTo}})

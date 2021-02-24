@@ -5,7 +5,7 @@ type OpenCommissionFilter struct {
 	Count                 *int64
 	Offset                *int64
 	Key                   *string
-	PriceForm             *float64
+	PriceFrom             *float64
 	PriceTo               *float64
 	DayNeedGreaterOrEqual *int
 	DayNeedLessOrEqual    *int
