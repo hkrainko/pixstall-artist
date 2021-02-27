@@ -6,5 +6,5 @@ import (
 )
 
 type UseCase interface {
-	ValidateNewCommission(ctx context.Context, creator model.CommissionCreator) error
+	ValidateNewCommission(ctx context.Context, creator model.Commission) error
 }

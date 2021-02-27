@@ -5,7 +5,8 @@ import (
 	"encoding/json"
 	"github.com/streadway/amqp"
 	"log"
-	model2 "pixstall-artist/app/msg-broker/repo/rabbitmq/model"
+	model2 "pixstall-artist/app/msg-broker/repo/rabbitmq/msg"
+	"pixstall-artist/domain/commission/model"
 	msg_broker "pixstall-artist/domain/msg-broker"
 )
 
@@ -27,10 +28,9 @@ func NewRabbitMQMsgBrokerRepo(conn *amqp.Connection) msg_broker.Repo {
 	}
 }
 
-func (r rabbitmqMsgBrokerRepo) SendValidatedCommissionMsg(ctx context.Context, err error) error {
-	vComm := model2.ValidatedCommission{
-		IsValid: err == nil,
-		Reason: getRejectReason(err),
+func (r rabbitmqMsgBrokerRepo) SendCommOpenCommValidationMsg(ctx context.Context, validation model.CommissionOpenCommissionValidation) error {
+	vComm := model2.CommissionOpenCommissionValidation{
+		CommissionOpenCommissionValidation: validation,
 	}
 	b, err := json.Marshal(vComm)
 	if err != nil {
@@ -38,7 +38,7 @@ func (r rabbitmqMsgBrokerRepo) SendValidatedCommissionMsg(ctx context.Context, e
 	}
 	err = r.ch.Publish(
 		"commission",
-		"commission.event.validated",
+		"commission.event.validation",
 		false,
 		false,
 		amqp.Publishing{
@@ -48,15 +48,6 @@ func (r rabbitmqMsgBrokerRepo) SendValidatedCommissionMsg(ctx context.Context, e
 	)
 	if err != nil {
 		return err
-	}
-	return nil
-}
-
-// Private
-func getRejectReason(err error) *string {
-	if err != nil {
-		errStr := err.Error()
-		return &errStr
 	}
 	return nil
 }

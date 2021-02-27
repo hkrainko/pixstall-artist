@@ -51,16 +51,33 @@ func main() {
 	db := dbClient.Database("pixstall-artist")
 
 	//RabbitMQ
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	rabbitmqConn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	if err != nil {
 		log.Fatalf("Failed to connect to RabbitMQ %v", err)
 	}
-	defer conn.Close()
-	artistMsgBroker := InitArtistMessageBroker(db, conn, awsS3)
+	defer rabbitmqConn.Close()
+	ch, err := rabbitmqConn.Channel()
+	if err != nil {
+		log.Fatalf("Failed to create channel %v", err)
+	}
+	err = ch.ExchangeDeclare(
+		"artist",
+		"topic",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Fatalf("Failed to create exchange %v", err)
+	}
+
+	artistMsgBroker := InitArtistMessageBroker(db, rabbitmqConn, awsS3)
 	go artistMsgBroker.StartArtistQueue()
 	defer artistMsgBroker.StopArtistQueue()
 
-	commMsgBroker := InitCommissionMessageBroker(db, conn)
+	commMsgBroker := InitCommissionMessageBroker(db, rabbitmqConn)
 	go commMsgBroker.StartValidateQueue()
 	defer commMsgBroker.StopAllQueue()
 

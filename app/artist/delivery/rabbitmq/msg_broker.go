@@ -35,7 +35,7 @@ func NewRabbitMQArtistMessageBroker(useCase artist.UseCase, conn *amqp.Connectio
 func (a ArtistMessageBroker) StartArtistQueue() {
 	//TODO
 	q, err := a.ch.QueueDeclare(
-		"pixstall-artist_user_artist", // name
+		"artist-cmd", // name
 		true,                          // durable
 		false,                         // delete when unused
 		false,                         // exclusive
@@ -95,13 +95,13 @@ func (a ArtistMessageBroker) StartArtistQueue() {
 			}()
 
 			switch d.RoutingKey {
-			case "user.new.isArtist":
+			case "artist.cmd.create":
 				err := a.registerNewArtist(ctx, d.Body)
 				if err != nil {
 					//TODO: error handling, store it ?
 				}
 				cancel()
-			case "user.update.isArtist":
+			case "artist.cmd.update":
 				err := a.UpdateArtistUser(ctx, d.Body)
 				if err != nil {
 					//TODO: error handling, store it ?

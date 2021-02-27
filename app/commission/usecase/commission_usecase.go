@@ -21,41 +21,51 @@ func NewCommissionUseCase(msgBrokerRepo msgBroker.Repo, openCommRepo openComm.Re
 	}
 }
 
-func (c commissionUseCase) ValidateNewCommission(ctx context.Context, creator model.CommissionCreator) (error) {
+func (c commissionUseCase) ValidateNewCommission(ctx context.Context, comm model.Commission) error {
 
 	// Checking
-	tOpenComm, err := c.openCommRepo.GetOpenCommission(ctx, creator.OpenCommissionID)
+	tOpenComm, err := c.openCommRepo.GetOpenCommission(ctx, comm.OpenCommissionID)
+	if err == nil && tOpenComm.State != model2.OpenCommissionStateActive {
+		err = model.CommissionErrorStateNotAllowed
+	}
+	if err == nil && getHKPrice(comm.Price).Amount < getHKPrice(tOpenComm.Price).Amount {
+		err = model.CommissionErrorPriceInvalid
+	}
+	if err == nil && comm.DayNeed < tOpenComm.DayNeed.From {
+		err = model.CommissionErrorDayNeedInvalid
+	}
+	if err == nil && comm.BePrivate && !tOpenComm.AllowBePrivate {
+		err = model.CommissionErrorNotAllowBePrivate
+	}
+	if err == nil && comm.Anonymous && !tOpenComm.AllowAnonymous {
+		err = model.CommissionErrorNotAllowAnonymous
+	}
+	err = c.msgBrokerRepo.SendCommOpenCommValidationMsg(ctx, getCommissionOpenCommissionValidation(comm.ID, err))
 	if err != nil {
 		return err
 	}
-	if tOpenComm.State != model2.OpenCommissionStateActive {
-		return model.CommissionErrorStateNotAllowed
-	}
-	if getHKPrice(creator.Price).Amount < getHKPrice(tOpenComm.Price).Amount {
-		return model.CommissionErrorPriceInvalid
-	}
-	if creator.DayNeed < tOpenComm.DayNeed.From {
-		return model.CommissionErrorDayNeedInvalid
-	}
-	if creator.BePrivate && !tOpenComm.AllowBePrivate {
-		return model.CommissionErrorNotAllowBePrivate
-	}
-	if creator.Anonymous && !tOpenComm.AllowAnonymous {
-		return model.CommissionErrorNotAllowAnonymous
-	}
-
-	err = c.msgBrokerRepo.SendValidatedCommissionMsg(ctx, nil)
-	if err != nil {
-		return err
-	}
-
 	return nil
-
 }
 
 func getHKPrice(price model2.Price) model2.Price {
 	return model2.Price{
 		Amount: price.Amount,
 		Currency: model2.CurrencyHKD,
+	}
+}
+
+func getCommissionOpenCommissionValidation(commID string, err error) model.CommissionOpenCommissionValidation {
+	if err != nil {
+		reason := err.Error()
+		return model.CommissionOpenCommissionValidation{
+			ID:            commID,
+			IsValid:       false,
+			InvalidReason: &reason,
+		}
+	} else {
+		return model.CommissionOpenCommissionValidation{
+			ID:            commID,
+			IsValid:       true,
+		}
 	}
 }

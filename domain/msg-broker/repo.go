@@ -2,9 +2,10 @@ package msg_broker
 
 import (
 	"context"
+	"pixstall-artist/domain/commission/model"
 )
 
 type Repo interface {
-	SendValidatedCommissionMsg(ctx context.Context, err error) error
+	SendCommOpenCommValidationMsg(ctx context.Context, validation model.CommissionOpenCommissionValidation) error
 }
 

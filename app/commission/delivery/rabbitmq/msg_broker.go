@@ -34,12 +34,12 @@ func NewRabbitMQCommissionMessageBroker(commUseCase commission.UseCase, conn *am
 func (c CommissionMessageBroker) StartValidateQueue() {
 	//TODO
 	q, err := c.ch.QueueDeclare(
-		"commission-validate", // name
-		true,                  // durable
-		false,                 // delete when unused
-		false,                 // exclusive
-		false,                 // no-wait
-		nil,                   // arguments
+		"commission-open-comm-validate", // name
+		true,                            // durable
+		false,                           // delete when unused
+		false,                           // exclusive
+		false,                           // no-wait
+		nil,                             // arguments
 	)
 	if err != nil {
 		log.Fatalf("Failed to declare a queue %v", err)
@@ -119,10 +119,10 @@ func (c CommissionMessageBroker) StopAllQueue() {
 }
 
 func (c CommissionMessageBroker) newCommissionCreated(ctx context.Context, body []byte) error {
-	creator := model.CommissionCreator{}
-	err := json.Unmarshal(body, &creator)
+	comm := model.Commission{}
+	err := json.Unmarshal(body, &comm)
 	if err != nil {
 		return err
 	}
-	return c.commUseCase.ValidateNewCommission(ctx, creator)
+	return c.commUseCase.ValidateNewCommission(ctx, comm)
 }
