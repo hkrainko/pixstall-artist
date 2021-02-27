@@ -21,7 +21,7 @@ func NewCommissionUseCase(msgBrokerRepo msgBroker.Repo, openCommRepo openComm.Re
 	}
 }
 
-func (c commissionUseCase) ValidateCommission(ctx context.Context, creator model.CommissionCreator) (error) {
+func (c commissionUseCase) ValidateNewCommission(ctx context.Context, creator model.CommissionCreator) (error) {
 
 	// Checking
 	tOpenComm, err := c.openCommRepo.GetOpenCommission(ctx, creator.OpenCommissionID)

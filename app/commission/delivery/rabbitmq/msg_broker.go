@@ -124,5 +124,5 @@ func (c CommissionMessageBroker) newCommissionCreated(ctx context.Context, body 
 	if err != nil {
 		return err
 	}
-	return c.commUseCase.ValidateCommission(ctx, creator)
+	return c.commUseCase.ValidateNewCommission(ctx, creator)
 }

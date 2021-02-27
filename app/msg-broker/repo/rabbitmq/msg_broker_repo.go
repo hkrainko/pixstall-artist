@@ -30,13 +30,7 @@ func NewRabbitMQMsgBrokerRepo(conn *amqp.Connection) msg_broker.Repo {
 func (r rabbitmqMsgBrokerRepo) SendValidatedCommissionMsg(ctx context.Context, err error) error {
 	vComm := model2.ValidatedCommission{
 		IsValid: err == nil,
-		Reason: func(err error) *string {
-			if err != nil {
-				errStr := err.Error()
-				return &errStr
-			}
-			return nil
-		}(err),
+		Reason: getRejectReason(err),
 	}
 	b, err := json.Marshal(vComm)
 	if err != nil {
@@ -54,6 +48,15 @@ func (r rabbitmqMsgBrokerRepo) SendValidatedCommissionMsg(ctx context.Context, e
 	)
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+// Private
+func getRejectReason(err error) *string {
+	if err != nil {
+		errStr := err.Error()
+		return &errStr
 	}
 	return nil
 }

@@ -7,49 +7,36 @@ import (
 )
 
 type OpenCommission struct {
-	ObjectID                       primitive.ObjectID       `bson:"_id,omitempty"`
-	OpenCommID                     string                   `bson:"openCommId"`
-	ArtistID                       string                   `bson:"artistId"`
-	Title                          string                   `bson:"title"`
-	Desc                           string                   `bson:"desc"`
-	DepositRule                    *string                  `bson:"depositRule"`
-	Price                          model.Price              `bson:"price,omitempty"`
-	DayNeed                        model.DayNeed            `bson:"dayNeed"`
-	TimesAllowedDraftToChange      *int                     `bson:"timesAllowedDraftToChange,omitempty"`
-	TimesAllowedCompletionToChange *int                     `bson:"timesAllowedCompletionToChange,omitempty"`
-	SampleImagePaths               []string                 `bson:"sampleImagePaths"`
-	IsR18                          bool                     `bson:"isR18"`
-	AllowBePrivate                 bool                     `bson:"allowBePrivate"`
-	AllowAnonymous                 bool                     `bson:"allowAnonymous"`
-	State                          model.OpenCommissionSate `bson:"state"`
-	CreateTime                     time.Time                `bson:"createTime"`
-	LastUpdatedTime                time.Time                `bson:"lastUpdatedTime"`
+	ObjectID             primitive.ObjectID `bson:"_id,omitempty"`
+	model.OpenCommission `bson:",inline"`
 }
 
 func NewFromDomainOpenCommissionCreator(artistID string, d model.OpenCommissionCreator, openCommID string) OpenCommission {
 	return OpenCommission{
-		OpenCommID:                     openCommID,
-		ArtistID:                       artistID,
-		Title:                          d.Title,
-		Desc:                           d.Desc,
-		DepositRule:                    d.DepositRule,
-		Price:                          d.Price,
-		DayNeed:                        d.DayNeed,
-		TimesAllowedDraftToChange:      d.TimesAllowedDraftToChange,
-		TimesAllowedCompletionToChange: d.TimesAllowedCompletionToChange,
-		SampleImagePaths:               d.SampleImagePaths,
-		IsR18:                          d.IsR18,
-		AllowBePrivate:                 d.AllowBePrivate,
-		AllowAnonymous:                 d.AllowAnonymous,
-		State:           model.OpenCommissionStateActive,
-		CreateTime:      time.Now(),
-		LastUpdatedTime: time.Now(),
+		OpenCommission: model.OpenCommission{
+			ID:                     openCommID,
+			ArtistID:                       artistID,
+			Title:                          d.Title,
+			Desc:                           d.Desc,
+			DepositRule:                    d.DepositRule,
+			Price:                          d.Price,
+			DayNeed:                        d.DayNeed,
+			TimesAllowedDraftToChange:      d.TimesAllowedDraftToChange,
+			TimesAllowedCompletionToChange: d.TimesAllowedCompletionToChange,
+			SampleImagePaths:               d.SampleImagePaths,
+			IsR18:                          d.IsR18,
+			AllowBePrivate:                 d.AllowBePrivate,
+			AllowAnonymous:                 d.AllowAnonymous,
+			State:                          model.OpenCommissionStateActive,
+			CreateTime:                     time.Now(),
+			LastUpdatedTime:                time.Now(),
+		},
 	}
 }
 
 func (o *OpenCommission) ToDomainOpenCommission() *model.OpenCommission {
 	return &model.OpenCommission{
-		ID:                             o.OpenCommID,
+		ID:                             o.ID,
 		ArtistID:                       o.ArtistID,
 		Title:                          o.Title,
 		Desc:                           o.Desc,
