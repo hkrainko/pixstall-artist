@@ -38,7 +38,7 @@ func (r rabbitmqMsgBrokerRepo) SendCommOpenCommValidationMsg(ctx context.Context
 	}
 	err = r.ch.Publish(
 		"commission",
-		"commission.event.validation",
+		"commission.event.validation.open-comm",
 		false,
 		false,
 		amqp.Publishing{

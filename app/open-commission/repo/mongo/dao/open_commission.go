@@ -14,7 +14,7 @@ type OpenCommission struct {
 func NewFromDomainOpenCommissionCreator(artistID string, d model.OpenCommissionCreator, openCommID string) OpenCommission {
 	return OpenCommission{
 		OpenCommission: model.OpenCommission{
-			ID:                     openCommID,
+			ID:                             openCommID,
 			ArtistID:                       artistID,
 			Title:                          d.Title,
 			Desc:                           d.Desc,

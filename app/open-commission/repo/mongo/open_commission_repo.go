@@ -49,9 +49,9 @@ func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID
 }
 
 func (m mongoOpenCommissionRepo) GetOpenCommission(ctx context.Context, openCommID string) (*domainOpenCommissionModel.OpenCommission, error) {
-	filter := bson.M{"openCommId": openCommID}
+	filter := bson.M{"openCommissions.id": openCommID}
 	daoOpenComm := dao.OpenCommission{}
-	err := m.collection.FindOne(ctx, filter, nil).Decode(&daoOpenComm)
+	err := m.collection.FindOne(ctx, filter).Decode(&daoOpenComm)
 	if err != nil {
 		switch err {
 		case mongo.ErrNoDocuments:
