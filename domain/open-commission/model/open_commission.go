@@ -3,22 +3,22 @@ package model
 import "time"
 
 type OpenCommission struct {
-	ID                             string             `json:"id"`
-	ArtistID                       string             `json:"artistId"`
-	Title                          string             `json:"title"`
-	Desc                           string             `json:"desc"`
-	DepositRule                    *string            `json:"depositRule"`
-	Price                          Price              `json:"price"`
-	DayNeed                        DayNeed            `json:"dayNeed"`
-	TimesAllowedDraftToChange      *int               `json:"timesAllowedDraftToChange"`
-	TimesAllowedCompletionToChange *int               `json:"timesAllowedCompletionToChange"`
-	SampleImagePaths               []string           `json:"sampleImagePaths"`
-	IsR18                          bool               `json:"isR18"`
-	AllowBePrivate                 bool               `json:"allowBePrivate"`
-	AllowAnonymous                 bool               `json:"allowAnonymous"`
-	State                          OpenCommissionSate `json:"state"`
-	CreateTime                     time.Time          `json:"createTime"`
-	LastUpdatedTime                time.Time          `json:"lastUpdatedTime"`
+	ID                             string             `json:"id" bson:"id"`
+	ArtistID                       string             `json:"artistId" bson:"artistId"`
+	Title                          string             `json:"title" bson:"title"`
+	Desc                           string             `json:"desc" bson:"desc"`
+	DepositRule                    *string            `json:"depositRule" bson:"depositRule"`
+	Price                          Price              `json:"price" bson:"price"`
+	DayNeed                        DayNeed            `json:"dayNeed" bson:"dayNeed"`
+	TimesAllowedDraftToChange      *int               `json:"timesAllowedDraftToChange" bson:"timesAllowedDraftToChange"`
+	TimesAllowedCompletionToChange *int               `json:"timesAllowedCompletionToChange" bson:"timesAllowedCompletionToChange"`
+	SampleImagePaths               []string           `json:"sampleImagePaths" bson:"sampleImagePaths"`
+	IsR18                          bool               `json:"isR18" bson:"isR18"`
+	AllowBePrivate                 bool               `json:"allowBePrivate" bson:"allowBePrivate"`
+	AllowAnonymous                 bool               `json:"allowAnonymous" bson:"allowAnonymous"`
+	State                          OpenCommissionSate `json:"state" bson:"state"`
+	CreateTime                     time.Time          `json:"createTime" bson:"createTime"`
+	LastUpdatedTime                time.Time          `json:"lastUpdatedTime" bson:"lastUpdatedTime"`
 }
 
 type Price struct {

@@ -49,9 +49,23 @@ func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID
 }
 
 func (m mongoOpenCommissionRepo) GetOpenCommission(ctx context.Context, openCommID string) (*domainOpenCommissionModel.OpenCommission, error) {
-	filter := bson.M{"openCommissions.id": openCommID}
-	daoOpenComm := dao.OpenCommission{}
-	err := m.collection.FindOne(ctx, filter).Decode(&daoOpenComm)
+	//pipeline := bson.D{
+	//	{Key: "$match", Value: bson.M{"openCommissions.id": openCommID}},
+	//	//{Key: "$project", Value: bson.M{"openCommissions": 1}},
+	//	{Key: "$unwind", Value: "openCommissions"},
+	//	{Key: "$match", Value: bson.M{"openCommissions.id": openCommID}},
+	//	//{Key: "$replaceRoot", Value: bson.M{"newRoot": "$openCommissions"}},
+	//}
+
+	pipeline := []bson.M{
+		{"$match": bson.M{"openCommissions.id": openCommID}},
+		{"$project": bson.M{"openCommissions": 1}},
+		{"$unwind": "$openCommissions"},
+		{"$match": bson.M{"openCommissions.id": openCommID}},
+		{"$replaceRoot": bson.M{"newRoot": "$openCommissions"}},
+	}
+
+	cursor, err := m.collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		switch err {
 		case mongo.ErrNoDocuments:
@@ -60,7 +74,16 @@ func (m mongoOpenCommissionRepo) GetOpenCommission(ctx context.Context, openComm
 			return nil, domainOpenCommissionModel.OpenCommissionErrorUnknown
 		}
 	}
-	return daoOpenComm.ToDomainOpenCommission(), nil
+	defer cursor.Close(ctx)
+	var daoOpenComm dao.OpenCommission
+	for cursor.Next(ctx) {
+		if err := cursor.Decode(&daoOpenComm); err != nil {
+			return nil, err
+		} else {
+			return daoOpenComm.ToDomainOpenCommission(), nil
+		}
+	}
+	return nil, domainOpenCommissionModel.OpenCommissionErrorNotFound
 }
 
 func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter domainOpenCommissionModel.OpenCommissionFilter) ([]domainOpenCommissionModel.OpenCommission, error) {
@@ -93,8 +116,8 @@ func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter 
 }
 
 func (m mongoOpenCommissionRepo) UpdateOpenCommission(ctx context.Context, openCommUpdater domainOpenCommissionModel.OpenCommissionUpdater) error {
-	filter := bson.M {
-		"artistId": openCommUpdater.ArtistID,
+	filter := bson.M{
+		"artistId":                   openCommUpdater.ArtistID,
 		"openCommissions.openCommId": openCommUpdater.ID,
 	}
 	updater := dao.NewUpdaterFromOpenCommissionUpdater(openCommUpdater)
