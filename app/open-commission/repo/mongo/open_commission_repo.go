@@ -49,14 +49,6 @@ func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID
 }
 
 func (m mongoOpenCommissionRepo) GetOpenCommission(ctx context.Context, openCommID string) (*domainOpenCommissionModel.OpenCommission, error) {
-	//pipeline := bson.D{
-	//	{Key: "$match", Value: bson.M{"openCommissions.id": openCommID}},
-	//	//{Key: "$project", Value: bson.M{"openCommissions": 1}},
-	//	{Key: "$unwind", Value: "openCommissions"},
-	//	{Key: "$match", Value: bson.M{"openCommissions.id": openCommID}},
-	//	//{Key: "$replaceRoot", Value: bson.M{"newRoot": "$openCommissions"}},
-	//}
-
 	pipeline := []bson.M{
 		{"$match": bson.M{"openCommissions.id": openCommID}},
 		{"$project": bson.M{"openCommissions": 1}},
@@ -64,7 +56,6 @@ func (m mongoOpenCommissionRepo) GetOpenCommission(ctx context.Context, openComm
 		{"$match": bson.M{"openCommissions.id": openCommID}},
 		{"$replaceRoot": bson.M{"newRoot": "$openCommissions"}},
 	}
-
 	cursor, err := m.collection.Aggregate(ctx, pipeline)
 	if err != nil {
 		switch err {
