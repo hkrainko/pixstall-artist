@@ -25,7 +25,15 @@ func (c commissionUseCase) ValidateNewCommission(ctx context.Context, comm model
 
 	// Checking
 	tOpenComm, err := c.openCommRepo.GetOpenCommission(ctx, comm.OpenCommissionID)
-	if err == nil && tOpenComm.State != model2.OpenCommissionStateActive {
+	if err != nil {
+		switch err {
+		case model2.OpenCommissionErrorNotFound:
+			return c.msgBrokerRepo.SendCommOpenCommValidationMsg(ctx, getCommissionOpenCommissionValidation(comm.ID, err))
+		default:
+			return model.CommissionErrorUnknown
+		}
+	}
+	if tOpenComm.State != model2.OpenCommissionStateActive {
 		err = model.CommissionErrorStateNotAllowed
 	}
 	if err == nil && getHKPrice(comm.Price).Amount < getHKPrice(tOpenComm.Price).Amount {
