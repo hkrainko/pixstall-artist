@@ -28,8 +28,9 @@ func (c commissionUseCase) ValidateNewCommission(ctx context.Context, comm model
 	if err != nil {
 		switch err {
 		case model2.OpenCommissionErrorNotFound:
-			return c.msgBrokerRepo.SendCommOpenCommValidationMsg(ctx, getCommissionOpenCommissionValidation(comm.ID, err))
+			return c.msgBrokerRepo.SendCommOpenCommValidationMsg(ctx, getCommissionOpenCommissionValidation(comm.ID, tOpenComm, err))
 		default:
+			// return to broker and do it later?
 			return model.CommissionErrorUnknown
 		}
 	}
@@ -48,7 +49,7 @@ func (c commissionUseCase) ValidateNewCommission(ctx context.Context, comm model
 	if err == nil && comm.Anonymous && !tOpenComm.AllowAnonymous {
 		err = model.CommissionErrorNotAllowAnonymous
 	}
-	err = c.msgBrokerRepo.SendCommOpenCommValidationMsg(ctx, getCommissionOpenCommissionValidation(comm.ID, err))
+	err = c.msgBrokerRepo.SendCommOpenCommValidationMsg(ctx, getCommissionOpenCommissionValidation(comm.ID, tOpenComm, err))
 	if err != nil {
 		return err
 	}
@@ -62,7 +63,7 @@ func getHKPrice(price model2.Price) model2.Price {
 	}
 }
 
-func getCommissionOpenCommissionValidation(commID string, err error) model.CommissionOpenCommissionValidation {
+func getCommissionOpenCommissionValidation(commID string, openComm *model2.OpenCommission, err error) model.CommissionOpenCommissionValidation {
 	if err != nil {
 		reason := err.Error()
 		return model.CommissionOpenCommissionValidation{
@@ -72,8 +73,10 @@ func getCommissionOpenCommissionValidation(commID string, err error) model.Commi
 		}
 	} else {
 		return model.CommissionOpenCommissionValidation{
-			ID:            commID,
-			IsValid:       true,
+			ID:                             commID,
+			IsValid:                        true,
+			TimesAllowedDraftToChange:      openComm.TimesAllowedDraftToChange,
+			TimesAllowedCompletionToChange: openComm.TimesAllowedCompletionToChange,
 		}
 	}
 }
