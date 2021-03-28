@@ -85,6 +85,10 @@ func (a ArtistController) UpdateArtist(c *gin.Context) {
 	}
 	imageFiles, err := getMultipartFormImages(c, "artistBoard.bannerImage")
 	if err == nil {
+		if updater.ArtistBoard == nil {
+			artistBoard := domain.ArtistBoardUpdater{}
+			updater.ArtistBoard = &artistBoard
+		}
 		imgFiles := *imageFiles
 		updater.ArtistBoard.BannerFile = &imgFiles[0]
 	}

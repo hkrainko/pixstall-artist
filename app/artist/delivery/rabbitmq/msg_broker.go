@@ -47,8 +47,8 @@ func (a ArtistMessageBroker) StartArtistQueue() {
 	}
 	err = a.ch.QueueBind(
 		q.Name,
-		"user.#",
-		"user",
+		"artist.cmd.#",
+		"artist",
 		false,
 		nil,
 	)
