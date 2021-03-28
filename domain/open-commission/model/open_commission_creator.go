@@ -1,6 +1,8 @@
 package model
 
-import "image"
+import (
+	"pixstall-artist/domain/file/model"
+)
 
 type OpenCommissionCreator struct {
 	Title                          string
@@ -13,6 +15,6 @@ type OpenCommissionCreator struct {
 	IsR18                          bool
 	AllowBePrivate                 bool
 	AllowAnonymous                 bool
-	SampleImages                   []image.Image
+	SampleImages                   []model.ImageFile
 	SampleImagePaths               []string
 }

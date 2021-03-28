@@ -2,12 +2,12 @@ package usecase
 
 import (
 	"context"
-	"github.com/google/uuid"
 	"pixstall-artist/domain/artist"
 	domainArtistModel "pixstall-artist/domain/artist/model"
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
-	domainImage "pixstall-artist/domain/image"
-	model2 "pixstall-artist/domain/image/model"
+	error2 "pixstall-artist/domain/error"
+	domainFile "pixstall-artist/domain/file"
+	model2 "pixstall-artist/domain/file/model"
 	openCommission "pixstall-artist/domain/open-commission"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	domainRegModel "pixstall-artist/domain/reg/model"
@@ -18,10 +18,10 @@ import (
 type artistUseCase struct {
 	artistRepo   artist.Repo
 	openCommRepo openCommission.Repo
-	imageRepo    domainImage.Repo
+	imageRepo    domainFile.Repo
 }
 
-func NewArtistUseCase(artistRepo artist.Repo, openCommRepo openCommission.Repo, imageRepo domainImage.Repo) artist.UseCase {
+func NewArtistUseCase(artistRepo artist.Repo, openCommRepo openCommission.Repo, imageRepo domainFile.Repo) artist.UseCase {
 	return &artistUseCase{
 		artistRepo:   artistRepo,
 		openCommRepo: openCommRepo,
@@ -86,12 +86,7 @@ func (a artistUseCase) GetArtistDetails(ctx context.Context, artistID string, re
 
 func (a artistUseCase) UpdateArtist(ctx context.Context, updater domainArtistModel.ArtistUpdater) (*string, error) {
 	if updater.ArtistBoard.BannerFile != nil {
-		pathImage := model2.PathImage{
-			Path:  "roofs/",
-			Name:  "ba-" + updater.ArtistID + "-" + uuid.NewString(),
-			Image: *updater.ArtistBoard.BannerFile,
-		}
-		path, err := a.imageRepo.SaveImage(ctx, pathImage)
+		path, err := a.imageRepo.SaveFile(ctx, updater.ArtistBoard.BannerFile.File, model2.FileTypeRoof, updater.ArtistID, []string{"*"})
 		if err != nil {
 			return nil, err
 		}
@@ -131,21 +126,21 @@ func (a artistUseCase) GetOpenCommissionsForArtist(ctx context.Context, artistID
 }
 
 func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*string, error) {
-
-	if len(openCommCreator.SampleImages) > 0 {
-		pathImages := make([]model2.PathImage, 0, len(openCommCreator.SampleImages))
-		for _, sampleImage := range openCommCreator.SampleImages {
-			pathImages = append(pathImages, model2.PathImage{
-				Path:  "open-commissions/",
-				Name:  "oc-" + requesterID + "-" + uuid.NewString(),
-				Image: sampleImage,
-			})
-		}
-		paths, err := a.imageRepo.SaveImages(ctx, pathImages)
-		if err == nil {
-			openCommCreator.SampleImagePaths = paths
-		}
+	if len(openCommCreator.SampleImages) <= 0 {
+		return nil, error2.BadRequestError
 	}
+	var paths []string
+	for _, sampleImage := range openCommCreator.SampleImages {
+		path, err := a.imageRepo.SaveFile(ctx, sampleImage.File, model2.FileTypeOpenCommission, requesterID, []string{"*"})
+		if err != nil {
+			return nil, err
+		}
+		paths = append(paths, *path)
+	}
+	if len(paths) <= 0 {
+		return nil, error2.UnknownError
+	}
+	openCommCreator.SampleImagePaths = paths
 
 	addedOpenComm, err := a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommCreator)
 	return addedOpenComm, err

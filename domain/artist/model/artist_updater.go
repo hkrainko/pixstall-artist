@@ -1,6 +1,8 @@
 package model
 
-import "image"
+import (
+	"pixstall-artist/domain/file/model"
+)
 
 type ArtistUpdater struct {
 	ArtistID       string
@@ -15,7 +17,7 @@ type ArtistIntroUpdater struct {
 }
 
 type ArtistBoardUpdater struct {
-	BannerFile *image.Image
+	BannerFile *model.ImageFile
 	BannerPath *string
 	Desc       *string
 }

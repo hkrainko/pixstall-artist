@@ -1,15 +1,18 @@
 package http
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"image"
 	_ "image/jpeg"
 	_ "image/png"
+	"mime/multipart"
 	"net/http"
 	add_open_commission_for_artist "pixstall-artist/app/artist/delivery/model/add-open-commission-for-artist"
 	"pixstall-artist/app/artist/delivery/model/get-artist"
 	domainArtist "pixstall-artist/domain/artist"
 	domain "pixstall-artist/domain/artist/model"
+	model2 "pixstall-artist/domain/file/model"
 	"pixstall-artist/domain/open-commission/model"
 	"strconv"
 )
@@ -80,27 +83,10 @@ func (a ArtistController) UpdateArtist(c *gin.Context) {
 		}
 		updater.ArtistIntro.ArtTypes = &artTypes
 	}
-	bannerImage, err := c.FormFile("artistBoard.bannerImage")
+	imageFiles, err := getMultipartFormImages(c, "artistBoard.bannerImage")
 	if err == nil {
-		if updater.ArtistBoard == nil {
-			artistBoard := domain.ArtistBoardUpdater{}
-			updater.ArtistBoard = &artistBoard
-		}
-		decodedImg := func() image.Image {
-			if err != nil {
-				return nil
-			}
-			f, err := bannerImage.Open()
-			if err != nil {
-				return nil
-			}
-			img, _, err := image.Decode(f)
-			if err != nil {
-				return nil
-			}
-			return img
-		}()
-		updater.ArtistBoard.BannerFile = &decodedImg
+		imgFiles := *imageFiles
+		updater.ArtistBoard.BannerFile = &imgFiles[0]
 	}
 	desc, exist := c.GetPostForm("artistBoard.desc")
 	if exist {
@@ -210,33 +196,9 @@ func (a ArtistController) AddOpenCommissionForArtist(c *gin.Context) {
 			creator.TimesAllowedCompletionToChange = &i
 		}
 	}
-
-	form, err := c.MultipartForm()
+	imageFiles, err := getMultipartFormImages(c, "sampleImages")
 	if err == nil {
-		fileHeaders := form.File["sampleImages"]
-		images := make([]image.Image, 0)
-		for _, header := range fileHeaders {
-			decodedImage := func() image.Image {
-				if err != nil {
-					return nil
-				}
-				f, err := header.Open()
-				if err != nil {
-					return nil
-				}
-				decodedImage, _, err := image.Decode(f)
-				if err != nil {
-					return nil
-				}
-				return decodedImage
-			}()
-			if decodedImage != nil {
-				images = append(images, decodedImage)
-			}
-		}
-		if len(images) > 0 {
-			creator.SampleImages = images
-		}
+		creator.SampleImages = *imageFiles
 	}
 
 	id, err := a.artistUseCase.AddOpenCommission(c, artistID, creator)
@@ -247,4 +209,73 @@ func (a ArtistController) AddOpenCommissionForArtist(c *gin.Context) {
 	c.JSON(http.StatusOK, add_open_commission_for_artist.NewResponse(*id))
 }
 
+func getMultipartFormImages(ctx *gin.Context, key string) (*[]model2.ImageFile, error) {
+	form, err := ctx.MultipartForm()
+	if err != nil {
+		return nil, err
+	}
+	fileHeaders := form.File[key]
+	imageFiles := make([]model2.ImageFile, 0)
+	for _, header := range fileHeaders {
+		f, err := header.Open()
+		if err != nil {
+			continue
+		}
+		contentType, err := getFileContentType(f)
+		if err != nil {
+			_ = f.Close()
+			continue
+		}
+		_, err = f.Seek(0, 0)
+		if err != nil {
+			_ = f.Close()
+			continue
+		}
+		img, _, err := image.Decode(f)
+		if err != nil {
+			_ = f.Close()
+			continue
+		}
+		_, err = f.Seek(0, 0)
+		if err != nil {
+			_ = f.Close()
+			continue
+		}
+		imgF := model2.ImageFile{
+			File: model2.File{
+				File:        f,
+				Name:        header.Filename,
+				ContentType: contentType,
+				Volume:      header.Size,
+			},
+			Size: model2.Size{
+				Width:  float64(img.Bounds().Dx()),
+				Height: float64(img.Bounds().Dy()),
+				Unit:   "px",
+			},
+		}
+		imageFiles = append(imageFiles, imgF)
+		_ = f.Close()
+	}
+	if len(imageFiles) <= 0 {
+		return nil, errors.New("")
+	}
+	return &imageFiles, nil
+}
 
+func getFileContentType(out multipart.File) (string, error) {
+
+	// Only the first 512 bytes are used to sniff the content type.
+	buffer := make([]byte, 512)
+
+	_, err := out.Read(buffer)
+	if err != nil {
+		return "", err
+	}
+
+	// Use the net/http package's handy DectectContentType function. Always returns a valid
+	// content-type by returning "application/octet-stream" if no others seemed to match.
+	contentType := http.DetectContentType(buffer)
+
+	return contentType, nil
+}
