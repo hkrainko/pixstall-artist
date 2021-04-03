@@ -7,7 +7,7 @@ import (
 )
 
 type Artist struct {
-	model2.User
+	model2.User       `json:",inline"`
 	ArtistID          string                                     `json:"artistId"`
 	Fans              Fans                                       `json:"fans,omitempty"`
 	ArtistIntro       ArtistIntro                                `json:"artistIntro"`

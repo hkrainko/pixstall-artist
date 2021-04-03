@@ -102,7 +102,7 @@ func (a ArtistMessageBroker) StartArtistQueue() {
 				}
 				cancel()
 			case "artist.cmd.update":
-				err := a.UpdateArtistUser(ctx, d.Body)
+				err := a.updateArtistUser(ctx, d.Body)
 				if err != nil {
 					//TODO: error handling, store it ?
 				}
@@ -135,7 +135,7 @@ func (a ArtistMessageBroker) registerNewArtist(ctx context.Context, body []byte)
 	return a.artistUseCase.RegisterNewArtist(ctx, req.RegInfo)
 }
 
-func (a ArtistMessageBroker) UpdateArtistUser(ctx context.Context, body []byte) error {
+func (a ArtistMessageBroker) updateArtistUser(ctx context.Context, body []byte) error {
 	req := update_artist.Request{}
 	err := json.Unmarshal(body, &req)
 	if err != nil {
