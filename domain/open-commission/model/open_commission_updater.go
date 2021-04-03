@@ -2,7 +2,6 @@ package model
 
 type OpenCommissionUpdater struct {
 	ID                             string
-	ArtistID                       string
 	Title                          *string
 	Desc                           *string
 	DepositRule                    *string
@@ -11,5 +10,8 @@ type OpenCommissionUpdater struct {
 	TimesAllowedDraftToChange      *int
 	TimesAllowedCompletionToChange *int
 	SampleImagePaths               *[]string
+	IsR18                          *bool
+	AllowBePrivate                 *bool
+	AllowAnonymous                 *bool
 	State                          *OpenCommissionSate
 }
