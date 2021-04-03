@@ -5,10 +5,11 @@ import (
 )
 
 type ArtistUpdater struct {
-	ArtistID       string
-	ArtistIntro    *ArtistIntroUpdater
-	ArtistBoard    *ArtistBoardUpdater
-	PaymentMethods *[]string
+	ArtistID          string
+	ArtistIntro       *ArtistIntroUpdater
+	ArtistBoard       *ArtistBoardUpdater
+	PaymentMethods    *[]string
+	CommissionDetails *CommissionDetailsUpdater
 }
 
 type ArtistIntroUpdater struct {

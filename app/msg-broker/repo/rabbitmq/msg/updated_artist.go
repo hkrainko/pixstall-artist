@@ -16,4 +16,6 @@ type UpdatedArtist struct {
 	ArtistIntro    *model.ArtistIntro
 	ArtistBoard    *model.ArtistBoard
 	PaymentMethods *[]string
+
+	CommissionDetails *model.CommissionDetails
 }
