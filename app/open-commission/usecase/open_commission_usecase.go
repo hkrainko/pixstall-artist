@@ -32,7 +32,6 @@ func (o openCommissionUseCase) DeleteOpenCommission(ctx context.Context, request
 	newState := domainOpenCommModel.OpenCommissionStateRemoved
 	openCommissionUpdater := domainOpenCommModel.OpenCommissionUpdater{
 		ID:       openCommissionID,
-		ArtistID: requesterID,
 		State:    &newState,
 	}
 	return o.openCommRepo.UpdateOpenCommission(ctx, openCommissionUpdater)

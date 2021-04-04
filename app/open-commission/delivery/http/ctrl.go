@@ -58,7 +58,6 @@ func (o OpenCommissionController) UpdateOpenCommission(c *gin.Context) {
 
 	updater := model.OpenCommissionUpdater{
 		ID:        openCommissionID,
-		ArtistID:  artistID,
 		Title:     &title,
 		Desc:      &desc,
 		DayNeed:   dayNeed,

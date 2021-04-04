@@ -108,7 +108,6 @@ func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter 
 
 func (m mongoOpenCommissionRepo) UpdateOpenCommission(ctx context.Context, openCommUpdater domainOpenCommissionModel.OpenCommissionUpdater) error {
 	filter := bson.M{
-		"artistId":                   openCommUpdater.ArtistID,
 		"openCommissions.openCommId": openCommUpdater.ID,
 	}
 	updater := dao.NewUpdaterFromOpenCommissionUpdater(openCommUpdater)
