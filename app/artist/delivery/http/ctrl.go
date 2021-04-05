@@ -68,37 +68,21 @@ func (a ArtistController) UpdateArtist(c *gin.Context) {
 	yearOfDrawing, exist := c.GetPostForm("artistIntro.yearOfDrawing")
 	if exist {
 		if value, err := strconv.Atoi(yearOfDrawing); err == nil {
-			if updater.ArtistIntro == nil {
-				artistIntro := domain.ArtistIntroUpdater{}
-				updater.ArtistIntro = &artistIntro
-			}
-			updater.ArtistIntro.YearOfDrawing = &value
+			updater.YearOfDrawing = &value
 		}
 	}
 	artTypes, exist := c.GetPostFormArray("artistIntro.artTypes")
 	if exist {
-		if updater.ArtistIntro == nil {
-			artistIntro := domain.ArtistIntroUpdater{}
-			updater.ArtistIntro = &artistIntro
-		}
-		updater.ArtistIntro.ArtTypes = &artTypes
+		updater.ArtTypes = &artTypes
 	}
 	imageFiles, err := getMultipartFormImages(c, "artistBoard.bannerImage")
 	if err == nil {
-		if updater.ArtistBoard == nil {
-			artistBoard := domain.ArtistBoardUpdater{}
-			updater.ArtistBoard = &artistBoard
-		}
 		imgFiles := *imageFiles
-		updater.ArtistBoard.BannerFile = &imgFiles[0]
+		updater.BannerFile = &imgFiles[0]
 	}
 	desc, exist := c.GetPostForm("artistBoard.desc")
 	if exist {
-		if updater.ArtistBoard == nil {
-			artistBoard := domain.ArtistBoardUpdater{}
-			updater.ArtistBoard = &artistBoard
-		}
-		updater.ArtistBoard.Desc = &desc
+		updater.Desc = &desc
 	}
 	artistId, err := a.artistUseCase.UpdateArtist(c, updater)
 	if err != nil {

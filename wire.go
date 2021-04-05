@@ -20,13 +20,14 @@ import (
 	opencomm_ucase "pixstall-artist/app/open-commission/usecase"
 )
 
-func InitArtistController(db *mongo.Database, grpcConn *grpc.ClientConn) artist_deliv_http.ArtistController {
+func InitArtistController(db *mongo.Database, grpcConn *grpc.ClientConn, conn *amqp.Connection) artist_deliv_http.ArtistController {
 	wire.Build(
 		artist_deliv_http.NewArtistController,
 		artist_ucase.NewArtistUseCase,
 		artist_repo.NewMongoArtistRepo,
 		opencomm_repo.NewMongoOpenCommissionRepo,
 		file_repo.NewGRPCFileRepository,
+		msg_broker_repo.NewRabbitMQMsgBrokerRepo,
 	)
 	return artist_deliv_http.ArtistController{}
 }
@@ -47,6 +48,7 @@ func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection, grpcConn
 		artist_repo.NewMongoArtistRepo,
 		opencomm_repo.NewMongoOpenCommissionRepo,
 		file_repo.NewGRPCFileRepository,
+		msg_broker_repo.NewRabbitMQMsgBrokerRepo,
 	)
 	return artist_deliv_rabbitmq.ArtistMessageBroker{}
 }

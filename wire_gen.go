@@ -10,13 +10,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
 	"pixstall-artist/app/artist/delivery/http"
-	"pixstall-artist/app/artist/delivery/rabbitmq"
+	rabbitmq2 "pixstall-artist/app/artist/delivery/rabbitmq"
 	mongo2 "pixstall-artist/app/artist/repo/mongo"
 	"pixstall-artist/app/artist/usecase"
-	rabbitmq2 "pixstall-artist/app/commission/delivery/rabbitmq"
+	rabbitmq3 "pixstall-artist/app/commission/delivery/rabbitmq"
 	usecase3 "pixstall-artist/app/commission/usecase"
 	"pixstall-artist/app/file/repo"
-	rabbitmq3 "pixstall-artist/app/msg-broker/repo/rabbitmq"
+	"pixstall-artist/app/msg-broker/repo/rabbitmq"
 	http2 "pixstall-artist/app/open-commission/delivery/http"
 	mongo3 "pixstall-artist/app/open-commission/repo/mongo"
 	usecase2 "pixstall-artist/app/open-commission/usecase"
@@ -24,11 +24,12 @@ import (
 
 // Injectors from wire.go:
 
-func InitArtistController(db *mongo.Database, grpcConn *grpc.ClientConn) http.ArtistController {
+func InitArtistController(db *mongo.Database, grpcConn *grpc.ClientConn, conn *amqp.Connection) http.ArtistController {
 	artistRepo := mongo2.NewMongoArtistRepo(db)
 	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
 	fileRepo := repo.NewGRPCFileRepository(grpcConn)
-	useCase := usecase.NewArtistUseCase(artistRepo, open_commissionRepo, fileRepo)
+	msg_brokerRepo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
+	useCase := usecase.NewArtistUseCase(artistRepo, open_commissionRepo, fileRepo, msg_brokerRepo)
 	artistController := http.NewArtistController(useCase)
 	return artistController
 }
@@ -40,19 +41,20 @@ func InitOpenCommissionController(db *mongo.Database) http2.OpenCommissionContro
 	return openCommissionController
 }
 
-func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection, grpcConn *grpc.ClientConn) rabbitmq.ArtistMessageBroker {
+func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection, grpcConn *grpc.ClientConn) rabbitmq2.ArtistMessageBroker {
 	artistRepo := mongo2.NewMongoArtistRepo(db)
 	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
 	fileRepo := repo.NewGRPCFileRepository(grpcConn)
-	useCase := usecase.NewArtistUseCase(artistRepo, open_commissionRepo, fileRepo)
-	artistMessageBroker := rabbitmq.NewRabbitMQArtistMessageBroker(useCase, conn)
+	msg_brokerRepo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
+	useCase := usecase.NewArtistUseCase(artistRepo, open_commissionRepo, fileRepo, msg_brokerRepo)
+	artistMessageBroker := rabbitmq2.NewRabbitMQArtistMessageBroker(useCase, conn)
 	return artistMessageBroker
 }
 
-func InitCommissionMessageBroker(db *mongo.Database, conn *amqp.Connection) rabbitmq2.CommissionMessageBroker {
-	msg_brokerRepo := rabbitmq3.NewRabbitMQMsgBrokerRepo(conn)
+func InitCommissionMessageBroker(db *mongo.Database, conn *amqp.Connection) rabbitmq3.CommissionMessageBroker {
+	msg_brokerRepo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
 	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
 	useCase := usecase3.NewCommissionUseCase(msg_brokerRepo, open_commissionRepo)
-	commissionMessageBroker := rabbitmq2.NewRabbitMQCommissionMessageBroker(useCase, conn)
+	commissionMessageBroker := rabbitmq3.NewRabbitMQCommissionMessageBroker(useCase, conn)
 	return commissionMessageBroker
 }

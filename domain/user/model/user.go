@@ -7,7 +7,7 @@ import (
 type User struct {
 	UserID          string    `json:"userId" bson:"userId"`
 	UserName        string    `json:"userName" bson:"userName"`
-	ProfilePath     string    `json:"profilePath" bson:"profilePath"`
+	ProfilePath     *string   `json:"profilePath" bson:"profilePath"`
 	Email           string    `json:"email,omitempty" bson:"email"`
 	Birthday        string    `json:"birthday,omitempty" bson:"birthday"`
 	Gender          string    `json:"gender,omitempty" bson:"gender"`

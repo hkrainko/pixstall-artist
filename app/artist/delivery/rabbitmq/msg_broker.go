@@ -141,7 +141,7 @@ func (a ArtistMessageBroker) updateArtistUser(ctx context.Context, body []byte) 
 	if err != nil {
 		return err
 	}
-	id, err := a.artistUseCase.UpdateArtistUser(ctx, *req.UserUpdater)
+	id, err := a.artistUseCase.UpdateArtist(ctx, *req.ArtistUpdater)
 	if err != nil {
 		return err
 	}

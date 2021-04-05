@@ -11,8 +11,6 @@ import (
 	"pixstall-artist/domain/artist/model"
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
 	domainFanModel "pixstall-artist/domain/fan/model"
-	model2 "pixstall-artist/domain/user/model"
-	"time"
 )
 
 type mongoArtistRepo struct {
@@ -94,41 +92,38 @@ func (m mongoArtistRepo) UpdateArtist(ctx context.Context, updater *model.Artist
 	filter := bson.M{"artistId": updater.ArtistID}
 	update := bson.M{}
 
-	if updater.ArtistIntro != nil {
-		if updater.ArtistIntro.YearOfDrawing != nil {
-			update["artistIntro.yearOfDrawing"] = updater.ArtistIntro.YearOfDrawing
-		}
-		if updater.ArtistIntro.ArtTypes != nil {
-			update["artistIntro.artTypes"] = updater.ArtistIntro.ArtTypes
-		}
+	// ArtistIntro
+	if updater.YearOfDrawing != nil {
+		update["artistIntro.yearOfDrawing"] = updater.YearOfDrawing
 	}
-	if updater.ArtistBoard != nil {
-		if updater.ArtistBoard.BannerPath != nil {
-			update["artistBoard.bannerPath"] = updater.ArtistBoard.BannerPath
-		}
-		if updater.ArtistBoard.Desc != nil {
-			update["artistBoard.desc"] = updater.ArtistBoard.Desc
-		}
+	if updater.ArtTypes != nil {
+		update["artistIntro.artTypes"] = updater.ArtTypes
 	}
-	update["lastUpdatedTime"] = time.Now()
 
-	result, err := collection.UpdateOne(ctx, filter, bson.M{"$set": update})
-
-	if err != nil {
-		return err
+	// ArtistBoard
+	if updater.BannerPath != nil {
+		update["artistBoard.bannerPath"] = updater.BannerPath
 	}
-	fmt.Printf("UpdateArtist success: %v", result.UpsertedID)
-	return nil
-}
-
-func (m mongoArtistRepo) UpdateArtistUser(ctx context.Context, updater *model2.UserUpdater) error {
-	if updater == nil {
-		return model.ArtistErrorUnknown
+	if updater.Desc != nil {
+		update["artistBoard.desc"] = updater.Desc
 	}
-	collection := m.db.Collection(ArtistCollection)
 
-	filter := bson.M{"artistId": updater.UserID}
-	update := bson.M{}
+	// CommissionDetails
+	if updater.CommissionRequestCount != nil {
+		update["commissionDetails.commissionRequestCount"] = updater.CommissionRequestCount
+	}
+	if updater.CommissionAcceptCount != nil {
+		update["commissionDetails.commissionAcceptCount"] = updater.CommissionAcceptCount
+	}
+	if updater.CommissionSuccessCount != nil {
+		update["commissionDetails.commissionSuccessCount"] = updater.CommissionSuccessCount
+	}
+	if updater.AvgRatings != nil {
+		update["commissionDetails.avgRatings"] = updater.AvgRatings
+	}
+	if updater.LastRequestTime != nil {
+		update["commissionDetails.lastRequestTime"] = updater.LastRequestTime
+	}
 
 	if updater.UserName != nil {
 		update["userName"] = updater.UserName
@@ -151,7 +146,12 @@ func (m mongoArtistRepo) UpdateArtistUser(ctx context.Context, updater *model2.U
 	if updater.RegTime != nil {
 		update["regTime"] = updater.RegTime
 	}
-	update["lastUpdatedTime"] = time.Now()
+	if updater.PaymentMethods != nil {
+		update["paymentMethods"] = updater.PaymentMethods
+	}
+	if updater.LastUpdatedTime != nil {
+		update["lastUpdatedTime"] = updater.LastUpdatedTime
+	}
 
 	result, err := collection.UpdateOne(ctx, filter, bson.M{"$set": update})
 

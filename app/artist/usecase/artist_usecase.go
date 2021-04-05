@@ -2,12 +2,13 @@ package usecase
 
 import (
 	"context"
+	"log"
 	"pixstall-artist/domain/artist"
 	domainArtistModel "pixstall-artist/domain/artist/model"
-	domainArtworkModel "pixstall-artist/domain/artwork/model"
 	error2 "pixstall-artist/domain/error"
 	domainFile "pixstall-artist/domain/file"
 	model2 "pixstall-artist/domain/file/model"
+	msgBroker "pixstall-artist/domain/msg-broker"
 	openCommission "pixstall-artist/domain/open-commission"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	domainRegModel "pixstall-artist/domain/reg/model"
@@ -16,12 +17,13 @@ import (
 )
 
 type artistUseCase struct {
-	artistRepo   artist.Repo
-	openCommRepo openCommission.Repo
-	imageRepo    domainFile.Repo
+	artistRepo    artist.Repo
+	openCommRepo  openCommission.Repo
+	imageRepo     domainFile.Repo
+	msgBrokerRepo msgBroker.Repo
 }
 
-func NewArtistUseCase(artistRepo artist.Repo, openCommRepo openCommission.Repo, imageRepo domainFile.Repo) artist.UseCase {
+func NewArtistUseCase(artistRepo artist.Repo, openCommRepo openCommission.Repo, imageRepo domainFile.Repo, msgBrokerRepo msgBroker.Repo) artist.UseCase {
 	return &artistUseCase{
 		artistRepo:   artistRepo,
 		openCommRepo: openCommRepo,
@@ -62,7 +64,15 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 	}
 
 	err := a.artistRepo.SaveArtist(ctx, &dArtist)
-	return err
+	if err != nil {
+		return err
+	}
+	err = a.msgBrokerRepo.SendArtistCreatedMsg(ctx, dArtist)
+	if err != nil {
+		log.Println(err)
+		// Ignore error
+	}
+	return nil
 }
 
 func (a artistUseCase) GetArtist(ctx context.Context, artistID string) (*domainArtistModel.Artist, error) {
@@ -85,30 +95,18 @@ func (a artistUseCase) GetArtistDetails(ctx context.Context, artistID string, re
 }
 
 func (a artistUseCase) UpdateArtist(ctx context.Context, updater domainArtistModel.ArtistUpdater) (*string, error) {
-	if updater.ArtistBoard.BannerFile != nil {
-		path, err := a.imageRepo.SaveFile(ctx, updater.ArtistBoard.BannerFile.File, model2.FileTypeRoof, updater.ArtistID, []string{"*"})
+	if updater.BannerFile != nil {
+		path, err := a.imageRepo.SaveFile(ctx, updater.BannerFile.File, model2.FileTypeRoof, updater.ArtistID, []string{"*"})
 		if err != nil {
 			return nil, err
 		}
-		updater.ArtistBoard.BannerPath = path
+		updater.BannerPath = path
 	}
 	err := a.artistRepo.UpdateArtist(ctx, &updater)
 	if err != nil {
 		return nil, err
 	}
 	return &updater.ArtistID, nil
-}
-
-func (a artistUseCase) UpdateArtistUser(ctx context.Context, updater model.UserUpdater) (*string, error) {
-	err := a.artistRepo.UpdateArtistUser(ctx, &updater)
-	if err != nil {
-		return nil, err
-	}
-	return &updater.UserID, nil
-}
-
-func (a artistUseCase) UpdateDetails(ctx context.Context, artistID string, updater *domainArtistModel.CommissionDetailsUpdater) error {
-	panic("implement me")
 }
 
 // Open Commission
@@ -144,31 +142,4 @@ func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string
 
 	addedOpenComm, err := a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommCreator)
 	return addedOpenComm, err
-}
-
-// Artwork
-func (a artistUseCase) UpdateArtwork(ctx context.Context, artistID string, updater *domainArtworkModel.ArtworkUpdater) error {
-	return nil
-}
-
-func (a artistUseCase) AddArtwork(ctx context.Context, artwork *domainArtworkModel.Artwork) error {
-	return a.artistRepo.AddArtwork(ctx, artwork)
-}
-
-func (a artistUseCase) DeleteArtwork(ctx context.Context, artistID string, artworkID string) error {
-	//state := domainArtworkModel.ArtworkStateRemoved
-	//artworkUpdater := domainArtworkModel.ArtworkUpdater{
-	//	ID:           artworkID,
-	//	ArtistID:     artistID,
-	//	Rating:       nil,
-	//	RequestTime:  nil,
-	//	CompleteTime: nil,
-	//	State:        &state,
-	//}
-	//artistUpdater := &domainArtistModel.ArtistUpdater{
-	//	ArtistID: artistID,
-	//	Artworks: &[]domainArtworkModel.ArtworkUpdater{artworkUpdater},
-	//}
-	//return a.artistRepo.UpdateArtist(ctx, artistUpdater)
-	return nil
 }

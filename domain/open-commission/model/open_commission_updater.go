@@ -13,5 +13,5 @@ type OpenCommissionUpdater struct {
 	IsR18                          *bool
 	AllowBePrivate                 *bool
 	AllowAnonymous                 *bool
-	State                          *OpenCommissionSate
+	State                          *OpenCommissionState
 }

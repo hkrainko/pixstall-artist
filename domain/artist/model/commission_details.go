@@ -9,11 +9,3 @@ type CommissionDetails struct {
 	AvgRatings             *float64   `json:"avgRatings,omitempty" bson:"avgRatings,omitempty"`
 	LastRequestTime        *time.Time `json:"lastRequestTime,omitempty" bson:"lastRequestTime,omitempty"`
 }
-
-type CommissionDetailsUpdater struct {
-	CommissionRequestCount *int
-	CommissionAcceptCount  *int
-	CommissionSuccessCount *int
-	AvgRatings             *float64
-	LastRequestTime        *time.Time
-}

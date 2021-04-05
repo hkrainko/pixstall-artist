@@ -6,19 +6,19 @@ type OpenCommission struct {
 	ID                             string             `json:"id" bson:"id"`
 	ArtistID                       string             `json:"artistId" bson:"artistId"`
 	Title                          string             `json:"title" bson:"title"`
-	Desc                           string             `json:"desc" bson:"desc"`
-	DepositRule                    *string            `json:"depositRule" bson:"depositRule"`
-	Price                          Price              `json:"price" bson:"price"`
-	DayNeed                        DayNeed            `json:"dayNeed" bson:"dayNeed"`
-	TimesAllowedDraftToChange      *int               `json:"timesAllowedDraftToChange" bson:"timesAllowedDraftToChange"`
-	TimesAllowedCompletionToChange *int               `json:"timesAllowedCompletionToChange" bson:"timesAllowedCompletionToChange"`
-	SampleImagePaths               []string           `json:"sampleImagePaths" bson:"sampleImagePaths"`
-	IsR18                          bool               `json:"isR18" bson:"isR18"`
-	AllowBePrivate                 bool               `json:"allowBePrivate" bson:"allowBePrivate"`
-	AllowAnonymous                 bool               `json:"allowAnonymous" bson:"allowAnonymous"`
-	State                          OpenCommissionSate `json:"state" bson:"state"`
-	CreateTime                     time.Time          `json:"createTime" bson:"createTime"`
-	LastUpdatedTime                time.Time          `json:"lastUpdatedTime" bson:"lastUpdatedTime"`
+	Desc                           string              `json:"desc" bson:"desc"`
+	DepositRule                    *string             `json:"depositRule" bson:"depositRule"`
+	Price                          Price               `json:"price" bson:"price"`
+	DayNeed                        DayNeed             `json:"dayNeed" bson:"dayNeed"`
+	TimesAllowedDraftToChange      *int                `json:"timesAllowedDraftToChange" bson:"timesAllowedDraftToChange"`
+	TimesAllowedCompletionToChange *int                `json:"timesAllowedCompletionToChange" bson:"timesAllowedCompletionToChange"`
+	SampleImagePaths               []string            `json:"sampleImagePaths" bson:"sampleImagePaths"`
+	IsR18                          bool                `json:"isR18" bson:"isR18"`
+	AllowBePrivate                 bool                `json:"allowBePrivate" bson:"allowBePrivate"`
+	AllowAnonymous                 bool                `json:"allowAnonymous" bson:"allowAnonymous"`
+	State                          OpenCommissionState `json:"state" bson:"state"`
+	CreateTime                     time.Time           `json:"createTime" bson:"createTime"`
+	LastUpdatedTime                time.Time           `json:"lastUpdatedTime" bson:"lastUpdatedTime"`
 }
 
 type Price struct {
@@ -45,10 +45,10 @@ const (
 	CurrencyUSE Currency = "USD"
 )
 
-type OpenCommissionSate string
+type OpenCommissionState string
 
 const (
-	OpenCommissionStateActive  OpenCommissionSate = "A"
-	OpenCommissionStateHidden  OpenCommissionSate = "H"
-	OpenCommissionStateRemoved OpenCommissionSate = "R"
+	OpenCommissionStateActive  OpenCommissionState = "A"
+	OpenCommissionStateHidden  OpenCommissionState = "H"
+	OpenCommissionStateRemoved OpenCommissionState = "R"
 )

@@ -52,6 +52,18 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to create exchange %v", err)
 	}
+	err = ch.ExchangeDeclare(
+		"open-comm",
+		"topic",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Fatalf("Failed to create exchange %v", err)
+	}
 
 	//gRPC - File
 	fileGRPCConn, err := grpc.Dial("localhost:50052", grpc.WithInsecure(), grpc.WithBlock())
@@ -87,7 +99,7 @@ func main() {
 
 	artistGroup := apiGroup.Group("/artists")
 	{
-		ctrl := InitArtistController(db, fileGRPCConn)
+		ctrl := InitArtistController(db, fileGRPCConn, rabbitmqConn)
 		// Artist
 		artistGroup.GET("/:id", ctrl.GetArtist)
 		artistGroup.GET("/:id/details", userIDExtractor.ExtractPayloadsFromJWT, ctrl.GetArtistDetails)

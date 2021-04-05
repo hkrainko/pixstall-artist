@@ -11,3 +11,12 @@ type CreatedArtist struct {
 	ArtistIntro    model.ArtistIntro `json:"artistIntro"`
 	PaymentMethods []string          `json:"paymentMethods"`
 }
+
+func NewCreatedArtist(artist model.Artist) CreatedArtist {
+	return CreatedArtist{
+		User:           artist.User,
+		ArtistID:       artist.ArtistID,
+		ArtistIntro:    artist.ArtistIntro,
+		PaymentMethods: artist.PaymentMethods,
+	}
+}
