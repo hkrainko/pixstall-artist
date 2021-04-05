@@ -12,5 +12,5 @@ type Repo interface {
 	SendArtistCreatedMsg(ctx context.Context, artist model4.Artist) error
 	SendArtistUpdatedMsg(ctx context.Context, updater model4.ArtistUpdater) error
 	SendOpenCommCreatedMsg(ctx context.Context, openComm model3.OpenCommission) error
-	SendOpenCommUpdatedMsg(ctx context.Context, openComm model3.OpenCommission) error
+	SendOpenCommUpdatedMsg(ctx context.Context, updater model3.OpenCommissionUpdater) error
 }

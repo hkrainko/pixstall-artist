@@ -19,5 +19,24 @@ type UpdatedOpenCommission struct {
 	AllowBePrivate                 *bool                      `json:"allowBePrivate,omitempty"`
 	AllowAnonymous                 *bool                      `json:"allowAnonymous,omitempty"`
 	State                          *model.OpenCommissionState `json:"state,omitempty"`
-	LastUpdatedTime                time.Time                  `json:"lastUpdatedTime,omitempty"`
+	LastUpdatedTime                *time.Time                 `json:"lastUpdatedTime,omitempty"`
+}
+
+func NewUpdatedOpenCommission(updater model.OpenCommissionUpdater) UpdatedOpenCommission {
+	return UpdatedOpenCommission{
+		ID:                             updater.ID,
+		Title:                          updater.Title,
+		Desc:                           updater.Desc,
+		DepositRule:                    updater.DepositRule,
+		Price:                          updater.Price,
+		DayNeed:                        updater.DayNeed,
+		TimesAllowedDraftToChange:      updater.TimesAllowedDraftToChange,
+		TimesAllowedCompletionToChange: updater.TimesAllowedCompletionToChange,
+		SampleImagePaths:               updater.SampleImagePaths,
+		IsR18:                          updater.IsR18,
+		AllowBePrivate:                 updater.AllowBePrivate,
+		AllowAnonymous:                 updater.AllowAnonymous,
+		State:                          updater.State,
+		LastUpdatedTime:                updater.LastUpdatedTime,
+	}
 }

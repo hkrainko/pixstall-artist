@@ -32,8 +32,20 @@ func NewUpdaterFromOpenCommissionUpdater(d model.OpenCommissionUpdater) bson.D {
 	if d.SampleImagePaths != nil {
 		setter = append(setter, bson.E{Key: "sampleImagePaths", Value: d.SampleImagePaths})
 	}
+	if d.IsR18 != nil {
+		setter = append(setter, bson.E{Key: "isR18", Value: d.IsR18})
+	}
+	if d.AllowBePrivate != nil {
+		setter = append(setter, bson.E{Key: "allowBePrivate", Value: d.AllowBePrivate})
+	}
+	if d.AllowAnonymous != nil {
+		setter = append(setter, bson.E{Key: "allowAnonymous", Value: d.AllowAnonymous})
+	}
 	if d.State != nil {
 		setter = append(setter, bson.E{Key: "state", Value: d.State})
+	}
+	if d.LastUpdatedTime != nil {
+		setter = append(setter, bson.E{Key: "lastUpdatedTime", Value: d.LastUpdatedTime})
 	}
 
 	return bson.D{{"$set", setter}}

@@ -2,17 +2,22 @@ package usecase
 
 import (
 	"context"
+	"log"
+	msgBroker "pixstall-artist/domain/msg-broker"
 	openCommission "pixstall-artist/domain/open-commission"
 	domainOpenCommModel "pixstall-artist/domain/open-commission/model"
+	"time"
 )
 
 type openCommissionUseCase struct {
 	openCommRepo openCommission.Repo
+	msgBrokerRepo msgBroker.Repo
 }
 
-func NewOpenCommissionUseCase(openCommRepo openCommission.Repo) openCommission.UseCase {
+func NewOpenCommissionUseCase(openCommRepo openCommission.Repo, msgBrokerRepo msgBroker.Repo) openCommission.UseCase {
 	return &openCommissionUseCase{
 		openCommRepo: openCommRepo,
+		msgBrokerRepo: msgBrokerRepo,
 	}
 }
 
@@ -25,7 +30,18 @@ func (o openCommissionUseCase) GetOpenCommissions(ctx context.Context, filter do
 }
 
 func (o openCommissionUseCase) UpdateOpenCommission(ctx context.Context, requesterID string, updater domainOpenCommModel.OpenCommissionUpdater) error {
-	return o.openCommRepo.UpdateOpenCommission(ctx, updater)
+	now := time.Now()
+	updater.LastUpdatedTime = &now
+	err := o.openCommRepo.UpdateOpenCommission(ctx, updater)
+	if err != nil {
+		return err
+	}
+	err = o.msgBrokerRepo.SendOpenCommUpdatedMsg(ctx, updater)
+	if err != nil {
+		log.Println(err)
+		// Ignore error
+	}
+	return nil
 }
 
 func (o openCommissionUseCase) DeleteOpenCommission(ctx context.Context, requesterID string, openCommissionID string) error {

@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type OpenCommissionUpdater struct {
 	ID                             string
 	Title                          *string
@@ -14,4 +16,5 @@ type OpenCommissionUpdater struct {
 	AllowBePrivate                 *bool
 	AllowAnonymous                 *bool
 	State                          *OpenCommissionState
+	LastUpdatedTime                *time.Time
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/streadway/amqp"
 	"log"
 	model2 "pixstall-artist/app/msg-broker/repo/rabbitmq/msg"
+	"pixstall-artist/app/open-commission/repo/mongo/dao"
 	model4 "pixstall-artist/domain/artist/model"
 	"pixstall-artist/domain/commission/model"
 	msg_broker "pixstall-artist/domain/msg-broker"
@@ -120,6 +121,24 @@ func (r rabbitmqMsgBrokerRepo) SendOpenCommCreatedMsg(ctx context.Context, openC
 	return nil
 }
 
-func (r rabbitmqMsgBrokerRepo) SendOpenCommUpdatedMsg(ctx context.Context, openComm model3.OpenCommission) error {
+func (r rabbitmqMsgBrokerRepo) SendOpenCommUpdatedMsg(ctx context.Context, updater model3.OpenCommissionUpdater) error {
+	updatedOpenComm := dao.NewUpdaterFromOpenCommissionUpdater(updater)
+	b, err := json.Marshal(updatedOpenComm)
+	if err != nil {
+		return err
+	}
+	err = r.ch.Publish(
+		"open-comm",
+		"open-comm.event.updated",
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: "application/json",
+			Body:        b,
+		},
+	)
+	if err != nil {
+		return err
+	}
 	return nil
 }

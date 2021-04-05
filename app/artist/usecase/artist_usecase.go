@@ -149,5 +149,10 @@ func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string
 	if err != nil {
 		return nil, err
 	}
+	err = a.msgBrokerRepo.SendOpenCommCreatedMsg(ctx, *addedOpenComm)
+	if err != nil {
+		log.Println(err)
+		// Ignore error
+	}
 	return &addedOpenComm.ID, err
 }
