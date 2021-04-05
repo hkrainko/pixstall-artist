@@ -23,3 +23,24 @@ type CreatedOpenCommission struct {
 	CreateTime                     time.Time                 `json:"createTime"`
 	LastUpdatedTime                time.Time                 `json:"lastUpdatedTime"`
 }
+
+func NewCreatedOpenCommission(openComm model.OpenCommission) CreatedOpenCommission {
+	return CreatedOpenCommission{
+		ID:                             openComm.ID,
+		ArtistID:                       openComm.ArtistID,
+		Title:                          openComm.Title,
+		Desc:                           openComm.Desc,
+		DepositRule:                    openComm.DepositRule,
+		Price:                          openComm.Price,
+		DayNeed:                        openComm.DayNeed,
+		TimesAllowedDraftToChange:      openComm.TimesAllowedDraftToChange,
+		TimesAllowedCompletionToChange: openComm.TimesAllowedCompletionToChange,
+		SampleImagePaths:               openComm.SampleImagePaths,
+		IsR18:                          openComm.IsR18,
+		AllowBePrivate:                 openComm.AllowBePrivate,
+		AllowAnonymous:                 openComm.AllowAnonymous,
+		State:                          openComm.State,
+		CreateTime:                     openComm.CreateTime,
+		LastUpdatedTime:                openComm.LastUpdatedTime,
+	}
+}

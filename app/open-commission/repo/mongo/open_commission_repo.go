@@ -29,7 +29,7 @@ func NewMongoOpenCommissionRepo(db *mongo.Database) openCommission.Repo {
 	}
 }
 
-func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*string, error) {
+func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*domainOpenCommissionModel.OpenCommission, error) {
 	newUUID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, domainOpenCommissionModel.OpenCommissionErrorUnknown
@@ -45,7 +45,7 @@ func (m mongoOpenCommissionRepo) AddOpenCommission(ctx context.Context, artistID
 		return nil, domainOpenCommissionModel.OpenCommissionErrorUnknown
 	}
 	fmt.Printf("AddOpenCommission success, id:%v", newID)
-	return &newID, nil
+	return mongoOpenComm.ToDomainOpenCommission(), nil
 }
 
 func (m mongoOpenCommissionRepo) GetOpenCommission(ctx context.Context, openCommID string) (*domainOpenCommissionModel.OpenCommission, error) {

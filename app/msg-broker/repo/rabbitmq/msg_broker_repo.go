@@ -99,6 +99,24 @@ func (r rabbitmqMsgBrokerRepo) SendArtistUpdatedMsg(ctx context.Context, updater
 }
 
 func (r rabbitmqMsgBrokerRepo) SendOpenCommCreatedMsg(ctx context.Context, openComm model3.OpenCommission) error {
+	createdOpenComm := model2.NewCreatedOpenCommission(openComm)
+	b, err := json.Marshal(createdOpenComm)
+	if err != nil {
+		return err
+	}
+	err = r.ch.Publish(
+		"open-comm",
+		"open-comm.event.created",
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: "application/json",
+			Body:        b,
+		},
+	)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

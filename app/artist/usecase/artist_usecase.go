@@ -106,6 +106,11 @@ func (a artistUseCase) UpdateArtist(ctx context.Context, updater domainArtistMod
 	if err != nil {
 		return nil, err
 	}
+	err = a.msgBrokerRepo.SendArtistUpdatedMsg(ctx, updater)
+	if err != nil {
+		log.Println(err)
+		// Ignore error
+	}
 	return &updater.ArtistID, nil
 }
 
@@ -141,5 +146,8 @@ func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string
 	openCommCreator.SampleImagePaths = paths
 
 	addedOpenComm, err := a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommCreator)
-	return addedOpenComm, err
+	if err != nil {
+		return nil, err
+	}
+	return &addedOpenComm.ID, err
 }
