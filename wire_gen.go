@@ -34,9 +34,10 @@ func InitArtistController(db *mongo.Database, grpcConn *grpc.ClientConn, conn *a
 	return artistController
 }
 
-func InitOpenCommissionController(db *mongo.Database) http2.OpenCommissionController {
+func InitOpenCommissionController(db *mongo.Database, conn *amqp.Connection) http2.OpenCommissionController {
 	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
-	useCase := usecase2.NewOpenCommissionUseCase(open_commissionRepo)
+	msg_brokerRepo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
+	useCase := usecase2.NewOpenCommissionUseCase(open_commissionRepo, msg_brokerRepo)
 	openCommissionController := http2.NewOpenCommissionController(useCase)
 	return openCommissionController
 }

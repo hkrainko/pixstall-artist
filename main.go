@@ -112,7 +112,7 @@ func main() {
 
 	openCommGroup := apiGroup.Group("/open-commissions")
 	{
-		ctrl := InitOpenCommissionController(db)
+		ctrl := InitOpenCommissionController(db, rabbitmqConn)
 		openCommGroup.GET("/:id", ctrl.GetOpenCommission)
 		openCommGroup.GET("", ctrl.GetOpenCommissions)
 		openCommGroup.PATCH("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctrl.UpdateOpenCommission)

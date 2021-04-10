@@ -32,11 +32,12 @@ func InitArtistController(db *mongo.Database, grpcConn *grpc.ClientConn, conn *a
 	return artist_deliv_http.ArtistController{}
 }
 
-func InitOpenCommissionController(db *mongo.Database) opencomm_deliv_http.OpenCommissionController {
+func InitOpenCommissionController(db *mongo.Database, conn *amqp.Connection) opencomm_deliv_http.OpenCommissionController {
 	wire.Build(
 		opencomm_deliv_http.NewOpenCommissionController,
 		opencomm_ucase.NewOpenCommissionUseCase,
 		opencomm_repo.NewMongoOpenCommissionRepo,
+		msg_broker_repo.NewRabbitMQMsgBrokerRepo,
 	)
 	return opencomm_deliv_http.OpenCommissionController{}
 }
