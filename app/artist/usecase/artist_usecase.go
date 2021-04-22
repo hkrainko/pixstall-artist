@@ -28,6 +28,7 @@ func NewArtistUseCase(artistRepo artist.Repo, openCommRepo openCommission.Repo, 
 		artistRepo:   artistRepo,
 		openCommRepo: openCommRepo,
 		imageRepo:    imageRepo,
+		msgBrokerRepo: msgBrokerRepo,
 	}
 }
 
