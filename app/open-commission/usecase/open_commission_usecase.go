@@ -26,8 +26,8 @@ func (o openCommissionUseCase) GetOpenCommission(ctx context.Context, id string,
 	panic("implement me")
 }
 
-func (o openCommissionUseCase) GetOpenCommissions(ctx context.Context, filter domainOpenCommModel.OpenCommissionFilter) ([]domainOpenCommModel.OpenCommission, error) {
-	panic("implement me")
+func (o openCommissionUseCase) GetOpenCommissions(ctx context.Context, filter domainOpenCommModel.OpenCommissionFilter) (*domainOpenCommModel.GetOpenCommissionResult, error) {
+	return o.openCommRepo.GetOpenCommissions(ctx, filter)
 }
 
 func (o openCommissionUseCase) UpdateOpenCommission(ctx context.Context, requesterID string, updater domainOpenCommModel.OpenCommissionUpdater) error {

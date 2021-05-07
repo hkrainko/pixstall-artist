@@ -2,6 +2,10 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
+	http2 "pixstall-artist/app/error/http"
+	get_open_commissions "pixstall-artist/app/open-commission/delivery/http/model/get-open-commissions"
+	error2 "pixstall-artist/domain/error"
 	domainOpenComm "pixstall-artist/domain/open-commission"
 	"pixstall-artist/domain/open-commission/model"
 	"strconv"
@@ -22,7 +26,35 @@ func (o OpenCommissionController) GetOpenCommission(c *gin.Context) {
 }
 
 func (o OpenCommissionController) GetOpenCommissions(c *gin.Context) {
+	//tokenUserID := c.GetString("userId")
 
+	count, err := strconv.Atoi(c.Query("count"))
+	if err != nil {
+		c.JSON(http2.NewErrorResponse(error2.BadRequestError))
+		return
+	}
+	offset, err := strconv.Atoi(c.Query("offset"))
+	if err != nil {
+		c.JSON(http2.NewErrorResponse(error2.BadRequestError))
+		return
+	}
+	artistID, exist := c.GetQuery("artistId")
+	if !exist {
+		c.JSON(http2.NewErrorResponse(error2.BadRequestError))
+		return
+	}
+
+	filter := model.OpenCommissionFilter{
+		ArtistID: &artistID,
+		Count: &count,
+		Offset: &offset,
+	}
+
+	result, err := o.openCommUseCase.GetOpenCommissions(c, filter)
+	if err != nil {
+		c.JSON(http2.NewErrorResponse(err))
+	}
+	c.JSON(http.StatusOK, get_open_commissions.NewResponse(*result))
 }
 
 func (o OpenCommissionController) UpdateOpenCommission(c *gin.Context) {

@@ -7,7 +7,7 @@ import (
 
 type UseCase interface {
 	GetOpenCommission(ctx context.Context, id string, requesterID *string) (domainOpenCommModel.OpenCommission, error)
-	GetOpenCommissions(ctx context.Context, filter domainOpenCommModel.OpenCommissionFilter) ([]domainOpenCommModel.OpenCommission, error)
+	GetOpenCommissions(ctx context.Context, filter domainOpenCommModel.OpenCommissionFilter) (*domainOpenCommModel.GetOpenCommissionResult, error)
 	UpdateOpenCommission(ctx context.Context, requesterID string, updater domainOpenCommModel.OpenCommissionUpdater) error
 	DeleteOpenCommission(ctx context.Context, requesterID string, openCommissionID string) error
 }

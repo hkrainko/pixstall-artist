@@ -77,7 +77,7 @@ func (m mongoOpenCommissionRepo) GetOpenCommission(ctx context.Context, openComm
 	return nil, domainOpenCommissionModel.OpenCommissionErrorNotFound
 }
 
-func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter domainOpenCommissionModel.OpenCommissionFilter) ([]domainOpenCommissionModel.OpenCommission, error) {
+func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter domainOpenCommissionModel.OpenCommissionFilter) (*domainOpenCommissionModel.GetOpenCommissionResult, error) {
 	daoFilter := dao.NewFilterFromDomainOpenCommissionFilter(filter)
 	opts := options.FindOptions{}
 	if filter.Offset != nil {
@@ -96,6 +96,7 @@ func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter 
 	defer cursor.Close(ctx)
 
 	var dOpenComm []domainOpenCommissionModel.OpenCommission
+	cursor.b
 	for cursor.Next(ctx) {
 		var r dao.OpenCommission
 		if err := cursor.Decode(&r); err != nil {
