@@ -45,9 +45,9 @@ func (o OpenCommissionController) GetOpenCommissions(c *gin.Context) {
 	}
 
 	filter := model.OpenCommissionFilter{
-		ArtistID: &artistID,
-		Count: &count,
-		Offset: &offset,
+		ArtistID: artistID,
+		Count: count,
+		Offset: offset,
 	}
 
 	result, err := o.openCommUseCase.GetOpenCommissions(c, filter)

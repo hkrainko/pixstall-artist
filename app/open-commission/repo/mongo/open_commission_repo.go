@@ -6,8 +6,8 @@ import (
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"pixstall-artist/app/open-commission/repo/mongo/dao"
+	error2 "pixstall-artist/domain/error"
 	openCommission "pixstall-artist/domain/open-commission"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 )
@@ -78,33 +78,28 @@ func (m mongoOpenCommissionRepo) GetOpenCommission(ctx context.Context, openComm
 }
 
 func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter domainOpenCommissionModel.OpenCommissionFilter) (*domainOpenCommissionModel.GetOpenCommissionResult, error) {
-	daoFilter := dao.NewFilterFromDomainOpenCommissionFilter(filter)
-	opts := options.FindOptions{}
-	if filter.Offset != nil {
-		opts.Skip = filter.Offset
-	}
-	if filter.Count != nil {
-		opts.Limit = filter.Count
+
+	pipeline := []bson.M{
+		{"$match": bson.M{"openCommissions.id": filter.ArtistID}},
+		{"$project": bson.M{"openCommissions": 1, "$total": bson.M{"$size": "$openCommissions"}}},
+		{"$slice": bson.A{"$openCommissions", filter.Offset, filter.Count}},
 	}
 
-	cursor, err := m.collection.Find(ctx, bson.M{
-		"openCommissions": daoFilter,
-	}, &opts)
+	cursor, err := m.collection.Aggregate(ctx, pipeline)
 	if err != nil {
-		return nil, domainOpenCommissionModel.OpenCommissionErrorUnknown
+		return nil, error2.UnknownError
 	}
 	defer cursor.Close(ctx)
 
-	var dOpenComm []domainOpenCommissionModel.OpenCommission
-	cursor.b
+	var dGetOpenCommResult *domainOpenCommissionModel.GetOpenCommissionResult
 	for cursor.Next(ctx) {
-		var r dao.OpenCommission
+		var r dao.GetOpenCommissionResult
 		if err := cursor.Decode(&r); err != nil {
 			return nil, err
 		}
-		dOpenComm = append(dOpenComm, *r.ToDomainOpenCommission())
+		dGetOpenCommResult = r.ToDomainGetOpenCommissionResult(filter.Offset)
 	}
-	return dOpenComm, nil
+	return dGetOpenCommResult, nil
 }
 
 func (m mongoOpenCommissionRepo) UpdateOpenCommission(ctx context.Context, openCommUpdater domainOpenCommissionModel.OpenCommissionUpdater) error {

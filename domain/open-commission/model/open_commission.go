@@ -3,9 +3,9 @@ package model
 import "time"
 
 type OpenCommission struct {
-	ID                             string             `json:"id" bson:"id"`
-	ArtistID                       string             `json:"artistId" bson:"artistId"`
-	Title                          string             `json:"title" bson:"title"`
+	ID                             string              `json:"id" bson:"id"`
+	ArtistID                       string              `json:"artistId" bson:"artistId"`
+	Title                          string              `json:"title" bson:"title"`
 	Desc                           string              `json:"desc" bson:"desc"`
 	DepositRule                    *string             `json:"depositRule" bson:"depositRule"`
 	Price                          Price               `json:"price" bson:"price"`

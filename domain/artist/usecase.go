@@ -14,6 +14,6 @@ type UseCase interface {
 	UpdateArtist(ctx context.Context, updater domainArtistModel.ArtistUpdater) (*string, error)
 
 	// Open Commission
-	GetOpenCommissionsForArtist(ctx context.Context, artistID string, requesterID *string, count int64, offset int64) ([]domainOpenCommissionModel.OpenCommission, error)
+	GetOpenCommissionsForArtist(ctx context.Context, artistID string, requesterID *string, count int, offset int) (*domainOpenCommissionModel.GetOpenCommissionResult, error)
 	AddOpenCommission(ctx context.Context, requesterID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*string, error)
 }
