@@ -46,15 +46,15 @@ func (o OpenCommissionController) GetOpenCommissions(c *gin.Context) {
 
 	filter := model.OpenCommissionFilter{
 		ArtistID: artistID,
-		Count: count,
-		Offset: offset,
+		Count:    count,
+		Offset:   offset,
 	}
 
 	result, err := o.openCommUseCase.GetOpenCommissions(c, filter)
 	if err != nil {
 		c.JSON(http2.NewErrorResponse(err))
 	}
-	c.JSON(http.StatusOK, get_open_commissions.NewResponse(*result))
+	c.JSON(http.StatusOK, get_open_commissions.NewResponse(*result, artistID))
 }
 
 func (o OpenCommissionController) UpdateOpenCommission(c *gin.Context) {
@@ -89,10 +89,10 @@ func (o OpenCommissionController) UpdateOpenCommission(c *gin.Context) {
 	}
 
 	updater := model.OpenCommissionUpdater{
-		ID:        openCommissionID,
-		Title:     &title,
-		Desc:      &desc,
-		DayNeed:   dayNeed,
+		ID:      openCommissionID,
+		Title:   &title,
+		Desc:    &desc,
+		DayNeed: dayNeed,
 	}
 
 	err := o.openCommUseCase.UpdateOpenCommission(c, artistID, updater)
