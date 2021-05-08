@@ -54,7 +54,7 @@ func (o OpenCommissionController) GetOpenCommissions(c *gin.Context) {
 	if err != nil {
 		c.JSON(http2.NewErrorResponse(err))
 	}
-	c.JSON(http.StatusOK, get_open_commissions.NewResponse(*result, artistID))
+	c.JSON(http.StatusOK, get_open_commissions.NewResponse(*result, artistID, count))
 }
 
 func (o OpenCommissionController) UpdateOpenCommission(c *gin.Context) {

@@ -6,16 +6,16 @@ type Response struct {
 	ArtistID        string                 `json:"artistId"`
 	OpenCommissions []model.OpenCommission `json:"openCommissions"`
 	Offset          int                    `json:"offset"`
-	Count           int                    `json:"count"`
+	FetchCount      int                    `json:"fetchCount"`
 	Total           int                    `json:"total"`
 }
 
-func NewResponse(result model.GetOpenCommissionResult, artistID string) *Response {
+func NewResponse(result model.GetOpenCommissionResult, artistID string, fetchCount int) *Response {
 	return &Response{
 		ArtistID:        artistID,
 		OpenCommissions: result.OpenCommissions,
 		Offset:          result.Offset,
-		Count:           len(result.OpenCommissions),
+		FetchCount:      fetchCount,
 		Total:           result.Total,
 	}
 }
