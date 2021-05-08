@@ -191,7 +191,7 @@ func (a ArtistController) AddOpenCommissionForArtist(c *gin.Context) {
 
 	id, err := a.artistUseCase.AddOpenCommission(c, artistID, creator)
 	if err != nil {
-		add_open_commission_for_artist.NewErrorResponse(err)
+		c.JSON(add_open_commission_for_artist.NewErrorResponse(err))
 		return
 	}
 	c.JSON(http.StatusOK, add_open_commission_for_artist.NewResponse(*id))
