@@ -80,9 +80,16 @@ func (m mongoOpenCommissionRepo) GetOpenCommission(ctx context.Context, openComm
 func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter domainOpenCommissionModel.OpenCommissionFilter) (*domainOpenCommissionModel.GetOpenCommissionResult, error) {
 
 	pipeline := []bson.M{
-		{"$match": bson.M{"openCommissions.id": filter.ArtistID}},
-		{"$project": bson.M{"openCommissions": 1, "$total": bson.M{"$size": "$openCommissions"}}},
-		{"$slice": bson.A{"$openCommissions", filter.Offset, filter.Count}},
+		{"$match": bson.M{"artistId": filter.ArtistID}},
+		{"$project": bson.M{
+			"total": bson.M{
+				"$size": "$openCommissions",
+			},
+			"openCommissions": bson.M{
+				"$slice": bson.A{"$openCommissions", filter.Offset, filter.Count},
+			},
+		},
+		},
 	}
 
 	cursor, err := m.collection.Aggregate(ctx, pipeline)

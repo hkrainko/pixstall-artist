@@ -30,14 +30,16 @@ func InitArtistController(db *mongo.Database, grpcConn *grpc.ClientConn, conn *a
 	fileRepo := repo.NewGRPCFileRepository(grpcConn)
 	msg_brokerRepo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
 	useCase := usecase.NewArtistUseCase(artistRepo, open_commissionRepo, fileRepo, msg_brokerRepo)
-	artistController := http.NewArtistController(useCase)
+	open_commissionUseCase := usecase2.NewOpenCommissionUseCase(open_commissionRepo, msg_brokerRepo, fileRepo)
+	artistController := http.NewArtistController(useCase, open_commissionUseCase)
 	return artistController
 }
 
-func InitOpenCommissionController(db *mongo.Database, conn *amqp.Connection) http2.OpenCommissionController {
+func InitOpenCommissionController(db *mongo.Database, grpcConn *grpc.ClientConn, conn *amqp.Connection) http2.OpenCommissionController {
 	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
 	msg_brokerRepo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
-	useCase := usecase2.NewOpenCommissionUseCase(open_commissionRepo, msg_brokerRepo)
+	fileRepo := repo.NewGRPCFileRepository(grpcConn)
+	useCase := usecase2.NewOpenCommissionUseCase(open_commissionRepo, msg_brokerRepo, fileRepo)
 	openCommissionController := http2.NewOpenCommissionController(useCase)
 	return openCommissionController
 }

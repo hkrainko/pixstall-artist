@@ -116,18 +116,6 @@ func (a artistUseCase) UpdateArtist(ctx context.Context, updater domainArtistMod
 }
 
 // Open Commission
-func (a artistUseCase) GetOpenCommissionsForArtist(ctx context.Context, artistID string, requesterID *string, count int, offset int) (*domainOpenCommissionModel.GetOpenCommissionResult, error) {
-	filter := domainOpenCommissionModel.OpenCommissionFilter{
-		ArtistID: artistID,
-		Count:    count,
-		Offset:   offset,
-	}
-	oc, err := a.openCommRepo.GetOpenCommissions(ctx, filter)
-	if err != nil {
-		return nil, err
-	}
-	return oc, nil
-}
 
 func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*string, error) {
 	if len(openCommCreator.SampleImages) <= 0 {

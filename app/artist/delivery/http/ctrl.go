@@ -10,20 +10,26 @@ import (
 	"net/http"
 	add_open_commission_for_artist "pixstall-artist/app/artist/delivery/model/add-open-commission-for-artist"
 	"pixstall-artist/app/artist/delivery/model/get-artist"
+	http2 "pixstall-artist/app/error/http"
+	get_open_commissions "pixstall-artist/app/open-commission/delivery/http/model/get-open-commissions"
 	domainArtist "pixstall-artist/domain/artist"
 	domain "pixstall-artist/domain/artist/model"
+	error2 "pixstall-artist/domain/error"
 	model2 "pixstall-artist/domain/file/model"
+	domainOpenComm "pixstall-artist/domain/open-commission"
 	"pixstall-artist/domain/open-commission/model"
 	"strconv"
 )
 
 type ArtistController struct {
 	artistUseCase domainArtist.UseCase
+	openCommUseCase domainOpenComm.UseCase
 }
 
-func NewArtistController(useCase domainArtist.UseCase) ArtistController {
+func NewArtistController(useCase domainArtist.UseCase, openCommUseCase domainOpenComm.UseCase) ArtistController {
 	return ArtistController{
 		artistUseCase: useCase,
+		openCommUseCase: openCommUseCase,
 	}
 }
 
@@ -93,7 +99,31 @@ func (a ArtistController) UpdateArtist(c *gin.Context) {
 }
 
 func (a ArtistController) GetOpenCommissionsForArtist(c *gin.Context) {
+	//tokenUserID := c.GetString("userId")
+	artistID := c.Param("id")
+	count, err := strconv.Atoi(c.Query("count"))
+	if err != nil {
+		c.JSON(http2.NewErrorResponse(error2.BadRequestError))
+		return
+	}
+	offset, err := strconv.Atoi(c.Query("offset"))
+	if err != nil {
+		c.JSON(http2.NewErrorResponse(error2.BadRequestError))
+		return
+	}
 
+	filter := model.OpenCommissionFilter{
+		ArtistID: artistID,
+		Count:    count,
+		Offset:   offset,
+	}
+
+	result, err := a.openCommUseCase.GetOpenCommissions(c, filter)
+	if err != nil {
+		c.JSON(http2.NewErrorResponse(err))
+		return
+	}
+	c.JSON(http.StatusOK, get_open_commissions.NewResponse(*result, artistID, count))
 }
 
 func (a ArtistController) GetOpenCommissionsDetailsForArtist(c *gin.Context) {
@@ -189,7 +219,7 @@ func (a ArtistController) AddOpenCommissionForArtist(c *gin.Context) {
 		creator.SampleImages = *imageFiles
 	}
 
-	id, err := a.artistUseCase.AddOpenCommission(c, artistID, creator)
+	id, err := a.openCommUseCase.AddOpenCommission(c, artistID, creator)
 	if err != nil {
 		c.JSON(add_open_commission_for_artist.NewErrorResponse(err))
 		return
