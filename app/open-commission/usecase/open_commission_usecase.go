@@ -22,6 +22,7 @@ func NewOpenCommissionUseCase(openCommRepo openCommission.Repo, msgBrokerRepo ms
 	return &openCommissionUseCase{
 		openCommRepo:  openCommRepo,
 		msgBrokerRepo: msgBrokerRepo,
+		imageRepo: imageRepo,
 	}
 }
 
