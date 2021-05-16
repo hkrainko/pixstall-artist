@@ -10,7 +10,7 @@ type Response struct {
 	Total           int                    `json:"total"`
 }
 
-func NewResponse(result model.GetOpenCommissionResult, artistID string, fetchCount int) *Response {
+func NewResponse(result model.GetOpenCommissionsResult, artistID string, fetchCount int) *Response {
 	return &Response{
 		ArtistID:        artistID,
 		OpenCommissions: result.OpenCommissions,

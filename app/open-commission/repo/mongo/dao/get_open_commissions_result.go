@@ -2,21 +2,21 @@ package dao
 
 import "pixstall-artist/domain/open-commission/model"
 
-type GetOpenCommissionResult struct {
+type GetOpenCommissionsResult struct {
 	OpenCommissions []OpenCommission `bson:"openCommissions"`
 	Total           int              `bson:"total"`
 }
 
-func (g GetOpenCommissionResult) ToDomainGetOpenCommissionResult(offSet int) *model.GetOpenCommissionResult {
+func (g GetOpenCommissionsResult) ToDomainGetOpenCommissionsResult(offset int) *model.GetOpenCommissionsResult {
 
 	var dOpenComms []model.OpenCommission
 	for _, oc := range g.OpenCommissions {
 		dOpenComms = append(dOpenComms, *oc.ToDomainOpenCommission())
 	}
 
-	return &model.GetOpenCommissionResult{
+	return &model.GetOpenCommissionsResult{
 		OpenCommissions: dOpenComms,
-		Offset:          offSet,
+		Offset:          offset,
 		Total:           g.Total,
 	}
 }

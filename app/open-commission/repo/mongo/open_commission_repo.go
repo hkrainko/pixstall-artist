@@ -77,7 +77,7 @@ func (m mongoOpenCommissionRepo) GetOpenCommission(ctx context.Context, openComm
 	return nil, domainOpenCommissionModel.OpenCommissionErrorNotFound
 }
 
-func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter domainOpenCommissionModel.OpenCommissionFilter) (*domainOpenCommissionModel.GetOpenCommissionResult, error) {
+func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter domainOpenCommissionModel.OpenCommissionFilter) (*domainOpenCommissionModel.GetOpenCommissionsResult, error) {
 
 	pipeline := []bson.M{
 		{"$match": bson.M{"artistId": filter.ArtistID}},
@@ -88,8 +88,7 @@ func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter 
 			"openCommissions": bson.M{
 				"$slice": bson.A{"$openCommissions", filter.Offset, filter.Count},
 			},
-		},
-		},
+		}},
 	}
 
 	cursor, err := m.collection.Aggregate(ctx, pipeline)
@@ -98,15 +97,15 @@ func (m mongoOpenCommissionRepo) GetOpenCommissions(ctx context.Context, filter 
 	}
 	defer cursor.Close(ctx)
 
-	var dGetOpenCommResult *domainOpenCommissionModel.GetOpenCommissionResult
+	var dGetOpenCommsResult *domainOpenCommissionModel.GetOpenCommissionsResult
 	for cursor.Next(ctx) {
-		var r dao.GetOpenCommissionResult
+		var r dao.GetOpenCommissionsResult
 		if err := cursor.Decode(&r); err != nil {
 			return nil, err
 		}
-		dGetOpenCommResult = r.ToDomainGetOpenCommissionResult(filter.Offset)
+		dGetOpenCommsResult = r.ToDomainGetOpenCommissionsResult(filter.Offset)
 	}
-	return dGetOpenCommResult, nil
+	return dGetOpenCommsResult, nil
 }
 
 func (m mongoOpenCommissionRepo) UpdateOpenCommission(ctx context.Context, openCommUpdater domainOpenCommissionModel.OpenCommissionUpdater) error {

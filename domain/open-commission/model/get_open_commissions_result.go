@@ -1,6 +1,6 @@
 package model
 
-type GetOpenCommissionResult struct {
+type GetOpenCommissionsResult struct {
 	OpenCommissions []OpenCommission
 	Offset          int
 	Total           int

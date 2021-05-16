@@ -59,7 +59,7 @@ func (o openCommissionUseCase) GetOpenCommission(ctx context.Context, id string,
 	panic("implement me")
 }
 
-func (o openCommissionUseCase) GetOpenCommissions(ctx context.Context, filter domainOpenCommModel.OpenCommissionFilter) (*domainOpenCommModel.GetOpenCommissionResult, error) {
+func (o openCommissionUseCase) GetOpenCommissions(ctx context.Context, filter domainOpenCommModel.OpenCommissionFilter) (*domainOpenCommModel.GetOpenCommissionsResult, error) {
 	return o.openCommRepo.GetOpenCommissions(ctx, filter)
 }
 
