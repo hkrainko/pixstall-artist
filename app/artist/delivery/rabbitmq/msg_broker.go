@@ -145,6 +145,6 @@ func (a ArtistMessageBroker) updateArtistUser(ctx context.Context, body []byte) 
 	if err != nil {
 		return err
 	}
-	log.Printf("UpdateArtistUser success ID: %v", id)
+	log.Printf("UpdateArtistUser success ID: %v", *id)
 	return nil
 }
