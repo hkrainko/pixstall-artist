@@ -11,6 +11,7 @@ import (
 	"pixstall-artist/domain/artist/model"
 	domainArtworkModel "pixstall-artist/domain/artwork/model"
 	domainFanModel "pixstall-artist/domain/fan/model"
+	model2 "pixstall-artist/domain/model"
 )
 
 type mongoArtistRepo struct {
@@ -60,6 +61,39 @@ func (m mongoArtistRepo) GetArtist(ctx context.Context, artistID string) (*model
 		}
 	}
 	return mongoArtist.ToDomainArtist(), nil
+}
+
+func (m mongoArtistRepo) GetArtists(ctx context.Context, filter model.ArtistFilter, sorter model.ArtistSorter) (*[]model.Artist, error) {
+
+	opts := options.Find()
+	if sorter.RegTime != nil {
+		desc := 0 //desc
+		if *sorter.RegTime == model2.SortOrderAscending {
+			desc = 1 //asc
+		}
+		opts.SetSort(bson.D{{"regTime", desc}})
+	}
+	opts.SetSkip(int64(filter.Offset))
+	opts.SetLimit(int64(filter.Count))
+	mongoFilter := bson.M{}
+	if filter.State != nil {
+		mongoFilter["state"] = *filter.State
+	}
+
+	cursor, err := m.collection.Find(ctx, filter, opts)
+	if err != nil {
+		switch err {
+		case mongo.ErrNoDocuments:
+			return nil, model.ArtistErrorNotFound
+		default:
+			return nil, model.ArtistErrorUnknown
+		}
+	}
+	var artists []model.Artist
+	if err = cursor.All(ctx, &artists); err != nil {
+		return nil, model.ArtistErrorUnknown
+	}
+	return &artists, nil
 }
 
 func (m mongoArtistRepo) GetArtistDetails(ctx context.Context, artistID string) (*model.Artist, error) {

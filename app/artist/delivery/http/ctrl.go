@@ -10,6 +10,7 @@ import (
 	"net/http"
 	add_open_commission_for_artist "pixstall-artist/app/artist/delivery/model/add-open-commission-for-artist"
 	"pixstall-artist/app/artist/delivery/model/get-artist"
+	get_artists "pixstall-artist/app/artist/delivery/model/get-artists"
 	http2 "pixstall-artist/app/error/http"
 	get_open_commissions "pixstall-artist/app/open-commission/delivery/http/model/get-open-commissions"
 	domainArtist "pixstall-artist/domain/artist"
@@ -18,6 +19,7 @@ import (
 	model2 "pixstall-artist/domain/file/model"
 	domainOpenComm "pixstall-artist/domain/open-commission"
 	"pixstall-artist/domain/open-commission/model"
+	model3 "pixstall-artist/domain/user/model"
 	"strconv"
 )
 
@@ -42,6 +44,37 @@ func (a ArtistController) GetArtist(c *gin.Context) {
 	}
 
 	c.JSON(200, get_artist.NewResponse(*artist))
+}
+
+func (a ArtistController) GetArtists(c *gin.Context) {
+	count := getIntFromQuery("count", c)
+	if count == nil {
+		c.AbortWithStatusJSON(get_artists.NewErrorResponse(error2.BadRequestError))
+		return
+	}
+	offset := getIntFromQuery("offset", c)
+	if offset == nil {
+		c.AbortWithStatusJSON(get_artists.NewErrorResponse(error2.BadRequestError))
+		return
+	}
+	sorter := getArtistsSorter(c.Query("sort"))
+	if sorter == nil {
+		c.AbortWithStatusJSON(get_artists.NewErrorResponse(error2.BadRequestError))
+		return
+	}
+	userState := model3.UserStateActive
+	filter := domain.ArtistFilter{
+		Count:  *count,
+		Offset: *offset,
+		State:  &userState,
+	}
+
+	artists, err := a.artistUseCase.GetArtists(c, filter, *sorter)
+	if err != nil {
+		c.AbortWithStatusJSON(get_artists.NewErrorResponse(err))
+		return
+	}
+	c.JSON(http.StatusOK, get_artists.NewResponse(*artists, *count, *offset))
 }
 
 func (a ArtistController) GetArtistDetails(c *gin.Context) {
@@ -296,4 +329,16 @@ func getFileContentType(out multipart.File) (string, error) {
 	contentType := http.DetectContentType(buffer)
 
 	return contentType, nil
+}
+
+func getIntFromQuery(q string, c *gin.Context) *int {
+	str, exist := c.GetQuery(q)
+	if !exist {
+		return nil
+	}
+	result, err := strconv.Atoi(str)
+	if err != nil {
+		return nil
+	}
+	return &result
 }

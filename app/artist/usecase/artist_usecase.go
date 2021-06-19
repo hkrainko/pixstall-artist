@@ -84,6 +84,14 @@ func (a artistUseCase) GetArtist(ctx context.Context, artistID string) (*domainA
 	return dArtist, nil
 }
 
+func (a artistUseCase) GetArtists(ctx context.Context, filter domainArtistModel.ArtistFilter, sorter domainArtistModel.ArtistSorter) (*[]domainArtistModel.Artist, error) {
+	dArtist, err := a.artistRepo.GetArtists(ctx, filter, sorter)
+	if err != nil {
+		return nil, err
+	}
+	return dArtist, nil
+}
+
 func (a artistUseCase) GetArtistDetails(ctx context.Context, artistID string, requesterID *string) (*domainArtistModel.Artist, error) {
 	if requesterID == nil || *requesterID != artistID {
 		return nil, domainArtistModel.ArtistErrorUnAuth

@@ -101,6 +101,7 @@ func main() {
 	{
 		ctrl := InitArtistController(db, fileGRPCConn, rabbitmqConn)
 		// Artist
+		artistGroup.GET("", ctrl.GetArtists)
 		artistGroup.GET("/:id", ctrl.GetArtist)
 		artistGroup.GET("/:id/details", userIDExtractor.ExtractPayloadsFromJWT, ctrl.GetArtistDetails)
 		artistGroup.PATCH("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctrl.UpdateArtist)
