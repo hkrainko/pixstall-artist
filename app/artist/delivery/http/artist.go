@@ -13,7 +13,7 @@ func getArtistsSorter(str string) *model.ArtistSorter {
 	symbol := str[:1]
 	if symbol == "-" {
 		switch str[1:len(str)] {
-		case "regTime":
+		case "reg-time":
 			v := model2.SortOrderDescending
 			sorter.RegTime = &v
 		default:
@@ -21,7 +21,7 @@ func getArtistsSorter(str string) *model.ArtistSorter {
 		}
 	} else {
 		switch str {
-		case "regTime":
+		case "reg-time":
 			v := model2.SortOrderAscending
 			sorter.RegTime = &v
 		default:

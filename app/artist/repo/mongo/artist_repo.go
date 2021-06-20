@@ -67,7 +67,7 @@ func (m mongoArtistRepo) GetArtists(ctx context.Context, filter model.ArtistFilt
 
 	opts := options.Find()
 	if sorter.RegTime != nil {
-		desc := 0 //desc
+		desc := -1 //desc
 		if *sorter.RegTime == model2.SortOrderAscending {
 			desc = 1 //asc
 		}
@@ -80,7 +80,7 @@ func (m mongoArtistRepo) GetArtists(ctx context.Context, filter model.ArtistFilt
 		mongoFilter["state"] = *filter.State
 	}
 
-	cursor, err := m.collection.Find(ctx, filter, opts)
+	cursor, err := m.collection.Find(ctx, mongoFilter, opts)
 	if err != nil {
 		switch err {
 		case mongo.ErrNoDocuments:
@@ -89,11 +89,15 @@ func (m mongoArtistRepo) GetArtists(ctx context.Context, filter model.ArtistFilt
 			return nil, model.ArtistErrorUnknown
 		}
 	}
-	var artists []model.Artist
-	if err = cursor.All(ctx, &artists); err != nil {
+	mongoArtists := make([]mongoModel.Artist, 0)
+	if err = cursor.All(ctx, &mongoArtists); err != nil {
 		return nil, model.ArtistErrorUnknown
 	}
-	return &artists, nil
+	domainArtists := make([]model.Artist, 0)
+	for _, v := range mongoArtists {
+		domainArtists = append(domainArtists, *v.ToDomainArtist())
+	}
+	return &domainArtists, nil
 }
 
 func (m mongoArtistRepo) GetArtistDetails(ctx context.Context, artistID string) (*model.Artist, error) {
