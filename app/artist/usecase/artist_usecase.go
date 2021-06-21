@@ -68,7 +68,7 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 	if err != nil {
 		return err
 	}
-	err = a.msgBrokerRepo.SendArtistCreatedMsg(ctx, dArtist)
+	err = a.msgBrokerRepo.SendArtistCreatedEventMsg(ctx, dArtist)
 	if err != nil {
 		log.Println(err)
 		// Ignore error
@@ -115,7 +115,7 @@ func (a artistUseCase) UpdateArtist(ctx context.Context, updater domainArtistMod
 	if err != nil {
 		return nil, err
 	}
-	err = a.msgBrokerRepo.SendArtistUpdatedMsg(ctx, updater)
+	err = a.msgBrokerRepo.SendArtistUpdatedEventMsg(ctx, updater)
 	if err != nil {
 		log.Println(err)
 		// Ignore error

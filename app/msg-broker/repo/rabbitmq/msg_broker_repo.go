@@ -55,8 +55,8 @@ func (r rabbitmqMsgBrokerRepo) SendCommOpenCommValidationMsg(ctx context.Context
 	return nil
 }
 
-func (r rabbitmqMsgBrokerRepo) SendArtistCreatedMsg(ctx context.Context, artist model4.Artist) error {
-	createdArtist := model2.NewCreatedArtist(artist)
+func (r rabbitmqMsgBrokerRepo) SendArtistCreatedEventMsg(ctx context.Context, artist model4.Artist) error {
+	createdArtist := model2.NewArtistCreatedEventMsg(artist)
 	b, err := json.Marshal(createdArtist)
 	if err != nil {
 		return err
@@ -77,15 +77,15 @@ func (r rabbitmqMsgBrokerRepo) SendArtistCreatedMsg(ctx context.Context, artist 
 	return nil
 }
 
-func (r rabbitmqMsgBrokerRepo) SendArtistUpdatedMsg(ctx context.Context, updater model4.ArtistUpdater) error {
-	updatedArtist := model2.NewUpdatedArtist(updater)
+func (r rabbitmqMsgBrokerRepo) SendArtistUpdatedEventMsg(ctx context.Context, updater model4.ArtistUpdater) error {
+	updatedArtist := model2.NewArtistUpdatedEventMsg(updater)
 	b, err := json.Marshal(updatedArtist)
 	if err != nil {
 		return err
 	}
 	err = r.ch.Publish(
 		"artist",
-		"artist.event.created",
+		"artist.event.updated",
 		false,
 		false,
 		amqp.Publishing{

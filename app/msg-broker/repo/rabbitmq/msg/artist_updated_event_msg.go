@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type UpdatedArtist struct {
+type ArtistUpdatedEventMsg struct {
 	ArtistID string `json:"artistId"`
 
 	UserName    *string          `json:"userName,omitempty"`
@@ -35,8 +35,8 @@ type UpdatedArtist struct {
 	LastUpdatedTime        *time.Time `json:"lastUpdatedTime,omitempty"`
 }
 
-func NewUpdatedArtist(updater model2.ArtistUpdater) UpdatedArtist {
-	return UpdatedArtist{
+func NewArtistUpdatedEventMsg(updater model2.ArtistUpdater) ArtistUpdatedEventMsg {
+	return ArtistUpdatedEventMsg{
 		ArtistID:               updater.ArtistID,
 		UserName:               updater.UserName,
 		ProfilePath:            updater.ProfilePath,
