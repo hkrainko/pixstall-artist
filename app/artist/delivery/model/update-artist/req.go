@@ -5,5 +5,5 @@ import (
 )
 
 type Request struct {
-	*model2.ArtistUpdater
+	*model2.ArtistUpdater `json:",inline"`
 }
