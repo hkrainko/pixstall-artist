@@ -25,6 +25,10 @@ func (b bookmarkUseCase) AddBookmark(ctx context.Context, userID string, artistI
 	return b.artistRepo.AddBookmark(ctx, userID, artistID)
 }
 
+func (b bookmarkUseCase) GetBookmarkIDs(ctx context.Context, userID string) (*[]string, error) {
+	return b.artistRepo.GetBookmarkIDs(ctx, userID)
+}
+
 func (b bookmarkUseCase) GetBookmarksForUser(ctx context.Context, userID string, count int, offset int) (*[]model.Artist, error) {
 	active := model2.UserStateActive
 	filter := model.ArtistFilter{

@@ -120,10 +120,11 @@ func main() {
 		openCommGroup.DELETE("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctrl.DeleteOpenCommission)
 	}
 
-	bookmarkGroup := apiGroup.Group("/bookmarks/me/artists")
+	bookmarkGroup := apiGroup.Group("/artists-bookmarks")
 	{
 		ctrl := InitBookmarkController(db, rabbitmqConn)
 		bookmarkGroup.GET("", userIDExtractor.ExtractPayloadsFromJWT, ctrl.GetBookmarks)
+		bookmarkGroup.GET("/ids", userIDExtractor.ExtractPayloadsFromJWT, ctrl.GetBookmarks)
 		bookmarkGroup.POST("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctrl.AddBookmark)
 		bookmarkGroup.DELETE("/:id", userIDExtractor.ExtractPayloadsFromJWT, ctrl.DeleteBookmark)
 	}

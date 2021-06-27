@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	mongoModel "pixstall-artist/app/artist/repo/mongo/model"
+	mongoModel "pixstall-artist/app/artist/repo/mongo/dao"
 	"pixstall-artist/domain/artist"
 	"pixstall-artist/domain/artist/model"
 	error2 "pixstall-artist/domain/error"
@@ -215,6 +215,32 @@ func (m mongoArtistRepo) AddBookmark(ctx context.Context, userID string, artistI
 	}
 	fmt.Printf("AddBookmark success: %v", result.UpsertedID)
 	return nil
+}
+
+func (m mongoArtistRepo) GetBookmarkIDs(ctx context.Context, userID string) (*[]string, error) {
+	var pipeline []bson.M
+	pipeline = append(pipeline, bson.M{"$exist": "bookmarks." + userID})
+	pipeline = append(pipeline, bson.M{
+		"$group": bson.M{
+			"_id": nil,
+			"ids": bson.M{"$push": "artistId"},
+		},
+	})
+
+	cursor, err := m.collection.Aggregate(ctx, pipeline)
+	defer cursor.Close(ctx)
+	if err != nil {
+		return nil, error2.UnknownError
+	}
+	var result *[]string
+	for cursor.Next(ctx) {
+		var r mongoModel.GetBookmarkIDsResult
+		if err := cursor.Decode(&r); err != nil {
+			return nil, err
+		}
+		result = &r.IDs
+	}
+	return result, nil
 }
 
 func (m mongoArtistRepo) RemoveBookmark(ctx context.Context, userID string, artistID string) error {

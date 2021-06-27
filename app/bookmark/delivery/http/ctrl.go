@@ -5,6 +5,7 @@ import (
 	"net/http"
 	add_bookmark "pixstall-artist/app/bookmark/delivery/http/resp/add-bookmark"
 	delete_bookmark "pixstall-artist/app/bookmark/delivery/http/resp/delete-bookmark"
+	get_bookmark_ids "pixstall-artist/app/bookmark/delivery/http/resp/get-bookmark-ids"
 	get_bookmarks "pixstall-artist/app/bookmark/delivery/http/resp/get-bookmarks"
 	http2 "pixstall-artist/app/error/http"
 	"pixstall-artist/domain/bookmark"
@@ -53,6 +54,17 @@ func (b BookmarkController) GetBookmarks(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, get_bookmarks.NewResponse(*result, count, offset))
+}
+
+func (b BookmarkController) GetBookmarkIDs(c *gin.Context) {
+	tokenUserID := c.GetString("userId")
+
+	result, err := b.bookmarkUseCase.GetBookmarkIDs(c, tokenUserID)
+	if err != nil {
+		c.AbortWithStatusJSON(http2.NewErrorResponse(err))
+		return
+	}
+	c.JSON(http.StatusOK, get_bookmark_ids.NewResponse(*result))
 }
 
 func (b BookmarkController) DeleteBookmark(c *gin.Context) {

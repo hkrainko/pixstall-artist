@@ -14,6 +14,7 @@ type Repo interface {
 	UpdateArtist(ctx context.Context, updater *domainArtistModel.ArtistUpdater) error
 	// bookmark
 	AddBookmark(ctx context.Context, userID string, artistID string) error
+	GetBookmarkIDs(ctx context.Context, userID string) (*[]string, error)
 	RemoveBookmark(ctx context.Context, userID string, artistID string) error
 	// fan
 	AddFan(ctx context.Context, artistID string, fan model.Fan) error
