@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	add_bookmark "pixstall-artist/app/bookmark/delivery/http/resp/add-bookmark"
+	delete_bookmark "pixstall-artist/app/bookmark/delivery/http/resp/delete-bookmark"
 	get_bookmarks "pixstall-artist/app/bookmark/delivery/http/resp/get-bookmarks"
 	http2 "pixstall-artist/app/error/http"
 	"pixstall-artist/domain/bookmark"
@@ -45,6 +46,7 @@ func (b BookmarkController) GetBookmarks(c *gin.Context) {
 		c.JSON(http2.NewErrorResponse(error2.BadRequestError))
 		return
 	}
+
 	result, err := b.bookmarkUseCase.GetBookmarksForUser(c, tokenUserID, count, offset)
 	if err != nil {
 		c.AbortWithStatusJSON(http2.NewErrorResponse(err))
@@ -57,5 +59,10 @@ func (b BookmarkController) DeleteBookmark(c *gin.Context) {
 	tokenUserID := c.GetString("userId")
 	artistID := c.Param("id")
 
-
+	err := b.bookmarkUseCase.RemoveBookmark(c, tokenUserID, artistID)
+	if err != nil {
+		c.AbortWithStatusJSON(http2.NewErrorResponse(err))
+		return
+	}
+	c.JSON(http.StatusOK, delete_bookmark.Response{ArtistID: artistID})
 }
