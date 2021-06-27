@@ -3,7 +3,6 @@ package artist
 import (
 	"context"
 	domainArtistModel "pixstall-artist/domain/artist/model"
-	domainArtworkModel "pixstall-artist/domain/artwork/model"
 	"pixstall-artist/domain/fan/model"
 )
 
@@ -13,9 +12,10 @@ type Repo interface {
 	GetArtists(ctx context.Context, filter domainArtistModel.ArtistFilter, sorter domainArtistModel.ArtistSorter) (*[]domainArtistModel.Artist, error)
 	GetArtistDetails(ctx context.Context, artistID string) (*domainArtistModel.Artist, error)
 	UpdateArtist(ctx context.Context, updater *domainArtistModel.ArtistUpdater) error
-	// Artwork
-	AddArtwork(ctx context.Context, artwork *domainArtworkModel.Artwork) error
-	// Fan
+	// bookmark
+	AddBookmark(ctx context.Context, userID string, artistID string) error
+	RemoveBookmark(ctx context.Context, userID string, artistID string) error
+	// fan
 	AddFan(ctx context.Context, artistID string, fan model.Fan) error
 	RemoveFan(ctx context.Context, artistID string, fanId string) error
 }

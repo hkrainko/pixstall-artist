@@ -3,7 +3,8 @@ package model
 import "pixstall-artist/domain/user/model"
 
 type ArtistFilter struct {
-	Count  int
-	Offset int
-	State  *model.UserState
+	Count          int
+	Offset         int
+	BookmarkUserID *string
+	State          *model.UserState
 }

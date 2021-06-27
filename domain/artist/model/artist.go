@@ -1,7 +1,6 @@
 package model
 
 import (
-	domainArtworkModel "pixstall-artist/domain/artwork/model"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	model2 "pixstall-artist/domain/user/model"
 )
@@ -15,7 +14,8 @@ type Artist struct {
 	PaymentMethods    []string                                   `json:"paymentMethods"`
 	CommissionDetails CommissionDetails                          `json:"commissionDetails"`
 	OpenCommissions   []domainOpenCommissionModel.OpenCommission `json:"openCommissions"`
-	Artworks          []domainArtworkModel.Artwork               `json:"artworks"`
+	Bookmarks         []string                                   `json:"bookmarks"`
+	BookmarkCount     int                                        `json:"bookmarkCount,omitempty"`
 }
 
 type ArtistIntro struct {

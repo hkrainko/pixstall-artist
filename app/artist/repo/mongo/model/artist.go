@@ -3,9 +3,9 @@ package model
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	domainArtistModel "pixstall-artist/domain/artist/model"
-	domainArtworkModel "pixstall-artist/domain/artwork/model"
 	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	model2 "pixstall-artist/domain/user/model"
+	"time"
 )
 
 type Artist struct {
@@ -17,12 +17,12 @@ type Artist struct {
 	CommissionDetails domainArtistModel.CommissionDetails        `bson:"commissionDetails,omitempty"`
 	ArtistBoard       domainArtistModel.ArtistBoard              `bson:"artistBoard,omitempty"`
 	OpenCommissions   []domainOpenCommissionModel.OpenCommission `bson:"openCommissions,omitempty"`
-	Artworks          []domainArtworkModel.Artwork               `bson:"artworks,omitempty"`
+	Bookmarks         map[string]time.Time                       `bson:"bookmarks"`
 }
 
 func NewFromDomainArtist(d *domainArtistModel.Artist) Artist {
 	return Artist{
-		ArtistID:          d.ArtistID,
+		ArtistID: d.ArtistID,
 		User: model2.User{
 			UserID:          d.UserID,
 			UserName:        d.UserName,
@@ -39,7 +39,7 @@ func NewFromDomainArtist(d *domainArtistModel.Artist) Artist {
 		CommissionDetails: d.CommissionDetails,
 		ArtistBoard:       d.ArtistBoard,
 		OpenCommissions:   d.OpenCommissions,
-		Artworks:          d.Artworks,
+		Bookmarks:         make(map[string]time.Time, 0),
 	}
 }
 
@@ -62,6 +62,6 @@ func (a *Artist) ToDomainArtist() *domainArtistModel.Artist {
 		CommissionDetails: a.CommissionDetails,
 		ArtistBoard:       a.ArtistBoard,
 		OpenCommissions:   a.OpenCommissions,
-		Artworks:          a.Artworks,
+		BookmarkCount:     len(a.Bookmarks),
 	}
 }

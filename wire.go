@@ -11,6 +11,8 @@ import (
 	artist_deliv_rabbitmq "pixstall-artist/app/artist/delivery/rabbitmq"
 	artist_repo "pixstall-artist/app/artist/repo/mongo"
 	artist_ucase "pixstall-artist/app/artist/usecase"
+	"pixstall-artist/app/bookmark/delivery/http"
+	"pixstall-artist/app/bookmark/usecase"
 	comm_deliv_rabbitmq "pixstall-artist/app/commission/delivery/rabbitmq"
 	comm_ucase "pixstall-artist/app/commission/usecase"
 	file_repo "pixstall-artist/app/file/repo"
@@ -44,6 +46,16 @@ func InitOpenCommissionController(db *mongo.Database, grpcConn *grpc.ClientConn,
 	return opencomm_deliv_http.OpenCommissionController{}
 }
 
+func InitBookmarkController(db *mongo.Database, conn *amqp.Connection) http.BookmarkController {
+	wire.Build(
+		http.NewBookmarkController,
+		usecase.NewBookmarkUseCase,
+		artist_repo.NewMongoArtistRepo,
+		msg_broker_repo.NewRabbitMQMsgBrokerRepo,
+	)
+	return http.BookmarkController{}
+}
+
 func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection, grpcConn *grpc.ClientConn) artist_deliv_rabbitmq.ArtistMessageBroker {
 	wire.Build(
 		artist_deliv_rabbitmq.NewRabbitMQArtistMessageBroker,
@@ -62,6 +74,6 @@ func InitCommissionMessageBroker(db *mongo.Database, conn *amqp.Connection) comm
 		comm_ucase.NewCommissionUseCase,
 		opencomm_repo.NewMongoOpenCommissionRepo,
 		msg_broker_repo.NewRabbitMQMsgBrokerRepo,
-		)
+	)
 	return comm_deliv_rabbitmq.CommissionMessageBroker{}
 }

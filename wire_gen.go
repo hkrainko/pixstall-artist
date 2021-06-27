@@ -13,8 +13,10 @@ import (
 	rabbitmq2 "pixstall-artist/app/artist/delivery/rabbitmq"
 	mongo2 "pixstall-artist/app/artist/repo/mongo"
 	"pixstall-artist/app/artist/usecase"
+	http3 "pixstall-artist/app/bookmark/delivery/http"
+	usecase3 "pixstall-artist/app/bookmark/usecase"
 	rabbitmq3 "pixstall-artist/app/commission/delivery/rabbitmq"
-	usecase3 "pixstall-artist/app/commission/usecase"
+	usecase4 "pixstall-artist/app/commission/usecase"
 	"pixstall-artist/app/file/repo"
 	"pixstall-artist/app/msg-broker/repo/rabbitmq"
 	http2 "pixstall-artist/app/open-commission/delivery/http"
@@ -44,6 +46,14 @@ func InitOpenCommissionController(db *mongo.Database, grpcConn *grpc.ClientConn,
 	return openCommissionController
 }
 
+func InitBookmarkController(db *mongo.Database, conn *amqp.Connection) http3.BookmarkController {
+	artistRepo := mongo2.NewMongoArtistRepo(db)
+	msg_brokerRepo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
+	useCase := usecase3.NewBookmarkUseCase(artistRepo, msg_brokerRepo)
+	bookmarkController := http3.NewBookmarkController(useCase)
+	return bookmarkController
+}
+
 func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection, grpcConn *grpc.ClientConn) rabbitmq2.ArtistMessageBroker {
 	artistRepo := mongo2.NewMongoArtistRepo(db)
 	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
@@ -57,7 +67,7 @@ func InitArtistMessageBroker(db *mongo.Database, conn *amqp.Connection, grpcConn
 func InitCommissionMessageBroker(db *mongo.Database, conn *amqp.Connection) rabbitmq3.CommissionMessageBroker {
 	msg_brokerRepo := rabbitmq.NewRabbitMQMsgBrokerRepo(conn)
 	open_commissionRepo := mongo3.NewMongoOpenCommissionRepo(db)
-	useCase := usecase3.NewCommissionUseCase(msg_brokerRepo, open_commissionRepo)
+	useCase := usecase4.NewCommissionUseCase(msg_brokerRepo, open_commissionRepo)
 	commissionMessageBroker := rabbitmq3.NewRabbitMQCommissionMessageBroker(useCase, conn)
 	return commissionMessageBroker
 }

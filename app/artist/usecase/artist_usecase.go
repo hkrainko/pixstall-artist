@@ -5,12 +5,10 @@ import (
 	"log"
 	"pixstall-artist/domain/artist"
 	domainArtistModel "pixstall-artist/domain/artist/model"
-	error2 "pixstall-artist/domain/error"
 	domainFile "pixstall-artist/domain/file"
 	model2 "pixstall-artist/domain/file/model"
 	msgBroker "pixstall-artist/domain/msg-broker"
 	openCommission "pixstall-artist/domain/open-commission"
-	domainOpenCommissionModel "pixstall-artist/domain/open-commission/model"
 	domainRegModel "pixstall-artist/domain/reg/model"
 	"pixstall-artist/domain/user/model"
 	"time"
@@ -25,9 +23,9 @@ type artistUseCase struct {
 
 func NewArtistUseCase(artistRepo artist.Repo, openCommRepo openCommission.Repo, imageRepo domainFile.Repo, msgBrokerRepo msgBroker.Repo) artist.UseCase {
 	return &artistUseCase{
-		artistRepo:   artistRepo,
-		openCommRepo: openCommRepo,
-		imageRepo:    imageRepo,
+		artistRepo:    artistRepo,
+		openCommRepo:  openCommRepo,
+		imageRepo:     imageRepo,
 		msgBrokerRepo: msgBrokerRepo,
 	}
 }
@@ -61,7 +59,6 @@ func (a artistUseCase) RegisterNewArtist(ctx context.Context, regInfo *domainReg
 		},
 		ArtistBoard:     domainArtistModel.ArtistBoard{},
 		OpenCommissions: nil,
-		Artworks:        nil,
 	}
 
 	err := a.artistRepo.SaveArtist(ctx, &dArtist)
@@ -125,31 +122,31 @@ func (a artistUseCase) UpdateArtist(ctx context.Context, updater domainArtistMod
 
 // Open Commission
 
-func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*string, error) {
-	if len(openCommCreator.SampleImages) <= 0 {
-		return nil, error2.BadRequestError
-	}
-	var paths []string
-	for _, sampleImage := range openCommCreator.SampleImages {
-		path, err := a.imageRepo.SaveFile(ctx, sampleImage.File, model2.FileTypeOpenCommission, requesterID, []string{"*"})
-		if err != nil {
-			return nil, err
-		}
-		paths = append(paths, *path)
-	}
-	if len(paths) <= 0 {
-		return nil, error2.UnknownError
-	}
-	openCommCreator.SampleImagePaths = paths
-
-	addedOpenComm, err := a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommCreator)
-	if err != nil {
-		return nil, err
-	}
-	err = a.msgBrokerRepo.SendOpenCommCreatedMsg(ctx, *addedOpenComm)
-	if err != nil {
-		log.Println(err)
-		// Ignore error
-	}
-	return &addedOpenComm.ID, err
-}
+//func (a artistUseCase) AddOpenCommission(ctx context.Context, requesterID string, openCommCreator domainOpenCommissionModel.OpenCommissionCreator) (*string, error) {
+//	if len(openCommCreator.SampleImages) <= 0 {
+//		return nil, error2.BadRequestError
+//	}
+//	var paths []string
+//	for _, sampleImage := range openCommCreator.SampleImages {
+//		path, err := a.imageRepo.SaveFile(ctx, sampleImage.File, model2.FileTypeOpenCommission, requesterID, []string{"*"})
+//		if err != nil {
+//			return nil, err
+//		}
+//		paths = append(paths, *path)
+//	}
+//	if len(paths) <= 0 {
+//		return nil, error2.UnknownError
+//	}
+//	openCommCreator.SampleImagePaths = paths
+//
+//	addedOpenComm, err := a.openCommRepo.AddOpenCommission(ctx, requesterID, openCommCreator)
+//	if err != nil {
+//		return nil, err
+//	}
+//	err = a.msgBrokerRepo.SendOpenCommCreatedMsg(ctx, *addedOpenComm)
+//	if err != nil {
+//		log.Println(err)
+//		// Ignore error
+//	}
+//	return &addedOpenComm.ID, err
+//}

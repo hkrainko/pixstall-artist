@@ -9,9 +9,10 @@ import (
 	mongoModel "pixstall-artist/app/artist/repo/mongo/model"
 	"pixstall-artist/domain/artist"
 	"pixstall-artist/domain/artist/model"
-	domainArtworkModel "pixstall-artist/domain/artwork/model"
+	error2 "pixstall-artist/domain/error"
 	domainFanModel "pixstall-artist/domain/fan/model"
 	model2 "pixstall-artist/domain/model"
+	"time"
 )
 
 type mongoArtistRepo struct {
@@ -200,16 +201,44 @@ func (m mongoArtistRepo) UpdateArtist(ctx context.Context, updater *model.Artist
 	return nil
 }
 
-func (m mongoArtistRepo) AddArtwork(ctx context.Context, artwork *domainArtworkModel.Artwork) error {
-	panic("implement me")
+// bookmark
+func (m mongoArtistRepo) AddBookmark(ctx context.Context, userID string, artistID string) error {
+	collection := m.db.Collection(ArtistCollection)
+
+	filter := bson.M{"artistId": artistID}
+
+	change := bson.M{"$set": bson.M{"bookmarks." + userID: time.Now()}}
+
+	result, err := collection.UpdateOne(ctx, filter, change)
+	if err != nil {
+		return error2.UnknownError
+	}
+	fmt.Printf("AddBookmark success: %v", result.UpsertedID)
+	return nil
 }
 
+func (m mongoArtistRepo) RemoveBookmark(ctx context.Context, userID string, artistID string) error {
+	collection := m.db.Collection(ArtistCollection)
+
+	filter := bson.M{"artistId": artistID}
+
+	change := bson.M{"$unset": "bookmarks." + userID}
+
+	result, err := collection.UpdateOne(ctx, filter, change)
+	if err != nil {
+		return error2.UnknownError
+	}
+	fmt.Printf("RemoveBookmark success: %v", result.UpsertedID)
+	return nil
+}
+
+// fan
 func (m mongoArtistRepo) AddFan(ctx context.Context, artistID string, fan domainFanModel.Fan) error {
 	collection := m.db.Collection(ArtistCollection)
 
 	filter := bson.M{"artistId": artistID}
 
-	change := bson.M{"$push": bson.M{"fans": bson.M{fan.UserID: fan}}}
+	change := bson.M{"$set": bson.M{"fans": bson.M{fan.UserID: fan}}}
 
 	result, err := collection.UpdateOne(ctx, filter, change)
 	if err != nil {
